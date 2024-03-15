@@ -14,12 +14,12 @@ class HomePage extends StatelessWidget {
       backgroundColor: purple,
       body: Stack(
         clipBehavior: Clip.none,
-        children: Menu(context),
+        children: menu(context),
       ),
     );
   }
 
-  List<Widget> Menu(BuildContext context) {
+  List<Widget> menu(BuildContext context) {
     return <Widget>[
       background(),
       max(context),
@@ -31,11 +31,39 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            newGame(context),
+            Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                // Add the widgets inside the stack
+                Container(
+                  width: 210,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                newGame(context),
+              ],
+            ),
             const SizedBox(
               height: 30,
             ),
-            continueGame(context),
+            Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                // Add the widgets inside the stack
+                Container(
+                  width: 210,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                continueGame(context),
+              ],
+            ),
           ],
         ),
       ),
@@ -52,7 +80,7 @@ class HomePage extends StatelessWidget {
         );
       },
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
             vertical: 5,
             horizontal: 35), // Adjust padding to make the button bigger
         backgroundColor: lightGreen,
@@ -68,7 +96,7 @@ class HomePage extends StatelessWidget {
       child: const StrokeText(
         text: "CONTINUE",
         textStyle: TextStyle(fontSize: 35, color: Colors.white),
-        strokeColor: Colors.black,
+        strokeColor: black,
         strokeWidth: 3,
       ),
     );
@@ -84,7 +112,7 @@ class HomePage extends StatelessWidget {
         );
       },
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
             vertical: 5,
             horizontal: 30), // Adjust padding to make the button bigger
         backgroundColor: yellow,
@@ -143,7 +171,7 @@ class HomePage extends StatelessWidget {
       child: Container(
         width: logoWidth,
         height: logoHeight,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             alignment: Alignment.topCenter,
             image: AssetImage('assets/images/logo.png'),
