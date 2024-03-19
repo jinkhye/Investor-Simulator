@@ -39,6 +39,8 @@ dependencies:
   stroke_text: ^0.0.2
   flutter_svg: ^2.0.10+1
   get: ^4.6.6
+  intl: any
+  provider: ^5.0.0
 
 dev_dependencies:
   flutter_test:

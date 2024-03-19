@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/pages/mainmenu.dart';
 import 'package:stroke_text/stroke_text.dart';
@@ -74,10 +75,7 @@ class HomePage extends StatelessWidget {
     return ElevatedButton(
       onPressed: () {
         // Add the action to be performed when the button is pressed
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const MainMenu()),
-        );
+        Get.to(const HomePage());
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(
@@ -106,10 +104,7 @@ class HomePage extends StatelessWidget {
     return ElevatedButton(
       onPressed: () {
         // Add the action to be performed when the button is pressed
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const MainMenu()),
-        );
+        Get.to(MainMenu());
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(
