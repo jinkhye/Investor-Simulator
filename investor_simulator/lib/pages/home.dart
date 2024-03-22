@@ -75,7 +75,9 @@ class HomePage extends StatelessWidget {
     return ElevatedButton(
       onPressed: () {
         // Add the action to be performed when the button is pressed
-        Get.to(const HomePage());
+        Get.to(() => const HomePage(),
+            transition: Transition.circularReveal,
+            duration: const Duration(milliseconds: 800));
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(
@@ -104,7 +106,9 @@ class HomePage extends StatelessWidget {
     return ElevatedButton(
       onPressed: () {
         // Add the action to be performed when the button is pressed
-        Get.to(MainMenu());
+        Get.to(() => const MainMenu(),
+            transition: Transition.circularReveal,
+            duration: const Duration(milliseconds: 800));
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(
@@ -145,7 +149,7 @@ class HomePage extends StatelessWidget {
         decoration: const BoxDecoration(
           image: DecorationImage(
             alignment: Alignment.topCenter,
-            image: AssetImage('assets/images/Max.png'),
+            image: AssetImage('assets/images/Maxupscaled.png'),
             fit: BoxFit.contain,
           ),
         ),
@@ -181,7 +185,7 @@ class HomePage extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/background.jpeg'),
+          image: AssetImage('assets/images/background.png'),
           fit: BoxFit.cover,
         ),
       ),

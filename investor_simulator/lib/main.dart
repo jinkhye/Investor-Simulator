@@ -3,8 +3,9 @@ import 'package:get/get.dart';
 import 'package:investor_simulator/pages/home.dart';
 import 'package:investor_simulator/pages/accomodation.dart';
 import 'package:investor_simulator/pages/mainmenu.dart';
+import 'package:investor_simulator/pages/clothes.dart';
 import 'package:provider/provider.dart';
-import 'provider/counter_provider.dart';
+import 'provider/game_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,8 +24,9 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
         routes: {
           '/': (context) => const HomePage(),
-          '/mainMenu': (context) => MainMenu(),
-          '/accomodation': (context) => Accomodation(),
+          '/mainMenu': (context) => const MainMenu(),
+          '/accomodation': (context) => const Accomodation(),
+          '/clothes': (context) => const Clothes(),
           // Add other routes here if needed
         },
       ),

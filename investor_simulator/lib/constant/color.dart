@@ -9,3 +9,5 @@ const Color green = Color(0xFF169218);
 const Color lightGreen = Color(0xFF5CD34D);
 const Color white = Color(0xFFFFFFFF);
 const Color black = Color(0xFF000000);
+const Color red = Color(0xFFEE4B2B);
+const Color darkRed = Color(0xFF9D0208);

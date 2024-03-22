@@ -1,16 +1,15 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:investor_simulator/constant/color.dart';
+import 'package:investor_simulator/menu/topMenu.dart';
 import 'package:investor_simulator/models/accomodation_model.dart';
-import 'package:investor_simulator/provider/counter_provider.dart';
+import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 import 'mainmenu.dart';
 
 class Accomodation extends StatefulWidget {
-  Accomodation({super.key});
+  const Accomodation({super.key});
 
   @override
   State<Accomodation> createState() => _AccomodationState();
@@ -18,8 +17,6 @@ class Accomodation extends StatefulWidget {
 
 class _AccomodationState extends State<Accomodation> {
   List<AccomodationModel> accomodation = [];
-
-  late ValueNotifier<int> rot = ValueNotifier(0);
 
   void _getInitialInfo() {
     accomodation = AccomodationModel.getAccomodation();
@@ -43,10 +40,7 @@ class _AccomodationState extends State<Accomodation> {
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 40),
-            child: gameMenu(context, imagePath),
-          ),
+          child: gameMenu(context, imagePath),
         ),
       ),
     );
@@ -192,6 +186,7 @@ class _AccomodationState extends State<Accomodation> {
         String image = accomodation[index].iconPath;
         // Add the action to be performed when the button is pressed
         imagePath.setImagePath(image);
+        imagePath.subtractMoney(accomodation[index].price.toDouble());
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(0),
@@ -240,19 +235,6 @@ class _AccomodationState extends State<Accomodation> {
         textStyle: TextStyle(fontSize: 40, color: yellow),
         strokeColor: darkPurple,
         strokeWidth: 7,
-      ),
-    );
-  }
-
-  Padding topMenu(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 10),
-      child: Row(
-        children: <Widget>[
-          back(context),
-          Expanded(child: Container()), // Empty Expanded widget for empty space
-          money()
-        ],
       ),
     );
   }
@@ -306,7 +288,9 @@ class _AccomodationState extends State<Accomodation> {
     return ElevatedButton(
       onPressed: () {
         // Add the action to be performed when the button is pressed
-        Get.to(MainMenu());
+        Get.to(() => const MainMenu(),
+            transition: Transition.circularReveal,
+            duration: const Duration(milliseconds: 800));
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(0),

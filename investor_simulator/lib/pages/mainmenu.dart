@@ -1,19 +1,23 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:investor_simulator/constant/color.dart';
+import 'package:investor_simulator/menu/topMenu.dart';
 import 'package:investor_simulator/pages/clothes.dart';
 import 'package:investor_simulator/pages/home.dart';
 import 'package:investor_simulator/pages/accomodation.dart';
-import 'package:investor_simulator/provider/counter_provider.dart';
+import 'package:investor_simulator/pages/invest.dart';
+import 'package:investor_simulator/pages/news.dart';
+import 'package:investor_simulator/pages/portfolio.dart';
+import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 import 'package:provider/provider.dart';
 
 class MainMenu extends StatefulWidget {
-  MainMenu({super.key});
+  const MainMenu({super.key});
 
   @override
   State<MainMenu> createState() => _MainMenuState();
@@ -35,10 +39,7 @@ class _MainMenuState extends State<MainMenu> {
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 40),
-            child: gameMenu(context, imagePath, maxPath),
-          ),
+          child: gameMenu(context, imagePath, maxPath),
         ),
       ),
     );
@@ -52,7 +53,10 @@ class _MainMenuState extends State<MainMenu> {
         const SizedBox(
           height: 10,
         ),
-        backgroundMax(context, imagePath, maxPath),
+        Padding(
+          padding: const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+          child: backgroundMax(context, imagePath, maxPath),
+        ),
         Expanded(child: Container()), // Empty Expanded widget for empty space
         bottomMenu(context),
         Expanded(child: Container()), // Empty Expanded widget for empty space
@@ -71,9 +75,63 @@ class _MainMenuState extends State<MainMenu> {
             const SizedBox(width: 20),
             portfolio(context),
             const SizedBox(width: 20),
+            news(context),
+            const SizedBox(width: 20),
             accomodation(context),
             const SizedBox(width: 20),
             clothes(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  ElevatedButton news(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        // Add the action to be performed when the button is pressed
+        Get.to(() => const News(),
+            transition: Transition.circularReveal,
+            duration: const Duration(milliseconds: 800));
+      },
+      style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.all(0),
+          backgroundColor:
+              Colors.transparent, // Set the background color to transparent
+          elevation: 0, // Remove the elevation
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+            side: const BorderSide(color: white, width: 7),
+          )),
+      child: Container(
+        alignment: Alignment.topCenter,
+        width: 100, // Adjust width to make the icon smaller
+        height: 100, // Adjust height to make the icon smaller
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [yellow, orange], // Adjust colors as needed
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: orangeRed, width: 12),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/icons/news.svg',
+              width: 40,
+              height: 40,
+            ),
+            const StrokeText(
+              text: "NEWS",
+              textStyle: TextStyle(fontSize: 17, color: white),
+              strokeColor: black,
+              strokeWidth: 5,
+            ),
           ],
         ),
       ),
@@ -84,6 +142,9 @@ class _MainMenuState extends State<MainMenu> {
     return ElevatedButton(
       onPressed: () {
         // Add the action to be performed when the button is pressed
+        Get.to(() => const Portfolio(),
+            transition: Transition.circularReveal,
+            duration: const Duration(milliseconds: 800));
       },
       style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.all(0),
@@ -133,7 +194,7 @@ class _MainMenuState extends State<MainMenu> {
     return ElevatedButton(
       onPressed: () {
         // Add the action to be performed when the button is pressed
-        Get.to(Clothes(),
+        Get.to(() => const Clothes(),
             transition: Transition.circularReveal,
             duration: const Duration(milliseconds: 800));
       },
@@ -185,7 +246,7 @@ class _MainMenuState extends State<MainMenu> {
     return ElevatedButton(
       onPressed: () {
         // Add the action to be performed when the button is pressed
-        Get.to(Accomodation(),
+        Get.to(() => const Accomodation(),
             transition: Transition.circularReveal,
             duration: const Duration(milliseconds: 800));
       },
@@ -237,7 +298,7 @@ class _MainMenuState extends State<MainMenu> {
     return ElevatedButton(
       onPressed: () {
         // Add the action to be performed when the button is pressed
-        Get.to(Accomodation(),
+        Get.to(() => const Invest(),
             transition: Transition.circularReveal,
             duration: const Duration(milliseconds: 800));
       },
@@ -315,9 +376,15 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   StrokeText date() {
-    return const StrokeText(
-      text: "15 MAC 2024",
-      textStyle: TextStyle(fontSize: 18, color: yellow),
+    // Get the current date
+    DateTime now = DateTime.now();
+
+    // Format the date using a DateFormat object
+    DateFormat formatter = DateFormat('dd MMM yyyy');
+    String formattedDate = formatter.format(now);
+    return StrokeText(
+      text: formattedDate,
+      textStyle: const TextStyle(fontSize: 18, color: yellow),
       strokeColor: darkPurple,
       strokeWidth: 6,
     );
@@ -386,19 +453,6 @@ class _MainMenuState extends State<MainMenu> {
     );
   }
 
-  Padding topMenu(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 10),
-      child: Row(
-        children: <Widget>[
-          back(context),
-          Expanded(child: Container()), // Empty Expanded widget for empty space
-          money()
-        ],
-      ),
-    );
-  }
-
   Stack backgroundMax(BuildContext context, imagePath, maxPath) {
     return Stack(
       clipBehavior: Clip.none,
@@ -411,14 +465,21 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   Container area(BuildContext context, imagePath) {
+    // ignore: sized_box_for_whitespace
     return Container(
       height: MediaQuery.of(context).size.height - 400,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(color: Colors.white, width: 5),
+              image: DecorationImage(
+                image: AssetImage(imagePath),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
           ClipRRect(
             child: BackdropFilter(
@@ -510,7 +571,7 @@ class _MainMenuState extends State<MainMenu> {
     return ElevatedButton(
       onPressed: () {
         // Add the action to be performed when the button is pressed
-        Get.to(HomePage());
+        Get.to(() => const HomePage());
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(0),

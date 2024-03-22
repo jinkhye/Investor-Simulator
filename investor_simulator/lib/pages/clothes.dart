@@ -1,17 +1,15 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:investor_simulator/constant/color.dart';
-import 'package:investor_simulator/models/accomodation_model.dart';
+import 'package:investor_simulator/menu/topMenu.dart';
 import 'package:investor_simulator/models/clothes_model.dart';
-import 'package:investor_simulator/provider/counter_provider.dart';
+import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 import 'mainmenu.dart';
 
 class Clothes extends StatefulWidget {
-  Clothes({super.key});
+  const Clothes({super.key});
 
   @override
   State<Clothes> createState() => _ClothesState();
@@ -44,10 +42,7 @@ class _ClothesState extends State<Clothes> {
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 40),
-            child: gameMenu(context, maxPath),
-          ),
+          child: gameMenu(context, maxPath),
         ),
       ),
     );
@@ -198,6 +193,7 @@ class _ClothesState extends State<Clothes> {
         String image = clothes[index].iconPath;
         // Add the action to be performed when the button is pressed
         maxPath.setMaxPath(image);
+        maxPath.subtractMoney(clothes[index].price.toDouble());
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(0),
@@ -246,19 +242,6 @@ class _ClothesState extends State<Clothes> {
         textStyle: TextStyle(fontSize: 40, color: yellow),
         strokeColor: darkPurple,
         strokeWidth: 7,
-      ),
-    );
-  }
-
-  Padding topMenu(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 10),
-      child: Row(
-        children: <Widget>[
-          back(context),
-          Expanded(child: Container()), // Empty Expanded widget for empty space
-          money()
-        ],
       ),
     );
   }
@@ -312,7 +295,9 @@ class _ClothesState extends State<Clothes> {
     return ElevatedButton(
       onPressed: () {
         // Add the action to be performed when the button is pressed
-        Get.to(MainMenu());
+        Get.to(() => const MainMenu(),
+            transition: Transition.circularReveal,
+            duration: const Duration(milliseconds: 800));
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(0),
