@@ -77,16 +77,16 @@ Center purchaseText() {
   );
 }
 
-Color getTextColor(int amount) {
-  if (amount <= 0) {
-    return red;
-  } else {
-    return green;
-  }
+Color getTextColor(String quantity) {
+  return quantity == "0" ? Colors.red : Colors.green;
 }
 
 SingleChildScrollView stockDetails(BuildContext context, stockName, stockPrice,
     percentage, image, portfolio, amount, index) {
+  String quantity = portfolio.portfolio.isEmpty
+      ? "0"
+      : portfolio.portfolio[index].amount.toString();
+
   return SingleChildScrollView(
     scrollDirection: Axis.vertical,
     child: Column(
@@ -122,12 +122,13 @@ SingleChildScrollView stockDetails(BuildContext context, stockName, stockPrice,
                 ),
               ),
               TextSpan(
-                text: '$amount',
+                text: quantity,
                 style: TextStyle(
                   fontFamily: 'Helvetica',
                   letterSpacing: 0,
                   fontSize: 14,
-                  color: getTextColor(amount), // Change the color of the number
+                  color:
+                      getTextColor(quantity), // Change the color of the number
                 ),
               ),
               const TextSpan(
