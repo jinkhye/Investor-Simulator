@@ -48,9 +48,9 @@ class _InvestState extends State<Invest> {
                   child: PageView(
                     controller: controller,
                     children: [
-                      Expanded(child: stockMenu(context, imagePath)),
-                      Expanded(child: etfMenu(context, imagePath)),
-                      Expanded(child: cryptoMenu(context, imagePath)),
+                      stockMenu(context, imagePath),
+                      etfMenu(context, imagePath),
+                      cryptoMenu(context, imagePath),
                     ],
                   ),
                 ),
