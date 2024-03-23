@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:investor_simulator/constant/color.dart';
+import 'package:investor_simulator/dialog/opening_dialog.dart';
 import 'package:investor_simulator/pages/mainmenu.dart';
 import 'package:stroke_text/stroke_text.dart';
 
@@ -75,7 +76,7 @@ class HomePage extends StatelessWidget {
     return ElevatedButton(
       onPressed: () {
         // Add the action to be performed when the button is pressed
-        Get.to(() => const HomePage(),
+        Get.to(() => const MainMenu(),
             transition: Transition.circularReveal,
             duration: const Duration(milliseconds: 800));
       },
@@ -103,12 +104,15 @@ class HomePage extends StatelessWidget {
   }
 
   ElevatedButton newGame(context) {
+    final pageController = PageController();
     return ElevatedButton(
-      onPressed: () {
+      onPressed: () async {
         // Add the action to be performed when the button is pressed
+
         Get.to(() => const MainMenu(),
             transition: Transition.circularReveal,
             duration: const Duration(milliseconds: 800));
+        openOpeningDialog(context, pageController);
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(
