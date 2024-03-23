@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:investor_simulator/constant/color.dart';
-import 'package:stroke_text/stroke_text.dart';
 
 void openOpeningDialog(BuildContext context, pagecontroller) {
   final PageController pageController = pagecontroller;
