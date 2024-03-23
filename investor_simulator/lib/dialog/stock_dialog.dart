@@ -83,9 +83,10 @@ Color getTextColor(String quantity) {
 
 SingleChildScrollView stockDetails(BuildContext context, stockName, stockPrice,
     percentage, image, portfolio, amount, index) {
-  String quantity = portfolio.portfolio.isEmpty
-      ? "0"
-      : portfolio.portfolio[index].amount.toString();
+  String quantity = "0"; // Default value
+  if (index >= 0 && index < portfolio.portfolio.length) {
+    quantity = portfolio.portfolio[index].amount.toString();
+  }
 
   return SingleChildScrollView(
     scrollDirection: Axis.vertical,
