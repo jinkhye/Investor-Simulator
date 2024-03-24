@@ -194,6 +194,7 @@ class _ClothesState extends State<Clothes> {
         // Add the action to be performed when the button is pressed
         maxPath.setMaxPath(image);
         maxPath.subtractMoney(clothes[index].price.toDouble());
+        maxPath.setClothesUse(index);
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(0),
@@ -206,10 +207,10 @@ class _ClothesState extends State<Clothes> {
         height: 35,
         width: 100,
         decoration: BoxDecoration(
-          color: lightGreen,
+          color: getButtonColor(index, maxPath),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: green,
+            color: getStrokeColor(index, maxPath),
             width: 4,
           ),
           boxShadow: [
@@ -221,14 +222,38 @@ class _ClothesState extends State<Clothes> {
             ),
           ],
         ),
-        child: const StrokeText(
-          text: 'ACCEPT',
-          textStyle: TextStyle(fontSize: 18, color: white),
+        child: StrokeText(
+          text: getText(index, maxPath),
+          textStyle: const TextStyle(fontSize: 18, color: white),
           strokeColor: black,
           strokeWidth: 4,
         ),
       ),
     );
+  }
+
+  Color getButtonColor(int index, maxPath) {
+    if (maxPath.clothesUse == index) {
+      return yellow;
+    } else {
+      return lightGreen;
+    }
+  }
+
+  Color getStrokeColor(int index, maxPath) {
+    if (maxPath.clothesUse == index) {
+      return orangeRed;
+    } else {
+      return green;
+    }
+  }
+
+  String getText(int index, maxPath) {
+    if (maxPath.clothesUse == index) {
+      return 'SELECTED';
+    } else {
+      return 'ACCEPT';
+    }
   }
 
   Container clothesText() {

@@ -10,6 +10,20 @@ class GameProvider extends ChangeNotifier {
   List<PortfolioModel> get portfolio => _portfolio;
   double _money = 10000;
   double get money => _money;
+  int _accomodationUse = 0;
+  int get accomodationUse => _accomodationUse;
+  int _clothesUse = 0;
+  int get clothesUse => _clothesUse;
+
+  void setClothesUse(int value) {
+    _clothesUse = value;
+    notifyListeners();
+  }
+
+  void setAccomodationUse(int value) {
+    _accomodationUse = value;
+    notifyListeners();
+  }
 
   void addMoney(double amount) {
     _money += amount;

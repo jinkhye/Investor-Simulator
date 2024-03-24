@@ -187,6 +187,7 @@ class _AccomodationState extends State<Accomodation> {
         // Add the action to be performed when the button is pressed
         imagePath.setImagePath(image);
         imagePath.subtractMoney(accomodation[index].price.toDouble());
+        imagePath.setAccomodationUse(index);
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(0),
@@ -199,10 +200,10 @@ class _AccomodationState extends State<Accomodation> {
         height: 35,
         width: 100,
         decoration: BoxDecoration(
-          color: lightGreen,
+          color: getButtonColor(index, imagePath),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: green,
+            color: getStrokeColor(index, imagePath),
             width: 4,
           ),
           boxShadow: [
@@ -214,14 +215,38 @@ class _AccomodationState extends State<Accomodation> {
             ),
           ],
         ),
-        child: const StrokeText(
-          text: 'ACCEPT',
-          textStyle: TextStyle(fontSize: 18, color: white),
+        child: StrokeText(
+          text: getText(index, imagePath),
+          textStyle: const TextStyle(fontSize: 18, color: white),
           strokeColor: black,
           strokeWidth: 4,
         ),
       ),
     );
+  }
+
+  Color getButtonColor(int index, imagePath) {
+    if (imagePath.accomodationUse == index) {
+      return yellow;
+    } else {
+      return lightGreen;
+    }
+  }
+
+  Color getStrokeColor(int index, imagePath) {
+    if (imagePath.accomodationUse == index) {
+      return orangeRed;
+    } else {
+      return green;
+    }
+  }
+
+  String getText(int index, imagePath) {
+    if (imagePath.accomodationUse == index) {
+      return 'SELECTED';
+    } else {
+      return 'ACCEPT';
+    }
   }
 
   Container accomodationText() {
