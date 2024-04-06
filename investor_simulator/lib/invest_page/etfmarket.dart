@@ -145,7 +145,7 @@ Column _stocksSection(imagePath) {
                       ),
                     ),
                   ),
-                  Positioned(child: accept(context, index, imagePath)),
+                  Positioned(child: accept(context, index)),
                 ],
               ),
             );
@@ -156,11 +156,10 @@ Column _stocksSection(imagePath) {
   );
 }
 
-ElevatedButton accept(BuildContext context, index, imagePath) {
+ElevatedButton accept(BuildContext context, index) {
   return ElevatedButton(
     onPressed: () {
-      openAnimatedDialog(context, etf[index].name, etf[index].price,
-          etf[index].percentage, etf[index].iconPath, 0, index);
+      openAnimatedDialog(context, 1, index);
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),

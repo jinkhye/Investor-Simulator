@@ -3,16 +3,12 @@ import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/dialog/stock_dialog.dart';
 import 'package:investor_simulator/dialog/stock_help_dialog.dart';
 import 'package:investor_simulator/models/stocks_model.dart';
+import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 
-List<StocksModel> stocks = [];
-
-void _getInitialInfo() {
-  stocks = StocksModel.getStocks();
-}
-
-Column stockMenu(BuildContext context, imagePath) {
-  _getInitialInfo();
+Column stockMenu(BuildContext context) {
+  final gameProvider = GameProvider();
+  List<StocksModel> stocks = gameProvider.stocks;
   return Column(
     children: <Widget>[
       Stack(
@@ -38,13 +34,13 @@ Column stockMenu(BuildContext context, imagePath) {
       ),
       const SizedBox(height: 10),
       Expanded(
-        child: _stocksSection(imagePath),
+        child: _stocksSection(stocks),
       ),
     ],
   );
 }
 
-Column _stocksSection(imagePath) {
+Column _stocksSection(stocks) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -145,7 +141,7 @@ Column _stocksSection(imagePath) {
                       ),
                     ),
                   ),
-                  Positioned(child: accept(context, index, imagePath)),
+                  Positioned(child: accept(context, stocks, index)),
                 ],
               ),
             );
@@ -156,11 +152,14 @@ Column _stocksSection(imagePath) {
   );
 }
 
-ElevatedButton accept(BuildContext context, index, imagePath) {
+ElevatedButton accept(BuildContext context, stocks, index) {
   return ElevatedButton(
     onPressed: () {
-      openAnimatedDialog(context, stocks[index].name, stocks[index].price,
-          stocks[index].percentage, stocks[index].iconPath, 0, index);
+      openAnimatedDialog(
+        context,
+        0,
+        index,
+      );
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),

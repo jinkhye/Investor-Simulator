@@ -8,9 +8,30 @@ import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 
-void openAnimatedDialog(BuildContext context, stockName, stockPrice, percentage,
-    image, amount, index) {
+void openAnimatedDialog(BuildContext context, int select, int index) {
   final portfolio = Provider.of<GameProvider>(context, listen: false);
+  List<dynamic> stocks = [];
+  switch (select) {
+    case 0:
+      stocks = portfolio.stocks;
+      break;
+    case 1:
+      stocks = portfolio.etf;
+      break;
+    case 2:
+      stocks = portfolio.crypto;
+      break;
+    case 3:
+      stocks = portfolio.portfolio;
+      break;
+  }
+
+  // Check if the portfolio is empty and handle the case
+  if (stocks.isEmpty) {
+    // Show a message or handle the empty portfolio state
+    return;
+  }
+
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -29,12 +50,11 @@ void openAnimatedDialog(BuildContext context, stockName, stockPrice, percentage,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Container(
-              padding: const EdgeInsets.all(10), // Adjust padding as needed
+              padding: const EdgeInsets.all(10),
               width: 400,
               height: 600,
               child: Scrollbar(
-                  child: stockDetails(context, stockName, stockPrice,
-                      percentage, image, portfolio, amount, index)),
+                  child: stockDetails(context, stocks, index, select)),
             ),
           ),
         ),
@@ -81,11 +101,15 @@ Color getTextColor(String quantity) {
   return quantity == "0" ? Colors.red : Colors.green;
 }
 
-SingleChildScrollView stockDetails(BuildContext context, stockName, stockPrice,
-    percentage, image, portfolio, amount, index) {
-  String quantity = "0"; // Default value
-  if (index >= 0 && index < portfolio.portfolio.length) {
-    quantity = portfolio.portfolio[index].amount.toString();
+SingleChildScrollView stockDetails(
+    BuildContext context, stocks, int index, int select) {
+  // Check if the stocks list is empty
+  if (stocks.isEmpty || index < 0 || index >= stocks.length) {
+    // Show a message or handle the empty portfolio state
+    return const SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: SizedBox(),
+    );
   }
 
   return SingleChildScrollView(
@@ -105,7 +129,7 @@ SingleChildScrollView stockDetails(BuildContext context, stockName, stockPrice,
         SizedBox(
           width: 300,
           height: 85,
-          child: stockDetailsLogoName(context, image, stockName),
+          child: stockDetailsLogoName(context, stocks, index),
         ),
         const SizedBox(
           height: 10,
@@ -123,13 +147,13 @@ SingleChildScrollView stockDetails(BuildContext context, stockName, stockPrice,
                 ),
               ),
               TextSpan(
-                text: quantity,
+                text: "${stocks[index].amount}",
                 style: TextStyle(
                   fontFamily: 'Helvetica',
                   letterSpacing: 0,
                   fontSize: 14,
-                  color:
-                      getTextColor(quantity), // Change the color of the number
+                  color: getTextColor(
+                      '${stocks[index].amount}'), // Change the color of the number
                 ),
               ),
               const TextSpan(
@@ -153,7 +177,7 @@ SingleChildScrollView stockDetails(BuildContext context, stockName, stockPrice,
           children: [
             const SizedBox(width: 15),
             StrokeText(
-              text: "\$$stockPrice",
+              text: '\$${stocks[index].price}',
               textStyle: const TextStyle(
                 fontFamily: 'Helvetica',
                 fontWeight: FontWeight.w800,
@@ -166,10 +190,10 @@ SingleChildScrollView stockDetails(BuildContext context, stockName, stockPrice,
             ),
             Expanded(child: Container()),
             StrokeText(
-              text: '($percentage)',
+              text: '(${stocks[index].percentage})',
               textStyle: TextStyle(
                   fontSize: 16,
-                  color: getColour(percentage),
+                  color: getColour(stocks[index].percentage),
                   fontFamily: 'Helvetica',
                   fontWeight: FontWeight.w700),
               strokeColor: Colors.transparent,
@@ -183,9 +207,9 @@ SingleChildScrollView stockDetails(BuildContext context, stockName, stockPrice,
         const SizedBox(height: 10),
         Row(
           children: [
-            sellStock(context, stockPrice, index),
+            sellStock(context, stocks, index, select),
             Expanded(child: Container()),
-            buyStock(context, stockName, stockPrice, image, percentage),
+            buyStock(context, select, index),
           ],
         ),
         const Divider(
@@ -220,7 +244,7 @@ SingleChildScrollView stockDetails(BuildContext context, stockName, stockPrice,
           thickness: 4,
         ),
         const SizedBox(height: 10),
-        revenueReport(context, image, stockName),
+        revenueReport(context, stocks, index),
         const SizedBox(height: 10),
       ],
     ),
@@ -259,10 +283,10 @@ ElevatedButton statsHelp(BuildContext context) {
   );
 }
 
-ElevatedButton revenueReport(BuildContext context, image, stockName) {
+ElevatedButton revenueReport(BuildContext context, stocks, index) {
   return ElevatedButton(
     onPressed: () {
-      openRevenueDialog(context, image, stockName);
+      openRevenueDialog(context, stocks[index].iconPath, stocks[index].name);
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),
@@ -445,7 +469,7 @@ Container marketcap() {
   );
 }
 
-Stack stockDetailsLogoName(BuildContext context, image, stockName) {
+Stack stockDetailsLogoName(BuildContext context, stocks, index) {
   return Stack(
     children: [
       Positioned(
@@ -466,7 +490,7 @@ Stack stockDetailsLogoName(BuildContext context, image, stockName) {
             child: Transform.scale(
               scale: 1.0, // Adjust the scale factor to make the image smaller
               child: Image.asset(
-                image,
+                stocks[index].iconPath,
                 width: 40, // Adjust the width of the image
                 height: 40, // Adjust the height of the image
               ),
@@ -483,7 +507,7 @@ Stack stockDetailsLogoName(BuildContext context, image, stockName) {
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              stockName,
+              stocks[index].name,
               textAlign: TextAlign.left,
               maxLines: 3,
               style: const TextStyle(
@@ -500,10 +524,10 @@ Stack stockDetailsLogoName(BuildContext context, image, stockName) {
   );
 }
 
-ElevatedButton sellStock(BuildContext context, stockPrice, index) {
+ElevatedButton sellStock(BuildContext context, stocks, index, select) {
   return ElevatedButton(
     onPressed: () {
-      openSellDialog(context, stockPrice, index);
+      openSellDialog(context, stocks[index].price, index, select);
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),
@@ -533,11 +557,10 @@ ElevatedButton sellStock(BuildContext context, stockPrice, index) {
   );
 }
 
-ElevatedButton buyStock(
-    BuildContext context, stockName, stockPrice, image, percentage) {
+ElevatedButton buyStock(BuildContext context, select, index) {
   return ElevatedButton(
     onPressed: () {
-      openBuyDialog(context, stockName, stockPrice, image, percentage);
+      openBuyDialog(context, select, index);
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),

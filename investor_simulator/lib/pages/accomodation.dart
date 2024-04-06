@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/menu/topMenu.dart';
-import 'package:investor_simulator/models/accomodation_model.dart';
+import 'package:investor_simulator/models/accommodation_model.dart';
 import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
@@ -16,10 +16,10 @@ class Accomodation extends StatefulWidget {
 }
 
 class _AccomodationState extends State<Accomodation> {
-  List<AccomodationModel> accomodation = [];
+  List<AccomodationModel> accommodation = [];
 
   void _getInitialInfo() {
-    accomodation = AccomodationModel.getAccomodation();
+    accommodation = AccomodationModel.getAccomodation();
   }
 
   @override
@@ -50,22 +50,22 @@ class _AccomodationState extends State<Accomodation> {
     return Column(
       children: <Widget>[
         topMenu(context),
-        accomodationText(),
+        accommodationText(),
         Expanded(
-          child: _accomodationSection(imagePath),
+          child: _accommodationSection(imagePath),
         ),
       ],
     );
   }
 
-  Column _accomodationSection(imagePath) {
+  Column _accommodationSection(imagePath) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 10),
         Expanded(
           child: ListView.builder(
-            itemCount: accomodation.length,
+            itemCount: accommodation.length,
             scrollDirection: Axis.vertical,
             padding: const EdgeInsets.only(left: 20, right: 20),
             itemBuilder: (context, index) {
@@ -106,7 +106,7 @@ class _AccomodationState extends State<Accomodation> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               StrokeText(
-                                text: accomodation[index].name,
+                                text: accommodation[index].name,
                                 textStyle:
                                     const TextStyle(fontSize: 25, color: black),
                                 strokeColor: darkPurple,
@@ -122,7 +122,7 @@ class _AccomodationState extends State<Accomodation> {
                                   ),
                                   const SizedBox(width: 5),
                                   StrokeText(
-                                    text: "${accomodation[index].price}/month",
+                                    text: "${accommodation[index].price}/month",
                                     textStyle: const TextStyle(
                                       fontSize: 20,
                                       color: black,
@@ -152,7 +152,7 @@ class _AccomodationState extends State<Accomodation> {
                           color: purple,
                           borderRadius: BorderRadius.circular(16),
                           image: DecorationImage(
-                            image: AssetImage(accomodation[index].iconPath),
+                            image: AssetImage(accommodation[index].iconPath),
                             fit: BoxFit.cover,
                           ),
                           border: Border.all(
@@ -183,11 +183,11 @@ class _AccomodationState extends State<Accomodation> {
   ElevatedButton accept(BuildContext context, index, imagePath) {
     return ElevatedButton(
       onPressed: () {
-        String image = accomodation[index].iconPath;
+        String image = accommodation[index].iconPath;
         // Add the action to be performed when the button is pressed
         imagePath.setImagePath(image);
-        imagePath.subtractMoney(accomodation[index].price.toDouble());
-        imagePath.setAccomodationUse(index);
+        imagePath.subtractMoney(accommodation[index].price.toDouble());
+        imagePath.setAccommodationUse(index);
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(0),
@@ -226,7 +226,7 @@ class _AccomodationState extends State<Accomodation> {
   }
 
   Color getButtonColor(int index, imagePath) {
-    if (imagePath.accomodationUse == index) {
+    if (imagePath.accommodationUse == index) {
       return yellow;
     } else {
       return lightGreen;
@@ -234,7 +234,7 @@ class _AccomodationState extends State<Accomodation> {
   }
 
   Color getStrokeColor(int index, imagePath) {
-    if (imagePath.accomodationUse == index) {
+    if (imagePath.accommodationUse == index) {
       return orangeRed;
     } else {
       return green;
@@ -242,14 +242,14 @@ class _AccomodationState extends State<Accomodation> {
   }
 
   String getText(int index, imagePath) {
-    if (imagePath.accomodationUse == index) {
+    if (imagePath.accommodationUse == index) {
       return 'SELECTED';
     } else {
       return 'ACCEPT';
     }
   }
 
-  Container accomodationText() {
+  Container accommodationText() {
     return Container(
       alignment: Alignment.topCenter,
       color: Colors.transparent,

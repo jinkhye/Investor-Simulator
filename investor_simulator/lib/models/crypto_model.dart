@@ -6,13 +6,15 @@ class CryptoModel {
   double price;
   String percentage;
   Color colour;
+  int amount;
 
   CryptoModel(
       {required this.name,
       required this.iconPath,
       required this.price,
       required this.percentage,
-      required this.colour});
+      required this.colour,
+      required this.amount});
 
   static List<CryptoModel> getCrypto() {
     List<CryptoModel> crypto = [];
@@ -23,6 +25,7 @@ class CryptoModel {
       price: 67058.30,
       percentage: '-1.17 %',
       colour: const Color(0xFFE74C3C),
+      amount: 0,
     ));
 
     crypto.add(CryptoModel(
@@ -31,6 +34,7 @@ class CryptoModel {
       price: 3514.54,
       percentage: '-0.06 %',
       colour: const Color(0xFFE74C3C),
+      amount: 0,
     ));
 
     crypto.add(CryptoModel(
@@ -39,6 +43,7 @@ class CryptoModel {
       price: 202.18,
       percentage: '+1.19 %',
       colour: const Color(0xFF5CD34D),
+      amount: 0,
     ));
 
     crypto.add(CryptoModel(
@@ -47,6 +52,7 @@ class CryptoModel {
       price: 0.15,
       percentage: '0.00%',
       colour: Colors.grey,
+      amount: 0,
     ));
 
     return crypto;

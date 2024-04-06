@@ -284,7 +284,7 @@ class _MainMenuState extends State<MainMenu> {
             ),
             const StrokeText(
               text: "ACCOMODATION",
-              textStyle: TextStyle(fontSize: 13, color: white),
+              textStyle: TextStyle(fontSize: 12, color: white),
               strokeColor: black,
               strokeWidth: 5,
             ),

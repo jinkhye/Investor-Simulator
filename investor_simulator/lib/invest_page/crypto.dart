@@ -3,16 +3,12 @@ import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/dialog/stock_dialog.dart';
 import 'package:investor_simulator/dialog/stock_help_dialog.dart';
 import 'package:investor_simulator/models/crypto_model.dart';
+import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 
-List<CryptoModel> crypto = [];
-
-void _getInitialInfo() {
-  crypto = CryptoModel.getCrypto();
-}
-
-Column cryptoMenu(BuildContext context, imagePath) {
-  _getInitialInfo();
+Column cryptoMenu(BuildContext context) {
+  final gameProvider = GameProvider();
+  List<CryptoModel> stocks = gameProvider.crypto;
   return Column(
     children: <Widget>[
       Stack(
@@ -38,20 +34,20 @@ Column cryptoMenu(BuildContext context, imagePath) {
       ),
       const SizedBox(height: 10),
       Expanded(
-        child: _stocksSection(imagePath),
+        child: _stocksSection(stocks),
       ),
     ],
   );
 }
 
-Column _stocksSection(imagePath) {
+Column _stocksSection(stocks) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       const SizedBox(height: 10),
       Expanded(
         child: ListView.builder(
-          itemCount: crypto.length,
+          itemCount: stocks.length,
           scrollDirection: Axis.vertical,
           padding: const EdgeInsets.only(left: 20, right: 20),
           itemBuilder: (context, index) {
@@ -73,10 +69,10 @@ Column _stocksSection(imagePath) {
                     top: 70,
                     right: 35,
                     child: StrokeText(
-                      text: crypto[index].percentage,
+                      text: stocks[index].percentage,
                       textStyle: TextStyle(
                           fontSize: 16,
-                          color: crypto[index].colour,
+                          color: stocks[index].colour,
                           fontFamily: 'Helvetica',
                           fontWeight: FontWeight.w700),
                       strokeColor: white,
@@ -87,7 +83,7 @@ Column _stocksSection(imagePath) {
                     top: 15,
                     right: 35,
                     child: StrokeText(
-                      text: "\$${crypto[index].price}",
+                      text: "\$${stocks[index].price}",
                       textStyle: const TextStyle(
                         fontFamily: 'Helvetica',
                         fontWeight: FontWeight.w800,
@@ -106,7 +102,7 @@ Column _stocksSection(imagePath) {
                     child: SizedBox(
                       width: 145,
                       child: StrokeText(
-                        text: crypto[index].name,
+                        text: stocks[index].name,
                         textStyle: const TextStyle(
                           letterSpacing: 0.5,
                           fontSize: 18,
@@ -137,7 +133,7 @@ Column _stocksSection(imagePath) {
                           scale:
                               1.0, // Adjust the scale factor to make the image smaller
                           child: Image.asset(
-                            crypto[index].iconPath,
+                            stocks[index].iconPath,
                             width: 40, // Adjust the width of the image
                             height: 40, // Adjust the height of the image
                           ),
@@ -145,7 +141,7 @@ Column _stocksSection(imagePath) {
                       ),
                     ),
                   ),
-                  Positioned(child: accept(context, index, imagePath)),
+                  Positioned(child: accept(context, stocks, index)),
                 ],
               ),
             );
@@ -156,11 +152,14 @@ Column _stocksSection(imagePath) {
   );
 }
 
-ElevatedButton accept(BuildContext context, index, imagePath) {
+ElevatedButton accept(BuildContext context, stocks, index) {
   return ElevatedButton(
     onPressed: () {
-      openAnimatedDialog(context, crypto[index].name, crypto[index].price,
-          crypto[index].percentage, crypto[index].iconPath, 0, index);
+      openAnimatedDialog(
+        context,
+        2,
+        index,
+      );
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),

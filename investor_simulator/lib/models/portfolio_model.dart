@@ -5,6 +5,7 @@ class PortfolioModel {
   int amount;
   double total;
   String percentage;
+  int type;
 
   PortfolioModel({
     required this.name,
@@ -13,5 +14,6 @@ class PortfolioModel {
     required this.amount,
     required this.total,
     required this.percentage,
+    required this.type,
   });
 }

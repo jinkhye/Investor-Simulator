@@ -4,30 +4,43 @@ import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 
-void openBuyDialog(
-    BuildContext context, stockName, stockPrice, image, percentage) {
+void openBuyDialog(BuildContext context, int select, int index) {
+  final portfolio = Provider.of<GameProvider>(context, listen: false);
+  List<dynamic> stocks = [];
+  switch (select) {
+    case 0:
+      stocks = portfolio.stocks;
+      break;
+    case 1:
+      stocks = portfolio.etf;
+      break;
+    case 2:
+      stocks = portfolio.crypto;
+      break;
+    case 3:
+      stocks = portfolio.portfolio;
+      break;
+  }
   showDialog(
     context: context,
     builder: (context) => BuyDialog(
-        stockName: stockName,
-        stockPrice: stockPrice,
-        image: image,
-        percentage: percentage),
+      select: select,
+      index: index,
+      stocks: stocks,
+    ),
   );
 }
 
 class BuyDialog extends StatefulWidget {
-  final String stockName;
-  final double stockPrice;
-  final String image;
-  final String percentage;
+  final int select;
+  final int index;
+  final List<dynamic> stocks; // Add this line
 
   const BuyDialog(
       {super.key,
-      required this.stockName,
-      required this.stockPrice,
-      required this.image,
-      required this.percentage});
+      required this.select,
+      required this.index,
+      required this.stocks});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -64,7 +77,7 @@ class _BuyDialogState extends State<BuyDialog> {
             children: [
               purchaseText(),
               Text(
-                'Price: \$${widget.stockPrice}',
+                'Price: \$${widget.stocks[widget.index].price}',
                 style: const TextStyle(
                   fontFamily: 'Helvetica',
                   fontSize: 16,
@@ -131,8 +144,8 @@ class _BuyDialogState extends State<BuyDialog> {
               const SizedBox(
                 height: 5,
               ),
-              confirmBuyButton(
-                  portfolio, amount, totalPrice, widget.percentage),
+              confirmBuyButton(portfolio, amount, totalPrice,
+                  widget.stocks[widget.index].percentage, widget.index),
             ],
           ),
         ),
@@ -141,17 +154,37 @@ class _BuyDialogState extends State<BuyDialog> {
   }
 
   double calculateTotal(int quantity) {
-    return double.parse((widget.stockPrice * quantity).toStringAsFixed(2));
+    return double.parse(
+        (widget.stocks[widget.index].price * quantity).toStringAsFixed(2));
   }
 
   Widget confirmBuyButton(
-      GameProvider portfolio, quantity, totalPrice, percentage) {
+      GameProvider portfolio, int quantity, totalPrice, percentage, index) {
     return ElevatedButton(
       onPressed: () {
         if (quantity > 0) {
+          switch (widget.select) {
+            case 0:
+              portfolio.setStocksAmount(index, quantity);
+              break;
+            case 1:
+              portfolio.setETFAmount(index, quantity);
+              break;
+            case 2:
+              portfolio.setCryptoAmount(index, quantity);
+              break;
+            case 3:
+              break;
+          }
           portfolio.subtractMoney(totalPrice);
-          portfolio.insertPortfolio(widget.stockName, widget.image,
-              widget.stockPrice, quantity, totalPrice, percentage);
+          portfolio.insertPortfolio(
+              widget.stocks[widget.index].name,
+              widget.stocks[widget.index].iconPath,
+              widget.stocks[widget.index].price,
+              quantity,
+              totalPrice,
+              percentage,
+              widget.select);
           Navigator.pop(context); // Close the dialog after buying
         } else {
           // Show error or handle invalid quantity

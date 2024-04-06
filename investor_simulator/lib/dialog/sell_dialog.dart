@@ -4,18 +4,24 @@ import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 
-void openSellDialog(BuildContext context, stockPrice, index) {
+void openSellDialog(BuildContext context, stockPrice, index, select) {
   showDialog(
     context: context,
-    builder: (context) => SellDialog(stockPrice: stockPrice, index: index),
+    builder: (context) =>
+        SellDialog(stockPrice: stockPrice, index: index, select: select),
   );
 }
 
 class SellDialog extends StatefulWidget {
   final double stockPrice;
   final int index;
+  final int select;
 
-  const SellDialog({super.key, required this.stockPrice, required this.index});
+  const SellDialog(
+      {super.key,
+      required this.stockPrice,
+      required this.index,
+      required this.select});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -141,7 +147,7 @@ class _SellDialogState extends State<SellDialog> {
         if (quantity > 0) {
           portfolio.addMoney(portfolio.portfolio[index].price * quantity);
           portfolio.removeFromPortfolio(index);
-
+          if (widget.select == 3) Navigator.pop(context);
           Navigator.pop(context); // Close the dialog after buying
         } else {
           // Show error or handle invalid quantity

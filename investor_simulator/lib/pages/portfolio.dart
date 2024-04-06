@@ -371,14 +371,7 @@ class _PortfolioState extends State<Portfolio> {
   ElevatedButton accept(BuildContext context, index, portfolio) {
     return ElevatedButton(
       onPressed: () {
-        openAnimatedDialog(
-            context,
-            portfolio[index].name,
-            portfolio[index].price,
-            portfolio[index].percentage,
-            portfolio[index].iconPath,
-            portfolio[index].amount,
-            index);
+        openAnimatedDialog(context, 3, index);
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(0),

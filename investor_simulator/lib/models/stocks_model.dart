@@ -6,13 +6,15 @@ class StocksModel {
   double price;
   String percentage;
   Color colour;
+  int amount;
 
   StocksModel(
       {required this.name,
       required this.iconPath,
       required this.price,
       required this.percentage,
-      required this.colour});
+      required this.colour,
+      required this.amount});
 
   static List<StocksModel> getStocks() {
     List<StocksModel> stocks = [];
@@ -23,6 +25,7 @@ class StocksModel {
       price: 172.2,
       percentage: '+6.25 %',
       colour: const Color(0xFF5CD34D),
+      amount: 0,
     ));
 
     stocks.add(StocksModel(
@@ -31,6 +34,7 @@ class StocksModel {
       price: 173.72,
       percentage: '+0.64 %',
       colour: const Color(0xFF5CD34D),
+      amount: 0,
     ));
 
     stocks.add(StocksModel(
@@ -39,6 +43,7 @@ class StocksModel {
       price: 2.43,
       percentage: '-0.10 %',
       colour: const Color(0xFFE74C3C),
+      amount: 0,
     ));
 
     stocks.add(StocksModel(
@@ -47,6 +52,7 @@ class StocksModel {
       price: 1.27,
       percentage: '-0.10 %',
       colour: const Color(0xFFE74C3C),
+      amount: 0,
     ));
 
     stocks.add(StocksModel(
@@ -55,6 +61,7 @@ class StocksModel {
       price: 4.25,
       percentage: '-0.73 %',
       colour: const Color(0xFFE74C3C),
+      amount: 0,
     ));
 
     stocks.add(StocksModel(
@@ -63,6 +70,7 @@ class StocksModel {
       price: 417.32,
       percentage: '-2.97 %',
       colour: const Color(0xFFE74C3C),
+      amount: 0,
     ));
 
     stocks.add(StocksModel(
@@ -71,6 +79,7 @@ class StocksModel {
       price: 884.5,
       percentage: '+13.2 %',
       colour: const Color(0xFF5CD34D),
+      amount: 0,
     ));
 
     return stocks;

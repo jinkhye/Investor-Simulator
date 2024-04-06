@@ -18,8 +18,6 @@ class Clothes extends StatefulWidget {
 class _ClothesState extends State<Clothes> {
   List<ClothesModel> clothes = [];
 
-  late ValueNotifier<int> rot = ValueNotifier(0);
-
   void _getInitialInfo() {
     clothes = ClothesModel.getClothes();
   }

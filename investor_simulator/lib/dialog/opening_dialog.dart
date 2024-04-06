@@ -23,12 +23,9 @@ void openOpeningDialog(BuildContext context, pagecontroller) {
               side: const BorderSide(color: white, width: 4),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Container(
+            child: SizedBox(
               width: 400,
-              height: 390,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-              ),
+              height: 400,
               child: Column(
                 children: [
                   Expanded(
@@ -71,10 +68,9 @@ Stack imageContainer(BuildContext context, image) {
       Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: white, width: 4),
+          border: Border.all(color: white, width: 3),
           color: Colors.transparent,
-          image:
-              DecorationImage(image: AssetImage(image), fit: BoxFit.fitWidth),
+          image: DecorationImage(image: AssetImage(image), fit: BoxFit.fill),
         ),
       ),
       Align(alignment: Alignment.topRight, child: close(context)),
