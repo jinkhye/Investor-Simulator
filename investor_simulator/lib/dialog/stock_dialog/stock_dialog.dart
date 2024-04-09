@@ -11,20 +11,6 @@ import 'package:stroke_text/stroke_text.dart';
 void openAnimatedDialog(BuildContext context, int select, int index) {
   final portfolio = Provider.of<GameProvider>(context, listen: false);
   List<dynamic> stocks = [];
-  switch (select) {
-    case 0:
-      stocks = portfolio.stocks;
-      break;
-    case 1:
-      stocks = portfolio.etf;
-      break;
-    case 2:
-      stocks = portfolio.crypto;
-      break;
-    case 3:
-      stocks = portfolio.portfolio;
-      break;
-  }
 
   // Check if the portfolio is empty and handle the case
   if (stocks.isEmpty) {

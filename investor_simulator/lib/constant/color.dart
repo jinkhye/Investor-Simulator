@@ -11,3 +11,15 @@ const Color white = Color(0xFFFFFFFF);
 const Color black = Color(0xFF000000);
 const Color red = Color(0xFFEE4B2B);
 const Color darkRed = Color(0xFF9D0208);
+
+Color getColorFromString(String input) {
+  double value = double.tryParse(input) ?? 0.0;
+  if (value > 0) {
+    return lightGreen;
+  } else if (value < 0) {
+    return darkRed;
+  } else {
+    // You can return a default color or handle other cases as needed
+    return Colors.grey;
+  }
+}

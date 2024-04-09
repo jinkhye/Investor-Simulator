@@ -14,9 +14,7 @@ void openBuyDialog(BuildContext context, int select, int index) {
     case 1:
       stocks = portfolio.etf;
       break;
-    case 2:
-      stocks = portfolio.crypto;
-      break;
+
     case 3:
       stocks = portfolio.portfolio;
       break;
@@ -170,9 +168,7 @@ class _BuyDialogState extends State<BuyDialog> {
             case 1:
               portfolio.setETFAmount(index, quantity);
               break;
-            case 2:
-              portfolio.setCryptoAmount(index, quantity);
-              break;
+
             case 3:
               break;
           }

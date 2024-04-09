@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:investor_simulator/models/crypto_model.dart';
 import 'package:investor_simulator/models/etf_model.dart';
 import 'package:investor_simulator/models/portfolio_model.dart';
 import 'package:investor_simulator/models/stocks_model.dart';
@@ -21,13 +20,6 @@ class GameProvider extends ChangeNotifier {
   List<StocksModel> get stocks => _stocks;
   final List<ETFModel> _etf = ETFModel.getETF();
   List<ETFModel> get etf => _etf;
-  final List<CryptoModel> _crypto = CryptoModel.getCrypto();
-  List<CryptoModel> get crypto => _crypto;
-
-  void setCryptoAmount(int index, int amount) {
-    _crypto[index].amount = amount;
-    notifyListeners();
-  }
 
   void setETFAmount(int index, int amount) {
     _etf[index].amount = amount;

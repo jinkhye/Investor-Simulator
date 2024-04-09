@@ -47,7 +47,7 @@ class _InvestState extends State<Invest> {
                     children: [
                       stockMenu(context),
                       etfMenu(context, imagePath),
-                      cryptoMenu(context),
+                      const CryptoMenuPage(),
                     ],
                   ),
                 ),

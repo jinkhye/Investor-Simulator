@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:investor_simulator/constant/color.dart';
-import 'package:investor_simulator/dialog/stock_dialog.dart';
+import 'package:investor_simulator/dialog/stock_dialog/stock_dialog.dart';
 import 'package:investor_simulator/dialog/stock_help_dialog.dart';
 import 'package:investor_simulator/models/stocks_model.dart';
 import 'package:investor_simulator/provider/game_provider.dart';
@@ -184,7 +184,7 @@ ElevatedButton accept(BuildContext context, stocks, index) {
 StrokeText stocksText() {
   return const StrokeText(
     text: "STOCKS",
-    textStyle: TextStyle(fontSize: 40, color: yellow),
+    textStyle: TextStyle(fontSize: 36, color: yellow),
     strokeColor: darkPurple,
     strokeWidth: 7,
   );

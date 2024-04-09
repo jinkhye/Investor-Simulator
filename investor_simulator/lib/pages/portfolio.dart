@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:investor_simulator/constant/color.dart';
-import 'package:investor_simulator/dialog/stock_dialog.dart';
+import 'package:investor_simulator/dialog/stock_dialog/stock_dialog.dart';
 
 import 'package:investor_simulator/invest_page/stocks.dart';
 import 'package:investor_simulator/menu/topMenu.dart';

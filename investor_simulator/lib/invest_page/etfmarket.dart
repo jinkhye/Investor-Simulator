@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:investor_simulator/constant/color.dart';
-import 'package:investor_simulator/dialog/stock_dialog.dart';
+import 'package:investor_simulator/dialog/stock_dialog/stock_dialog.dart';
 import 'package:investor_simulator/dialog/stock_help_dialog.dart';
 import 'package:investor_simulator/models/etf_model.dart';
 import 'package:stroke_text/stroke_text.dart';
@@ -184,7 +184,7 @@ ElevatedButton accept(BuildContext context, index) {
 StrokeText stocksText() {
   return const StrokeText(
     text: "ETF MARKET",
-    textStyle: TextStyle(fontSize: 40, color: yellow),
+    textStyle: TextStyle(fontSize: 36, color: yellow),
     strokeColor: darkPurple,
     strokeWidth: 7,
   );
