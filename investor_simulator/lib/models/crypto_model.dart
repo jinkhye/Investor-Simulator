@@ -10,9 +10,9 @@ class CoinModel {
   CoinModel({
     required this.id,
     required this.symbol,
-    required this.name,
+    required this.longName,
     required this.image,
-    required this.currentPrice,
+    required this.regularMarketPrice,
     // required this.marketCap,
     required this.marketCapRank,
     // required this.fullyDilutedValuation,
@@ -20,7 +20,7 @@ class CoinModel {
     required this.high24H,
     required this.low24H,
     required this.priceChange24H,
-    required this.priceChangePercentage24H,
+    required this.regularMarketChangePercent,
     // required this.marketCapChange24H,
     required this.marketCapChangePercentage24H,
     // required this.circulatingSupply,
@@ -37,11 +37,12 @@ class CoinModel {
     required this.sparklineIn7D,
   });
 
+  String type = 'crypto';
   String id;
   String symbol;
-  String name;
+  String longName;
   String image;
-  double currentPrice;
+  double regularMarketPrice;
   // int marketCap;
   int marketCapRank;
   // int fullyDilutedValuation;
@@ -49,7 +50,7 @@ class CoinModel {
   double high24H;
   double low24H;
   double priceChange24H;
-  double priceChangePercentage24H;
+  double regularMarketChangePercent;
   // int marketCapChange24H;
   double marketCapChangePercentage24H;
   // int circulatingSupply;
@@ -71,15 +72,15 @@ class CoinModel {
     return CoinModel(
       id: json["id"],
       symbol: json["symbol"],
-      name: json["name"],
+      longName: json["name"],
       image: json["image"],
-      currentPrice: json["current_price"].toDouble(),
+      regularMarketPrice: json["current_price"].toDouble(),
       marketCapRank: json["market_cap_rank"],
       totalVolume: json["total_volume"].toDouble(),
       high24H: json["high_24h"].toDouble(),
       low24H: json["low_24h"].toDouble(),
       priceChange24H: json["price_change_24h"]?.toDouble() ?? 0.0,
-      priceChangePercentage24H:
+      regularMarketChangePercent:
           json["price_change_percentage_24h"]?.toDouble() ?? 0.0,
       marketCapChangePercentage24H:
           json["market_cap_change_percentage_24h"]?.toDouble() ?? 0.0,
@@ -92,9 +93,9 @@ class CoinModel {
   Map<String, dynamic> toJson() => {
         "id": id,
         "symbol": symbol,
-        "name": name,
+        "longName": longName,
         "image": image,
-        "current_price": currentPrice,
+        "current_price": regularMarketPrice,
         // "market_cap": marketCap,
         "market_cap_rank": marketCapRank,
         // "fully_diluted_valuation": fullyDilutedValuation,

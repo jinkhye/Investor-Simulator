@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -24,6 +25,25 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> {
+  DateTime _dateTime = DateTime.now();
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      setState(() {
+        _dateTime = DateTime.now();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel(); // Ensure timer is cancelled when widget is disposed
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final imageProvider = Provider.of<GameProvider>(context);
@@ -49,10 +69,11 @@ class _MainMenuState extends State<MainMenu> {
     return Column(
       children: <Widget>[
         topMenu(context),
-        middleMenu(context),
         const SizedBox(
           height: 10,
         ),
+        middleMenu(context),
+
         Padding(
           padding: const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
           child: backgroundMax(context, imagePath, maxPath),
@@ -355,11 +376,7 @@ class _MainMenuState extends State<MainMenu> {
         children: [
           name(),
           Expanded(child: Container()),
-          pause(context),
-          play(context),
-          fastForward(context),
-          Expanded(child: Container()),
-          date(),
+          dateTime(),
         ],
         // Empty Expanded widget for empty space
       ),
@@ -375,16 +392,13 @@ class _MainMenuState extends State<MainMenu> {
     );
   }
 
-  StrokeText date() {
-    // Get the current date
-    DateTime now = DateTime.now();
-
+  StrokeText dateTime() {
     // Format the date using a DateFormat object
-    DateFormat formatter = DateFormat('dd MMM yyyy');
-    String formattedDate = formatter.format(now);
+    DateFormat formatter = DateFormat('hh:mm:ss a');
+    String formattedDate = formatter.format(_dateTime);
     return StrokeText(
       text: formattedDate,
-      textStyle: const TextStyle(fontSize: 18, color: yellow),
+      textStyle: const TextStyle(fontSize: 25, color: yellow),
       strokeColor: darkPurple,
       strokeWidth: 6,
     );

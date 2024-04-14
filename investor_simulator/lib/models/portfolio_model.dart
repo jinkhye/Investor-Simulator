@@ -1,19 +1,66 @@
-class PortfolioModel {
-  String name;
-  String iconPath;
-  double price;
-  int amount;
-  double total;
-  String percentage;
-  int type;
+import 'package:investor_simulator/models/crypto_model.dart';
+import 'package:investor_simulator/models/stocks_model.dart';
+import 'package:investor_simulator/models/etf_model.dart' as etf;
 
-  PortfolioModel({
-    required this.name,
-    required this.iconPath,
-    required this.price,
-    required this.amount,
-    required this.total,
-    required this.percentage,
-    required this.type,
+class StockInvestment {
+  final Result stock;
+  int shares;
+  final double purchasePrice;
+  final DateTime purchaseDate;
+
+  StockInvestment({
+    required this.stock,
+    required this.shares,
+    required this.purchasePrice,
+    required this.purchaseDate,
   });
+
+  double get currentValue {
+    // Calculate the current value based on the current market price of the stock
+    // You might need to implement a method to fetch the current market price
+    double? currentMarketPrice = stock.regularMarketPrice;
+    return shares * currentMarketPrice!;
+  }
+}
+
+class ETFInvestment {
+  final etf.Result stock;
+  int shares;
+  final double purchasePrice;
+  final DateTime purchaseDate;
+
+  ETFInvestment({
+    required this.stock,
+    required this.shares,
+    required this.purchasePrice,
+    required this.purchaseDate,
+  });
+
+  double get currentValue {
+    // Calculate the current value based on the current market price of the stock
+    // You might need to implement a method to fetch the current market price
+    double? currentMarketPrice = stock.regularMarketPrice;
+    return shares * currentMarketPrice!;
+  }
+}
+
+class CryptoInvestment {
+  final CoinModel stock;
+  int shares;
+  final double purchasePrice;
+  final DateTime purchaseDate;
+
+  CryptoInvestment({
+    required this.stock,
+    required this.shares,
+    required this.purchasePrice,
+    required this.purchaseDate,
+  });
+
+  double get currentValue {
+    // Calculate the current value based on the current market price of the cryptocurrency
+    // You might need to implement a method to fetch the current market price
+    double currentMarketPrice = stock.regularMarketPrice;
+    return shares * currentMarketPrice;
+  }
 }

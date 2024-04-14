@@ -1,43 +1,176 @@
-// ignore_for_file: file_names
+// To parse this JSON data, do
+//
+//     final newsModel = newsModelFromJson(jsonString);
+
+import 'dart:convert';
+
+NewsModel newsModelFromJson(String str) => NewsModel.fromJson(json.decode(str));
+
+String newsModelToJson(NewsModel data) => json.encode(data.toJson());
 
 class NewsModel {
-  String name;
-  String iconPath;
-  int hours;
-  String description;
+  Data data;
 
-  NewsModel(
-      {required this.name,
-      required this.iconPath,
-      required this.hours,
-      required this.description});
+  NewsModel({
+    required this.data,
+  });
 
-  static List<NewsModel> getNews() {
-    List<NewsModel> news = [];
+  factory NewsModel.fromJson(Map<String, dynamic> json) => NewsModel(
+        data: Data.fromJson(json["data"]),
+      );
 
-    news.add(NewsModel(
-      name: 'Tesla Unveils Groundbreaking Battery Technology',
-      iconPath: 'assets/images/news1.png',
-      hours: 9,
-      description:
-          'In a groundbreaking announcement today, Tesla revealed a revolutionary advancement in battery technology that promises to reshape the electric vehicle industry and significantly accelerate the global transition to sustainable energy. The unveiling of this cutting-edge innovation sent shockwaves through the financial markets, propelling Tesla\'s stock price to new heights.\n\nCEO Elon Musk introduced the world a next-generation battery cell with unparalleled energy density and longevity. This leap forward in battery technology is aimed to address the longstanding challenges of range anxiety and charging times, effectively eliminating barriers to widespread EV adoption.',
-    ));
+  Map<String, dynamic> toJson() => {
+        "data": data.toJson(),
+      };
+}
 
-    news.add(NewsModel(
-        name:
-            'Apple Announces Revolutionary Augmented Reality Glasses, Igniting Investor Excitement',
-        iconPath: 'assets/images/news2.png',
-        hours: 23,
-        description:
-            'In a move that has sent ripples of excitement through the tech world, Apple has unveiled its latest innovation: Augmented Reality (AR) glasses. The announcement, made amidst much anticipation, has ignited fervor among investors and consumers alike.\n\nApple\'s AR glasses promise to revolutionize how we interact with technology and the world around us. With seamless integration into the Apple ecosystem, these glasses are poised to offer immersive experiences, blending digital elements with the real world in ways previously unimaginable.\n\nAs anticipation builds for their release, speculation abounds regarding the potential applications of this groundbreaking technology, from gaming and entertainment to productivity and communication. Apple\'s foray into AR is seen as a bold step forward, reaffirming the company\'s commitment to innovation and pushing the boundaries of what is possible in the realm of technology.'));
+class Data {
+  Main main;
 
-    news.add(NewsModel(
-        name: 'Microsoft Faces Regulatory Scrutiny Over Antitrust Concerns',
-        iconPath: 'assets/images/news3.png',
-        hours: 23,
-        description:
-            'Microsoft finds itself under the regulatory spotlight once again as concerns over antitrust violations mount. The tech giant, long a dominant force in the industry, is facing increased scrutiny from government authorities over its business practices.\n\nAt the heart of the issue are allegations that Microsoft has engaged in anti-competitive behavior, stifling competition and limiting consumer choice. These concerns have prompted calls for regulatory intervention to ensure a level playing field in the tech sector.\n\nAs investigations unfold, Microsoft is under pressure to address these allegations and demonstrate its commitment to fair competition. The outcome of these proceedings could have far-reaching implications not only for Microsoft but for the broader tech industry as well, shaping the landscape of competition and innovation for years to come.'));
+  Data({
+    required this.main,
+  });
 
-    return news;
-  }
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+        main: Main.fromJson(json["main"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "main": main.toJson(),
+      };
+}
+
+class Main {
+  List<Stream> stream;
+
+  Main({
+    required this.stream,
+  });
+
+  factory Main.fromJson(Map<String, dynamic> json) => Main(
+        stream:
+            List<Stream>.from(json["stream"].map((x) => Stream.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "stream": List<dynamic>.from(stream.map((x) => x.toJson())),
+      };
+}
+
+class Stream {
+  String? id;
+  Content content;
+
+  Stream({
+    required this.id,
+    required this.content,
+  });
+
+  factory Stream.fromJson(Map<String, dynamic> json) => Stream(
+        id: json["id"]?.toString() ?? '',
+        content: Content.fromJson(json["content"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "content": content.toJson(),
+      };
+}
+
+class Content {
+  String id;
+
+  String title;
+
+  ClickThroughUrl? clickThroughUrl;
+
+  DateTime pubDate;
+
+  Thumbnail? thumbnail;
+
+  Content({
+    required this.id,
+    required this.title,
+    required this.clickThroughUrl,
+    required this.pubDate,
+    required this.thumbnail,
+  });
+
+  factory Content.fromJson(Map<String, dynamic> json) => Content(
+        id: json["id"]?.toString() ?? '',
+        title: json["title"]?.toString() ?? '',
+        clickThroughUrl: json["clickThroughUrl"] == null
+            ? null
+            : ClickThroughUrl.fromJson(json["clickThroughUrl"]),
+        pubDate: DateTime.parse(json["pubDate"]),
+        thumbnail: json["thumbnail"] == null
+            ? null
+            : Thumbnail.fromJson(json["thumbnail"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "title": title,
+        "clickThroughUrl": clickThroughUrl?.toJson(),
+        "pubDate": pubDate.toIso8601String(),
+        "thumbnail": thumbnail?.toJson(),
+      };
+}
+
+class ClickThroughUrl {
+  String url;
+
+  ClickThroughUrl({
+    required this.url,
+  });
+
+  factory ClickThroughUrl.fromJson(Map<String, dynamic> json) =>
+      ClickThroughUrl(
+        url: json["url"]?.toString() ?? '',
+      );
+
+  Map<String, dynamic> toJson() => {
+        "url": url,
+      };
+}
+
+class Thumbnail {
+  List<Resolution> resolutions;
+
+  Thumbnail({
+    required this.resolutions,
+  });
+
+  factory Thumbnail.fromJson(Map<String, dynamic> json) => Thumbnail(
+        resolutions: List<Resolution>.from(
+            json["resolutions"].map((x) => Resolution.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "resolutions": List<dynamic>.from(resolutions.map((x) => x.toJson())),
+      };
+}
+
+class Resolution {
+  String url;
+  int width;
+  int height;
+
+  Resolution({
+    required this.url,
+    required this.width,
+    required this.height,
+  });
+
+  factory Resolution.fromJson(Map<String, dynamic> json) => Resolution(
+        url: json["url"]?.toString() ?? '',
+        width: json["width"]?.toInt() ?? 0,
+        height: json["height"]?.toInt() ?? 0,
+      );
+
+  Map<String, dynamic> toJson() => {
+        "url": url,
+        "width": width,
+        "height": height,
+      };
 }

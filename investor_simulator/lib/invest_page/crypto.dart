@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/constant/string_format.dart';
@@ -18,30 +16,6 @@ class CryptoMenuPage extends StatefulWidget {
 }
 
 class _CryptoMenuPageState extends State<CryptoMenuPage> {
-  bool _isDataFetched = false;
-  late Timer _timer; // Define a timer variable
-
-  @override
-  void initState() {
-    super.initState();
-    _startTimer(); // Start the timer when the widget is initialized
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel(); // Cancel the timer when the widget is disposed
-    super.dispose();
-  }
-
-  void _startTimer() {
-    const duration = Duration(minutes: 3);
-    _timer = Timer.periodic(duration, (Timer t) {
-      setState(() {
-        _isDataFetched = false; // Reset the flag every minute
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,13 +52,7 @@ class _CryptoMenuPageState extends State<CryptoMenuPage> {
         Expanded(
           child: Consumer<CryptoProvider>(
             builder: (context, provider, _) {
-              if (!_isDataFetched) {
-                // Fetch data only if it hasn't been fetched yet
-                _isDataFetched = true;
-                Provider.of<CryptoProvider>(context, listen: false)
-                    .fetchCryptocurrencies();
-              }
-              if (provider.isLoadingChartData) {
+              if (provider.isLoadingCryptocurrencies) {
                 return const Center(child: CircularProgressIndicator());
               } else if (provider.hasError) {
                 return Center(child: Text('Error: ${provider.errorMessage}'));
@@ -129,11 +97,11 @@ class _CryptoMenuPageState extends State<CryptoMenuPage> {
                       right: 35,
                       child: StrokeText(
                         text: formatPercentageString(
-                            coin.priceChangePercentage24H.toString()),
+                            coin.regularMarketChangePercent.toString()),
                         textStyle: TextStyle(
                             fontSize: 16,
                             color: getColorFromString(
-                                (coin.priceChangePercentage24H.toString())),
+                                (coin.regularMarketChangePercent.toString())),
                             fontFamily: 'Helvetica',
                             fontWeight: FontWeight.w700),
                         strokeColor: white,
@@ -144,7 +112,7 @@ class _CryptoMenuPageState extends State<CryptoMenuPage> {
                       top: 15,
                       right: 35,
                       child: StrokeText(
-                        text: '\$${coin.currentPrice.toStringAsFixed(2)}',
+                        text: '\$${coin.regularMarketPrice.toStringAsFixed(2)}',
                         textStyle: const TextStyle(
                           fontFamily: 'Helvetica',
                           fontWeight: FontWeight.w800,
@@ -159,25 +127,25 @@ class _CryptoMenuPageState extends State<CryptoMenuPage> {
                     ),
                     Positioned(
                       top: 15,
-                      left: 125,
+                      left: 115,
                       child: SizedBox(
-                        width: 90,
-                        child: StrokeText(
-                          text: coin.name,
-                          textStyle: const TextStyle(
-                            letterSpacing: 0.5,
-                            fontSize: 18,
-                            color: purple,
+                        width: 120,
+                        child: Text(
+                          coin.longName,
+                          style: const TextStyle(
+                            letterSpacing: 0,
+                            fontFamily: 'Helvetica',
+                            fontWeight: FontWeight.w800,
+                            fontSize: 17,
+                            color: darkPurple,
                             overflow: TextOverflow.clip,
                           ),
-                          strokeColor: white,
-                          strokeWidth: 4,
                         ),
                       ),
                     ),
                     Positioned(
                       top: 8,
-                      left: 30,
+                      left: 25,
                       child: Container(
                         height: 85,
                         width: 85,
@@ -224,7 +192,7 @@ class _CryptoMenuPageState extends State<CryptoMenuPage> {
   }
 
   ElevatedButton help(BuildContext context) {
-    final pageController = PageController(initialPage: 1);
+    final pageController = PageController(initialPage: 2);
     return ElevatedButton(
       onPressed: () {
         openStockHelpDialog(context, pageController);
@@ -254,28 +222,28 @@ class _CryptoMenuPageState extends State<CryptoMenuPage> {
       ),
     );
   }
-}
 
-ElevatedButton accept(BuildContext context, CoinModel coin) {
-  return ElevatedButton(
-    onPressed: () {
-      openCryptoDialog(context, coin);
-    },
-    style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.all(0),
-      shape: ContinuousRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+  ElevatedButton accept(BuildContext context, CoinModel coin) {
+    return ElevatedButton(
+      onPressed: () {
+        openCryptoDialog(context, coin);
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.all(0),
+        shape: ContinuousRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-    ),
-    child: Container(
-      height: 100,
-      width: 330,
-      decoration: const BoxDecoration(
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.all(Radius.circular(0)),
+      child: Container(
+        height: 100,
+        width: 330,
+        decoration: const BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.all(Radius.circular(0)),
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

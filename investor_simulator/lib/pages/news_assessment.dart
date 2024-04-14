@@ -25,9 +25,9 @@ class NewsAssessment extends StatelessWidget {
           child: Column(
             children: [
               topMenu(context),
-              Expanded(
+              const Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  padding: EdgeInsets.symmetric(horizontal: 15.0),
                   child: Scrollbar(
                     thumbVisibility:
                         true, // Ensure the scrollbar is always visible
@@ -35,8 +35,8 @@ class NewsAssessment extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 20),
-                          const Align(
+                          SizedBox(height: 20),
+                          Align(
                             alignment: Alignment.center,
                             child: StrokeText(
                               text: "NEWS ASSESSMENT",
@@ -45,13 +45,13 @@ class NewsAssessment extends StatelessWidget {
                               strokeWidth: 7,
                             ),
                           ),
-                          const SizedBox(height: 20),
-                          const Divider(
+                          SizedBox(height: 20),
+                          Divider(
                             thickness: 4,
                           ),
                           Text(
-                            news[index].name,
-                            style: const TextStyle(
+                            'news[index].name',
+                            style: TextStyle(
                               letterSpacing: 0.8,
                               fontSize: 30,
                               color: white,
@@ -59,32 +59,32 @@ class NewsAssessment extends StatelessWidget {
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 10),
-                          Center(
-                            child: Container(
-                              width: 150,
-                              height: 150,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
-                                image: DecorationImage(
-                                  image: AssetImage(news[index].iconPath),
-                                  fit: BoxFit.fill,
-                                ),
-                                border: const Border.fromBorderSide(
-                                  BorderSide(
-                                    color: white,
-                                    width: 4,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const Divider(
+                          SizedBox(height: 10),
+                          // Center(
+                          //   child: Container(
+                          //     width: 150,
+                          //     height: 150,
+                          //     decoration: BoxDecoration(
+                          //       borderRadius: BorderRadius.circular(16),
+                          //       image: DecorationImage(
+                          //         image: AssetImage(news[index].iconPath),
+                          //         fit: BoxFit.fill,
+                          //       ),
+                          //       border: const Border.fromBorderSide(
+                          //         BorderSide(
+                          //           color: white,
+                          //           width: 4,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                          SizedBox(height: 10),
+                          Divider(
                             thickness: 4,
                           ),
-                          const SizedBox(height: 20),
-                          const Text(
+                          SizedBox(height: 20),
+                          Text(
                             'Based on Tesla\'s advancement in battery technology, there is a strong likelihood that Tesla\'s stock price will rise.',
                             style: TextStyle(
                               fontFamily: 'Helvetica',
@@ -96,8 +96,8 @@ class NewsAssessment extends StatelessWidget {
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 20),
-                          const Text(
+                          SizedBox(height: 20),
+                          Text(
                             '1. Market Confidence:\n',
                             style: TextStyle(
                               fontFamily: 'Helvetica',
@@ -108,7 +108,7 @@ class NewsAssessment extends StatelessWidget {
                               letterSpacing: 0,
                             ),
                           ),
-                          const Text(
+                          Text(
                             'Investors are likely to react positively to the news, as it demonstrates Tesla\'s continued leadership in innovation within the electric vehicle industry.\n',
                             style: TextStyle(
                               fontFamily: 'Helvetica',
@@ -119,7 +119,7 @@ class NewsAssessment extends StatelessWidget {
                               letterSpacing: 0,
                             ),
                           ),
-                          const Text(
+                          Text(
                             '2. Competitive Advantage:\n',
                             style: TextStyle(
                               fontFamily: 'Helvetica',
@@ -130,7 +130,7 @@ class NewsAssessment extends StatelessWidget {
                               letterSpacing: 0,
                             ),
                           ),
-                          const Text(
+                          Text(
                             'Tesla\'s next-generation battery cell with superior energy density and longevity gives the company a competitive edge over rivals. This innovation by Tesla is likely to attract investors who anticipate long-term growth.',
                             style: TextStyle(
                               fontFamily: 'Helvetica',
@@ -141,8 +141,8 @@ class NewsAssessment extends StatelessWidget {
                               letterSpacing: 0,
                             ),
                           ),
-                          const SizedBox(height: 20),
-                          const SizedBox(height: 40),
+                          SizedBox(height: 20),
+                          SizedBox(height: 40),
                         ],
                       ),
                     ),

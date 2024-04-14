@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/dialog/news_dialog.dart';
+import 'package:investor_simulator/dialog/stock_help_dialog.dart';
 
-import 'package:investor_simulator/invest_page/stocks.dart';
 import 'package:investor_simulator/menu/topMenu.dart';
-import 'package:investor_simulator/models/news_model.dart';
+import 'package:investor_simulator/models/news_model.dart' as n;
+import 'package:investor_simulator/provider/news_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'package:stroke_text/stroke_text.dart';
-import 'mainmenu.dart';
 
 class News extends StatefulWidget {
   const News({super.key});
@@ -36,7 +37,7 @@ class _NewsState extends State<News> {
             children: [
               topMenu(context),
               Expanded(
-                child: stockMenu(context),
+                child: _buildStocksMenu(context),
               ),
             ],
           ),
@@ -45,7 +46,7 @@ class _NewsState extends State<News> {
     );
   }
 
-  Column stockMenu(BuildContext context) {
+  Widget _buildStocksMenu(BuildContext context) {
     return Column(
       children: <Widget>[
         Stack(
@@ -59,22 +60,24 @@ class _NewsState extends State<News> {
           ],
         ),
         const SizedBox(height: 10),
-        Expanded(child: _stocksSection(context)),
-        const SizedBox(height: 20),
+        Expanded(
+          child: Consumer<NewsProvider>(
+            builder: (context, provider, _) {
+              if (provider.isLoadingNews) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (provider.hasError) {
+                return Center(child: Text('Error: ${provider.errorMessage}'));
+              } else {
+                return _stocksSection(context, provider.news);
+              }
+            },
+          ),
+        ),
       ],
     );
   }
 
-  Color getColour(String percentage) {
-    if (percentage.contains('-')) {
-      return red;
-    } else {
-      return lightGreen;
-    }
-  }
-
-  Column _stocksSection(BuildContext context) {
-    List<NewsModel> news = NewsModel.getNews();
+  Column _stocksSection(BuildContext context, List<n.Stream> news) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -85,60 +88,101 @@ class _NewsState extends State<News> {
             scrollDirection: Axis.vertical,
             padding: const EdgeInsets.only(left: 20, right: 20),
             itemBuilder: (context, index) {
+              final newsCurrent = news[index];
+              n.Content content = newsCurrent.content;
+              String title = content.title;
+              DateTime pubDate = content.pubDate;
+              DateFormat dateFormat = DateFormat('dd/MM/yyyy hh:mm a');
+              List<n.Resolution>? resolutions = content.thumbnail?.resolutions;
+              String url = resolutions?[0].url ??
+                  'https://i.pinimg.com/736x/26/91/f2/2691f2fa1a0f078f5f274edf7fea6763.jpg';
+              String newsURL = content.clickThroughUrl?.url ?? '';
+
               return Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    Container(
-                      alignment: Alignment.topRight,
-                      height: 100,
-                      width: 330,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    openNewsDialog(
+                        context, newsURL, dateFormat.format(pubDate.toLocal()));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(0),
+                    shape: ContinuousRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    Positioned(
-                      top: 15,
-                      left: 125,
-                      child: SizedBox(
-                        width: 215,
-                        child: StrokeText(
-                          text: news[index].name,
-                          textStyle: const TextStyle(
-                            letterSpacing: 0.5,
-                            fontSize: 16,
-                            color: purple,
-                            overflow: TextOverflow.clip,
+                    backgroundColor: Colors
+                        .transparent, // Set the background color to transparent
+                    elevation: 0, // Remove the elevation
+                  ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      Column(
+                        children: [
+                          const SizedBox(height: 10),
+                          Container(
+                              alignment: Alignment.topRight,
+                              height: 200,
+                              width: 330,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: white, width: 2),
+                                borderRadius: BorderRadius.circular(16),
+                                image: DecorationImage(
+                                  image: NetworkImage(url),
+                                  fit: BoxFit.cover,
+                                ),
+                              )),
+                          const SizedBox(height: 10),
+                          SizedBox(
+                            width: 330,
+                            child: Text(
+                              title,
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                  fontFamily: 'Helvetica',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: white,
+                                  fontStyle: FontStyle.italic),
+                            ),
                           ),
-                          strokeColor: white,
-                          strokeWidth: 4,
-                        ),
+                          const SizedBox(height: 10),
+                          SizedBox(
+                            width: 330,
+                            child: Row(children: [
+                              Text(
+                                dateFormat.format(pubDate.toLocal()),
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontFamily: 'Helvetica',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: Colors.grey[350],
+                                    fontStyle: FontStyle.italic),
+                              ),
+                              Expanded(child: Container()),
+                              Text(
+                                timeAgo(pubDate),
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontFamily: 'Helvetica',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: Colors.grey[350],
+                                    fontStyle: FontStyle.italic),
+                              ),
+                            ]),
+                          ),
+                          const SizedBox(height: 10),
+                          const Divider(
+                            thickness: 2,
+                            indent: 15,
+                            endIndent: 15,
+                          ),
+                        ],
                       ),
-                    ),
-                    Positioned(
-                      top: 16,
-                      left: 30,
-                      child: Container(
-                        height: 85,
-                        width: 85,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: white,
-                          border: Border.all(
-                            color: darkPurple,
-                            width: 4,
-                          ),
-                          image: DecorationImage(
-                            image: AssetImage(news[index].iconPath),
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(child: accept(context, index, news)),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },
@@ -148,29 +192,30 @@ class _NewsState extends State<News> {
     );
   }
 
-  ElevatedButton accept(BuildContext context, index, List<NewsModel> news) {
-    return ElevatedButton(
-      onPressed: () {
-        openNewsDialog(context, news, index);
-      },
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.all(0),
-        shape: ContinuousRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        backgroundColor:
-            Colors.transparent, // Set the background color to transparent
-        elevation: 0, // Remove the elevation
-      ),
-      child: Container(
-        height: 115,
-        width: 330,
-        decoration: const BoxDecoration(
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.all(Radius.circular(0)),
-        ),
-      ),
-    );
+  String timeAgo(DateTime dateTime) {
+    // Calculate the difference between the current time and the provided dateTime
+    Duration difference = DateTime.now().difference(dateTime);
+
+    // Determine the time unit (seconds, minutes, hours, or days) and format the output
+    if (difference.inSeconds < 60) {
+      // Less than a minute ago, return "Just Now"
+      return 'Just Now';
+    } else if (difference.inMinutes < 60) {
+      // Less than an hour ago
+      int minutes = difference.inMinutes;
+      String unit = minutes == 1 ? 'minute' : 'minutes';
+      return '$minutes $unit ago';
+    } else if (difference.inHours < 24) {
+      // Less than a day ago
+      int hours = difference.inHours;
+      String unit = hours == 1 ? 'hour' : 'hours';
+      return '$hours $unit ago';
+    } else {
+      // More than a day ago
+      int days = difference.inDays;
+      String unit = days == 1 ? 'day' : 'days';
+      return '$days $unit ago';
+    }
   }
 
   StrokeText stocksText() {
@@ -182,81 +227,32 @@ class _NewsState extends State<News> {
     );
   }
 
-  Stack money() {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Positioned(
-          child: Container(
-            padding: const EdgeInsets.only(right: 10),
-            alignment: Alignment.bottomRight,
-            width: 150,
-            height: 45,
-            decoration: BoxDecoration(
-              color: lightGreen,
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(
-                color: green,
-                width: 4,
-              ),
-            ),
-            child: const StrokeText(
-              text: "10.000k",
-              textStyle: TextStyle(fontSize: 25, color: Colors.white),
-              strokeColor: Colors.black,
-              strokeWidth: 3,
-            ),
-          ),
-        ),
-        Positioned(
-          top: 0,
-          left: -20,
-          child: Container(
-            width: 50,
-            height: 50,
-            decoration: const BoxDecoration(
-              shape: BoxShape.rectangle,
-              image: DecorationImage(
-                image: AssetImage('assets/images/money.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  ElevatedButton back(BuildContext context) {
+  ElevatedButton help(BuildContext context) {
+    final pageController = PageController(initialPage: 1);
     return ElevatedButton(
       onPressed: () {
-        // Add the action to be performed when the button is pressed
-        Get.to(() => const MainMenu());
+        openStockHelpDialog(context, pageController);
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(0),
         backgroundColor: Colors.transparent,
         elevation: 0,
         shape: const CircleBorder(
-          side: BorderSide(color: Colors.white, width: 2),
+          side: BorderSide(color: darkPurple, width: 4),
         ),
       ),
       child: Container(
         width: 40,
         height: 40,
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [purple, darkPurple],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          color: purple,
           shape: BoxShape.circle,
         ),
         child: const Center(
           child: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Colors.white,
-            size: 20,
+            Icons.help_outline,
+            color: white,
+            size: 40,
           ),
         ),
       ),

@@ -1,87 +1,194 @@
-import 'package:flutter/material.dart';
+// To parse this JSON data, do
+//
+//     final stocksModel = stocksModelFromJson(jsonString);
+
+import 'dart:convert';
+
+StocksModel stocksModelFromJson(String str) =>
+    StocksModel.fromJson(json.decode(str) as Map<String, dynamic>);
+
+String stocksModelToJson(StocksModel data) => json.encode(data.toJson());
 
 class StocksModel {
-  String name;
-  String iconPath;
-  double price;
-  String percentage;
-  Color colour;
-  int amount;
+  final QuoteResponse quoteResponse;
 
-  StocksModel(
-      {required this.name,
-      required this.iconPath,
-      required this.price,
-      required this.percentage,
-      required this.colour,
-      required this.amount});
+  StocksModel({
+    required this.quoteResponse,
+  });
 
-  static List<StocksModel> getStocks() {
-    List<StocksModel> stocks = [];
+  factory StocksModel.fromJson(Map<String, dynamic> json) => StocksModel(
+        quoteResponse: QuoteResponse.fromJson(
+            json["quoteResponse"] as Map<String, dynamic>),
+      );
 
-    stocks.add(StocksModel(
-      name: 'Tesla',
-      iconPath: 'assets/images/tesla.png',
-      price: 172.2,
-      percentage: '+6.25 %',
-      colour: const Color(0xFF5CD34D),
-      amount: 0,
-    ));
-
-    stocks.add(StocksModel(
-      name: 'Apple',
-      iconPath: 'assets/images/apple.png',
-      price: 173.72,
-      percentage: '+0.64 %',
-      colour: const Color(0xFF5CD34D),
-      amount: 0,
-    ));
-
-    stocks.add(StocksModel(
-      name: 'Tenaga Nasional Berhad',
-      iconPath: 'assets/images/tnb.png',
-      price: 2.43,
-      percentage: '-0.10 %',
-      colour: const Color(0xFFE74C3C),
-      amount: 0,
-    ));
-
-    stocks.add(StocksModel(
-      name: 'Petronas Chemicals Group',
-      iconPath: 'assets/images/petronas.png',
-      price: 1.27,
-      percentage: '-0.10 %',
-      colour: const Color(0xFFE74C3C),
-      amount: 0,
-    ));
-
-    stocks.add(StocksModel(
-      name: 'CelcomDigi Berhad',
-      iconPath: 'assets/images/celcomdigi.png',
-      price: 4.25,
-      percentage: '-0.73 %',
-      colour: const Color(0xFFE74C3C),
-      amount: 0,
-    ));
-
-    stocks.add(StocksModel(
-      name: 'Microsoft Corporation',
-      iconPath: 'assets/images/microsoft.png',
-      price: 417.32,
-      percentage: '-2.97 %',
-      colour: const Color(0xFFE74C3C),
-      amount: 0,
-    ));
-
-    stocks.add(StocksModel(
-      name: 'NVIDIA Corporation',
-      iconPath: 'assets/images/nvidia.png',
-      price: 884.5,
-      percentage: '+13.2 %',
-      colour: const Color(0xFF5CD34D),
-      amount: 0,
-    ));
-
-    return stocks;
-  }
+  Map<String, dynamic> toJson() => {
+        "quoteResponse": quoteResponse.toJson(),
+      };
 }
+
+class QuoteResponse {
+  final List<Result> result;
+  final dynamic error;
+
+  QuoteResponse({
+    required this.result,
+    required this.error,
+  });
+
+  factory QuoteResponse.fromJson(Map<String, dynamic> json) => QuoteResponse(
+        result: List<Result>.from(
+            json["result"].map((x) => Result.fromJson(x)) as Iterable<dynamic>),
+        error: json["error"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "result": List<dynamic>.from(result.map((x) => x.toJson())),
+        "error": error,
+      };
+}
+
+class Result {
+  final String type = 'stock';
+  final double? regularMarketChangePercent;
+  final double? regularMarketPrice;
+  final String? longName;
+  final double? pegRatio;
+  final double? dividendYield;
+  final int? marketCap;
+  final String? symbol;
+
+  Result({
+    required this.regularMarketChangePercent,
+    required this.regularMarketPrice,
+    required this.longName,
+    required this.pegRatio,
+    required this.dividendYield,
+    required this.marketCap,
+    required this.symbol,
+  });
+
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
+        regularMarketChangePercent:
+            json["regularMarketChangePercent"]?.toDouble() ?? 0.0,
+        regularMarketPrice: json["regularMarketPrice"]?.toDouble() ?? 0.0,
+        longName: json["longName"]?.toString() ?? '',
+        pegRatio: json["pegRatio"]?.toDouble() ?? 0.0,
+        dividendYield: json["dividendYield"]?.toDouble() ?? 0.0,
+        marketCap: json["marketCap"]?.toInt() ?? 0,
+        symbol: json["symbol"]?.toString() ?? '',
+      );
+
+  Map<String, dynamic> toJson() => {
+        "regularMarketChangePercent": regularMarketChangePercent,
+        "regularMarketPrice": regularMarketPrice,
+        "longName": longName,
+        "pegRatio": pegRatio,
+        "dividendYield": dividendYield,
+        "marketCap": marketCap,
+        "symbol": symbol,
+      };
+}
+
+// class QuoteSummary {
+//   Earnings earnings;
+
+//   QuoteSummary({
+//     required this.earnings,
+//   });
+
+//   factory QuoteSummary.fromJson(Map<String, dynamic> json) => QuoteSummary(
+//         earnings: Earnings.fromJson(json["earnings"]),
+//       );
+
+//   Map<String, dynamic> toJson() => {
+//         "earnings": earnings.toJson(),
+//       };
+// }
+
+// class Earnings {
+//   FinancialsChart financialsChart;
+
+//   Earnings({
+//     required this.financialsChart,
+//   });
+
+//   factory Earnings.fromJson(Map<String, dynamic> json) => Earnings(
+//         financialsChart: FinancialsChart.fromJson(json["financialsChart"]),
+//       );
+
+//   Map<String, dynamic> toJson() => {
+//         "financialsChart": financialsChart.toJson(),
+//       };
+// }
+
+// class FinancialsChart {
+//   List<Yearly> yearly;
+//   List<FinancialsChartQuarterly> quarterly;
+
+//   FinancialsChart({
+//     required this.yearly,
+//     required this.quarterly,
+//   });
+
+//   factory FinancialsChart.fromJson(Map<String, dynamic> json) =>
+//       FinancialsChart(
+//         yearly:
+//             List<Yearly>.from(json["yearly"].map((x) => Yearly.fromJson(x))),
+//         quarterly: List<FinancialsChartQuarterly>.from(
+//             json["quarterly"].map((x) => FinancialsChartQuarterly.fromJson(x))),
+//       );
+
+//   Map<String, dynamic> toJson() => {
+//         "yearly": List<dynamic>.from(yearly.map((x) => x.toJson())),
+//         "quarterly": List<dynamic>.from(quarterly.map((x) => x.toJson())),
+//       };
+// }
+
+// class FinancialsChartQuarterly {
+//   String? date;
+//   int? revenue;
+//   int? earnings;
+
+//   FinancialsChartQuarterly({
+//     required this.date,
+//     required this.revenue,
+//     required this.earnings,
+//   });
+
+//   factory FinancialsChartQuarterly.fromJson(Map<String, dynamic> json) =>
+//       FinancialsChartQuarterly(
+//         date: json["date"]?.toString() ?? '',
+//         revenue: json["revenue"] as int?,
+//         earnings: json["earnings"] as int?,
+//       );
+
+//   Map<String, dynamic> toJson() => {
+//         "date": date,
+//         "revenue": revenue,
+//         "earnings": earnings,
+//       };
+// }
+
+// class Yearly {
+//   int? date;
+//   int? revenue;
+//   int? earnings;
+
+//   Yearly({
+//     required this.date,
+//     required this.revenue,
+//     required this.earnings,
+//   });
+
+//   factory Yearly.fromJson(Map<String, dynamic> json) => Yearly(
+//         date: json["date"] as int?,
+//         revenue: json["revenue"] as int?,
+//         earnings: json["earnings"] as int?,
+//       );
+
+//   Map<String, dynamic> toJson() => {
+//         "date": date,
+//         "revenue": revenue,
+//         "earnings": earnings,
+//       };
+// }

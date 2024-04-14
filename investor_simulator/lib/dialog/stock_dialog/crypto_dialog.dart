@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:investor_simulator/constant/color.dart';
@@ -8,6 +10,7 @@ import 'package:investor_simulator/dialog/sell_dialog.dart';
 import 'package:investor_simulator/models/chart_model.dart';
 import 'package:investor_simulator/models/crypto_model.dart';
 import 'package:investor_simulator/provider/crypto_provider.dart';
+import 'package:investor_simulator/provider/portfolio_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -16,6 +19,9 @@ void openCryptoDialog(BuildContext context, CoinModel coin) {
   final provider = Provider.of<CryptoProvider>(context, listen: false);
   provider.emptyChart();
   provider.fetchChartData(coin.id);
+
+  Timer? timer;
+
   late TrackballBehavior trackballBehavior;
   trackballBehavior = TrackballBehavior(
       enable: true,
@@ -27,6 +33,16 @@ void openCryptoDialog(BuildContext context, CoinModel coin) {
           fontSize: 12, // Adjust font size as needed,
         ),
       ));
+
+  void fetchDataPeriodically() {
+    // Fetch chart data every 1 minute
+    timer = Timer.periodic(const Duration(minutes: 10), (timer) {
+      provider.fetchChartData(coin.id);
+    });
+  }
+
+  fetchDataPeriodically();
+
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -55,7 +71,9 @@ void openCryptoDialog(BuildContext context, CoinModel coin) {
         ),
       );
     },
-  );
+  ).then((_) {
+    timer?.cancel();
+  });
 }
 
 GestureDetector close(BuildContext context) {
@@ -92,12 +110,27 @@ Center purchaseText() {
   );
 }
 
-Color getTextColor(String quantity) {
-  return quantity == "0" ? Colors.red : Colors.green;
+int getSharesForSymbol(PortfolioProvider portfolioProvider, String? symbol) {
+  // Check if the portfolio contains the symbol
+  if (portfolioProvider.portfolio.containsKey(symbol)) {
+    // Get the asset associated with the symbol
+    var asset = portfolioProvider.portfolio[symbol];
+
+    // Return the total shares (quantity) of the symbol
+    return asset?['quantity'].round();
+  }
+
+  // If the symbol is not in the portfolio, return 0
+  return 0;
 }
 
 SingleChildScrollView stockDetails(
     BuildContext context, CoinModel coin, TrackballBehavior trackballBehavior) {
+  final provider = Provider.of<CryptoProvider>(context);
+  final portfolio = Provider.of<PortfolioProvider>(context);
+  int quantity = getSharesForSymbol(portfolio, coin.symbol);
+  List<String> text = ['D', 'W', 'M', '3M', '6M', 'Y'];
+
   return SingleChildScrollView(
     scrollDirection: Axis.vertical,
     child: Column(
@@ -133,12 +166,14 @@ SingleChildScrollView stockDetails(
                 ),
               ),
               TextSpan(
-                text: "0",
+                text: getSharesForSymbol(portfolio, coin.symbol).toString(),
                 style: TextStyle(
                   fontFamily: 'Helvetica',
+                  fontWeight: FontWeight.w800,
                   letterSpacing: 0,
                   fontSize: 14,
-                  color: getTextColor('0'), // Change the color of the number
+                  color: getColorFromQuantity(
+                      quantity), // Change the color of the number
                 ),
               ),
               const TextSpan(
@@ -162,7 +197,7 @@ SingleChildScrollView stockDetails(
           children: [
             const SizedBox(width: 15),
             StrokeText(
-              text: '\$${coin.currentPrice.toStringAsFixed(2)}',
+              text: '\$${coin.regularMarketPrice.toStringAsFixed(2)}',
               textStyle: const TextStyle(
                 fontFamily: 'Helvetica',
                 fontWeight: FontWeight.w800,
@@ -175,10 +210,10 @@ SingleChildScrollView stockDetails(
             ),
             Expanded(child: Container()),
             StrokeText(
-              text: '(${coin.priceChangePercentage24H}%)',
+              text: '(${coin.regularMarketChangePercent}%)',
               textStyle: TextStyle(
                   fontSize: 16,
-                  color: getColour(coin.priceChangePercentage24H),
+                  color: getColour(coin.regularMarketChangePercent),
                   fontFamily: 'Helvetica',
                   fontWeight: FontWeight.w700),
               strokeColor: Colors.transparent,
@@ -197,7 +232,7 @@ SingleChildScrollView stockDetails(
             } else if (provider.isLoadingChartData) {
               // Data loading, return loading indicator
               return const Center(child: CircularProgressIndicator());
-            } else if (provider.hasError) {
+            } else if (provider.hasChartError) {
               // Error fetching data, handle error
               return Center(
                 child: Text(
@@ -213,13 +248,41 @@ SingleChildScrollView stockDetails(
         ),
 
         const SizedBox(height: 10),
-        Row(
-          children: [
-            // sellStock(context, stocks, index, select),
-            Expanded(child: Container()),
-            // buyStock(context, select, index),
-          ],
+
+        SizedBox(
+          height: 30,
+          width: 311,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: text.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    provider.setDays(text[index]);
+                    provider.fetchChartData(coin.id);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(0),
+                    backgroundColor: provider.getDayColour(
+                        text[index]), // Set the background color to transparent
+                    elevation: 0, // Remove the elevation
+                  ),
+                  child: Text(text[index],
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontFamily: 'Helvetica',
+                          fontWeight: FontWeight.w600,
+                          color: provider.getTextDayColour(text[index]))),
+                ),
+              );
+            },
+          ),
         ),
+
+        const SizedBox(height: 10),
+        buyStock(context, coin),
         const Divider(
           thickness: 4,
         ),
@@ -268,8 +331,9 @@ SizedBox stockChart(
       trackballBehavior: trackballBehavior,
       zoomPanBehavior:
           ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x),
-      primaryXAxis: DateTimeAxis(
+      primaryXAxis: DateTimeCategoryAxis(
         interval: 1,
+        dateFormat: DateFormat('d/M HH:mm'),
         labelStyle: const TextStyle(
             fontFamily: 'Helvetica', fontSize: 12, fontWeight: FontWeight.w600),
       ),
@@ -539,7 +603,7 @@ Stack stockDetailsLogoName(BuildContext context, CoinModel coin) {
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              coin.name,
+              coin.longName,
               textAlign: TextAlign.left,
               maxLines: 3,
               style: const TextStyle(
@@ -556,10 +620,10 @@ Stack stockDetailsLogoName(BuildContext context, CoinModel coin) {
   );
 }
 
-ElevatedButton sellStock(BuildContext context, stocks, index, select) {
+ElevatedButton sellStock(BuildContext context, CoinModel coin) {
   return ElevatedButton(
     onPressed: () {
-      openSellDialog(context, stocks[index].price, index, select);
+      openSellDialog(context, coin, 'crypto');
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),
@@ -589,10 +653,10 @@ ElevatedButton sellStock(BuildContext context, stocks, index, select) {
   );
 }
 
-ElevatedButton buyStock(BuildContext context, select, index) {
+ElevatedButton buyStock(BuildContext context, CoinModel coin) {
   return ElevatedButton(
     onPressed: () {
-      openBuyDialog(context, select, index);
+      openBuyDialog(context, coin, 'crypto');
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),
@@ -602,7 +666,7 @@ ElevatedButton buyStock(BuildContext context, select, index) {
     child: Container(
       alignment: Alignment.center,
       height: 40,
-      width: 100,
+      width: 311,
       decoration: BoxDecoration(
         color: lightGreen,
         borderRadius: BorderRadius.circular(10),

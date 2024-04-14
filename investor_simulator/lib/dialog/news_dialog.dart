@@ -1,11 +1,24 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:investor_simulator/constant/color.dart';
+import 'package:investor_simulator/models/news_details_model.dart';
 import 'package:investor_simulator/models/news_model.dart';
 import 'package:investor_simulator/pages/news_assessment.dart';
+import 'package:investor_simulator/provider/news_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
-void openNewsDialog(BuildContext context, List<NewsModel> news, index) {
+void openNewsDialog(BuildContext context, String newsURL, String pubDate) {
+  final provider = Provider.of<NewsProvider>(context, listen: false);
+  provider.emptyNewsDetails();
+  provider.fetchDetails(newsURL);
+
+  // Show the custom dialog with a general dialog
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -18,37 +31,49 @@ void openNewsDialog(BuildContext context, List<NewsModel> news, index) {
         scale: Tween<double>(begin: 0.5, end: 1).animate(a1),
         child: FadeTransition(
           opacity: Tween<double>(begin: 0.5, end: 1).animate(a1),
-          child: Dialog(
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Container(
-              width: 400,
-              height: 600,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: PageView(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: white,
-                          ),
-                          child:
-                              Scrollbar(child: newsPage(context, news, index)),
+          child: Stack(
+            children: [
+              // Dialog for displaying news content
+              Positioned(
+                bottom: 30,
+                child: Column(
+                  children: [
+                    Dialog(
+                      backgroundColor: white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width *
+                            0.8, // Adjusted width
+                        height: MediaQuery.of(context).size.height *
+                            0.7, // Adjusted height
+                        child: Consumer<NewsProvider>(
+                          builder: (context, provider, child) {
+                            if (provider.newsDetails.isNotEmpty) {
+                              return newsPage(
+                                  context, provider.newsDetails[0], pubDate);
+                            } else if (provider.isLoadingDetails) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (provider.hasErrorDetails) {
+                              return Center(
+                                child: Text(provider.errorMessage),
+                              );
+                            } else {
+                              return const Center(
+                                  child: Text('Loading news details...'));
+                            }
+                          },
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                  // Add other widgets if needed below the Scrollbar
-                ],
+                    aiAssessment(context),
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
         ),
       );
@@ -57,7 +82,11 @@ void openNewsDialog(BuildContext context, List<NewsModel> news, index) {
 }
 
 SingleChildScrollView newsPage(
-    BuildContext context, List<NewsModel> news, index) {
+    BuildContext context, NewsDetails content, String pubDate) {
+  String title = content.title;
+  String imageURL = content.topImage;
+  String text = content.text;
+
   return SingleChildScrollView(
     scrollDirection: Axis.vertical,
     child: Padding(
@@ -68,19 +97,20 @@ SingleChildScrollView newsPage(
             children: [
               helpText('NEWS'),
               Positioned(top: -2, right: 0, child: close(context)),
+              Positioned(top: 0, left: 0, child: webBrowser(content.url)),
             ],
           ),
           const SizedBox(
             height: 20,
           ),
           Container(
-            width: 150,
-            height: 150,
+            width: 400,
+            height: 200,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               image: DecorationImage(
-                image: AssetImage(news[index].iconPath),
-                fit: BoxFit.fill,
+                image: NetworkImage(imageURL),
+                fit: BoxFit.cover,
               ),
               border: const Border.fromBorderSide(
                 BorderSide(
@@ -96,15 +126,36 @@ SingleChildScrollView newsPage(
           SizedBox(
             width: 295,
             child: Text(
-              news[index].name,
+              title,
               style: const TextStyle(
-                letterSpacing: 0.5,
+                fontFamily: 'Helvetica',
+                fontWeight: FontWeight.bold,
                 fontSize: 20,
-                color: purple,
+                color: darkPurple,
                 overflow: TextOverflow.clip,
+                fontStyle: FontStyle.italic,
               ),
-              textAlign: TextAlign.center,
+              textAlign: TextAlign.left,
             ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            width: 295,
+            child: Text(
+              pubDate,
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                  fontFamily: 'Helvetica',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: Colors.grey[700],
+                  fontStyle: FontStyle.italic),
+            ),
+          ),
+          const SizedBox(
+            height: 15,
           ),
           Container(
             width: 400,
@@ -115,7 +166,7 @@ SingleChildScrollView newsPage(
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Text(
-                news[index].description,
+                text,
                 style: const TextStyle(
                   fontFamily: 'Helvetica',
                   letterSpacing: 0,
@@ -130,22 +181,46 @@ SingleChildScrollView newsPage(
           const SizedBox(
             height: 10,
           ),
-          aiAssessment(context, news, index),
-          const SizedBox(
-            height: 10,
-          ),
         ],
       ),
     ),
   );
 }
 
-ElevatedButton aiAssessment(BuildContext context, List<NewsModel> news, index) {
+Widget webBrowser(String url) {
+  return SizedBox(
+    width: 50,
+    height: 40,
+    child: TextButton(
+      onPressed: () async {
+        try {
+          final Uri uri = Uri.parse(url);
+          if (await canLaunchUrl(uri)) {
+            await launchUrl(uri);
+          } else {
+            print('Could not open $url');
+          }
+        } on Exception catch (e) {
+          print('Error launching URL: $e');
+        }
+      },
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.zero,
+        side: const BorderSide(color: darkPurple, width: 2),
+        backgroundColor: white,
+        elevation: 0,
+      ),
+      child: const Icon(Icons.public),
+    ),
+  );
+}
+
+ElevatedButton aiAssessment(BuildContext context) {
   return ElevatedButton(
     onPressed: () {
-      Get.to(() => NewsAssessment(news: news, index: index),
-          transition: Transition.circularReveal,
-          duration: const Duration(milliseconds: 800));
+      // Get.to(() => NewsAssessment(news: news, index: index),
+      //     transition: Transition.circularReveal,
+      //     duration: const Duration(milliseconds: 800));
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),

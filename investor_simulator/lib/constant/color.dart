@@ -23,3 +23,21 @@ Color getColorFromString(String input) {
     return Colors.grey;
   }
 }
+
+Color getColorFromQuantity(int quantity) {
+  if (quantity > 0) {
+    return green;
+  } else {
+    return red;
+  }
+}
+
+Color getColorFromPercentage(double percentage) {
+  if (percentage > 0) {
+    return green;
+  } else if (percentage == 0) {
+    return Colors.grey;
+  } else {
+    return red;
+  }
+}

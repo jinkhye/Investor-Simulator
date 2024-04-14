@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/invest_page/crypto.dart';
-import 'package:investor_simulator/invest_page/etfmarket.dart';
+import 'package:investor_simulator/invest_page/etf.dart';
 import 'package:investor_simulator/invest_page/stocks.dart';
 import 'package:investor_simulator/menu/topMenu.dart';
-import 'package:investor_simulator/provider/game_provider.dart';
-import 'package:provider/provider.dart';
 
 class Invest extends StatefulWidget {
   const Invest({super.key});
@@ -17,7 +15,6 @@ class Invest extends StatefulWidget {
 class _InvestState extends State<Invest> {
   @override
   Widget build(BuildContext context) {
-    final imagePath = Provider.of<GameProvider>(context);
     final controller = PageController(initialPage: 0);
 
     return Scaffold(
@@ -44,10 +41,10 @@ class _InvestState extends State<Invest> {
                   controller: controller,
                   child: PageView(
                     controller: controller,
-                    children: [
-                      stockMenu(context),
-                      etfMenu(context, imagePath),
-                      const CryptoMenuPage(),
+                    children: const [
+                      StocksMenuPage(),
+                      ETFMenuPage(),
+                      CryptoMenuPage(),
                     ],
                   ),
                 ),

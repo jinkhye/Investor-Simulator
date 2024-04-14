@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:investor_simulator/constant/color.dart';
-import 'package:investor_simulator/dialog/stock_dialog/stock_dialog.dart';
+import 'package:investor_simulator/constant/string_format.dart';
+import 'package:investor_simulator/dialog/portfolio_dialog.dart';
+import 'package:investor_simulator/dialog/stock_help_dialog.dart';
 
-import 'package:investor_simulator/invest_page/stocks.dart';
 import 'package:investor_simulator/menu/topMenu.dart';
-import 'package:investor_simulator/models/portfolio_model.dart';
-import 'package:investor_simulator/pages/assessment.dart';
-import 'package:investor_simulator/provider/game_provider.dart';
+import 'package:investor_simulator/provider/crypto_provider.dart';
+import 'package:investor_simulator/provider/etf_provider.dart';
+import 'package:investor_simulator/provider/portfolio_provider.dart';
+import 'package:investor_simulator/provider/stocks_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
-import 'mainmenu.dart';
 import 'package:intl/intl.dart';
 
 class Portfolio extends StatefulWidget {
@@ -23,8 +23,7 @@ class Portfolio extends StatefulWidget {
 class _PortfolioState extends State<Portfolio> {
   @override
   Widget build(BuildContext context) {
-    final imagePath = Provider.of<GameProvider>(context);
-    List<PortfolioModel> portfolio = imagePath.portfolio;
+    final portfolioProvider = Provider.of<PortfolioProvider>(context);
 
     return Scaffold(
       body: Container(
@@ -42,7 +41,7 @@ class _PortfolioState extends State<Portfolio> {
             children: [
               topMenu(context),
               Expanded(
-                child: stockMenu(context, portfolio),
+                child: stockMenu(context, portfolioProvider),
               ),
             ],
           ),
@@ -51,15 +50,17 @@ class _PortfolioState extends State<Portfolio> {
     );
   }
 
-  double getTotal(List<PortfolioModel> portfolio) {
+  double getTotal(PortfolioProvider portfolioProvider) {
     double total = 0;
-    for (int i = 0; i < portfolio.length; i++) {
-      total += portfolio[i].total;
+
+    for (var entry in portfolioProvider.portfolio.entries) {
+      total += entry.value['totalValue'];
     }
+
     return total;
   }
 
-  Column stockMenu(BuildContext context, List<PortfolioModel> portfolio) {
+  Column stockMenu(BuildContext context, PortfolioProvider portfolioProvider) {
     return Column(
       children: <Widget>[
         Stack(
@@ -85,7 +86,7 @@ class _PortfolioState extends State<Portfolio> {
                 ),
               ),
               TextSpan(
-                text: getTotal(portfolio).toStringAsFixed(2),
+                text: getTotal(portfolioProvider).toStringAsFixed(2),
                 style: const TextStyle(
                   fontFamily: 'Helvetica',
                   color: white,
@@ -116,7 +117,7 @@ class _PortfolioState extends State<Portfolio> {
         ),
         Builder(
           builder: (context) {
-            if (portfolio.isEmpty) {
+            if (portfolioProvider.portfolio.isEmpty) {
               return const Expanded(
                 child: Column(
                   children: [
@@ -137,86 +138,76 @@ class _PortfolioState extends State<Portfolio> {
               );
             } else {
               return Expanded(
-                  child: Scrollbar(child: _stocksSection(portfolio)));
+                  child: Scrollbar(child: _stocksSection(portfolioProvider)));
             }
           },
         ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 15.0, top: 10),
-          child: aiAssessment(context, portfolio),
-        )
+        // Padding(
+        //   padding: const EdgeInsets.only(bottom: 15.0, top: 10),
+        //   child: aiAssessment(context, portfolio),
+        // )
       ],
     );
   }
 
-  ElevatedButton aiAssessment(
-      BuildContext context, List<PortfolioModel> portfolio) {
-    return ElevatedButton(
-      onPressed: () {
-        Get.to(() => const Assessment(),
-            transition: Transition.circularReveal,
-            duration: const Duration(milliseconds: 800));
-      },
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.all(0),
-        backgroundColor:
-            Colors.transparent, // Set the background color to transparent
-        elevation: 0, // Remove the elevation
-      ),
-      child: Container(
-        alignment: Alignment.center,
-        height: 70,
-        width: 280,
-        decoration: BoxDecoration(
-          color: yellow,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: orangeRed,
-            width: 3,
-          ),
-        ),
-        child: const StrokeText(
-          text: 'BEGIN AI ASSESSMENT',
-          textStyle: TextStyle(
-            fontSize: 24,
-            color: white,
-            letterSpacing: 1,
-          ),
-          strokeColor: black,
-          strokeWidth: 4,
-        ),
-      ),
-    );
-  }
+  // ElevatedButton aiAssessment(
+  //     BuildContext context, List<PortfolioModel> portfolio) {
+  //   return ElevatedButton(
+  //     onPressed: () {
+  //       Get.to(() => const Assessment(),
+  //           transition: Transition.circularReveal,
+  //           duration: const Duration(milliseconds: 800));
+  //     },
+  //     style: ElevatedButton.styleFrom(
+  //       padding: const EdgeInsets.all(0),
+  //       backgroundColor:
+  //           Colors.transparent, // Set the background color to transparent
+  //       elevation: 0, // Remove the elevation
+  //     ),
+  //     child: Container(
+  //       alignment: Alignment.center,
+  //       height: 70,
+  //       width: 280,
+  //       decoration: BoxDecoration(
+  //         color: yellow,
+  //         borderRadius: BorderRadius.circular(10),
+  //         border: Border.all(
+  //           color: orangeRed,
+  //           width: 3,
+  //         ),
+  //       ),
+  //       child: const StrokeText(
+  //         text: 'BEGIN AI ASSESSMENT',
+  //         textStyle: TextStyle(
+  //           fontSize: 24,
+  //           color: white,
+  //           letterSpacing: 1,
+  //         ),
+  //         strokeColor: black,
+  //         strokeWidth: 4,
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Color getColour(String percentage) {
-    if (percentage.contains('-')) {
-      return red;
-    } else if (percentage.contains('+')) {
-      return lightGreen;
-    } else {
-      return Colors.grey;
-    }
-  }
-
-  Column _stocksSection(List<PortfolioModel> portfolio) {
-    // Get the current date
-    DateTime now = DateTime.now();
-
+  Column _stocksSection(PortfolioProvider portfolioProvider) {
     // Format the date using a DateFormat object
-    DateFormat formatter = DateFormat('dd/MM/yyyy');
-    String formattedDate = formatter.format(now);
+    DateFormat formatter = DateFormat('dd/MM/yyyy hh:mm a');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 10),
         Expanded(
-          child: ListView.builder(
-            itemCount: portfolio.length,
-            scrollDirection: Axis.vertical,
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            itemBuilder: (context, index) {
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            children: portfolioProvider.portfolio.entries.map((entry) {
+              final symbol = entry.key;
+              final asset = entry.value;
+
+              double percentage =
+                  getPercentageChange(symbol, asset['type'], portfolioProvider);
+
               return Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: Stack(
@@ -227,40 +218,26 @@ class _PortfolioState extends State<Portfolio> {
                       height: 120,
                       width: 330,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: white,
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
                     Positioned(
-                        bottom: 5,
-                        right: 35,
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: '(0.00%)',
-                                style: TextStyle(
-                                  fontFamily: 'MightySouly',
-                                  fontSize: 18,
-                                  color: getColour(
-                                    '0.00',
-                                  ),
-                                  // Set text color to black
-                                ),
-                              ),
-                              TextSpan(
-                                text:
-                                    '  \$${portfolio[index].price}', // Add space to separate the stroke
-                                style: const TextStyle(
-                                  fontFamily: 'Helvetica',
-                                  color: green, // Set stroke color to white
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )),
+                      bottom: 5,
+                      right: 35,
+                      child: Text(
+                        formatPercentageString(percentage.toString()),
+                        style: TextStyle(
+                          fontFamily: 'Helvetica',
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.5,
+                          fontSize: 18,
+                          color: getColorFromPercentage(percentage),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        maxLines: 1,
+                      ),
+                    ),
                     Positioned(
                       top: 5,
                       left: 105,
@@ -270,8 +247,10 @@ class _PortfolioState extends State<Portfolio> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              portfolio[index].name,
+                              asset['name'],
                               style: const TextStyle(
+                                fontFamily: 'Helvetica',
+                                fontWeight: FontWeight.w900,
                                 letterSpacing: 0.5,
                                 fontSize: 20,
                                 color: darkPurple,
@@ -285,18 +264,18 @@ class _PortfolioState extends State<Portfolio> {
                                   const TextSpan(
                                     text: 'Total: ',
                                     style: TextStyle(
-                                      fontFamily: 'MightySouly',
-
+                                      fontFamily: 'Helvetica',
+                                      fontWeight: FontWeight.w700,
                                       fontSize: 18,
-                                      color: purple, // Set text color to black
+                                      color: purple,
                                     ),
                                   ),
                                   TextSpan(
                                     text:
-                                        '\$${portfolio[index].total}', // Add space to separate the stroke
+                                        '\$${asset['totalValue'].toStringAsFixed(2)}',
                                     style: const TextStyle(
                                       fontFamily: 'Helvetica',
-                                      color: green, // Set stroke color to white
+                                      color: green,
                                       fontWeight: FontWeight.w800,
                                       fontSize: 18,
                                     ),
@@ -304,11 +283,28 @@ class _PortfolioState extends State<Portfolio> {
                                 ],
                               ),
                             ),
-                            Text(
-                              'Quantity: ${portfolio[index].amount}',
-                              style: const TextStyle(
-                                color: purple,
-                                fontSize: 16,
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: 'Quantity: ',
+                                    style: TextStyle(
+                                      fontFamily: 'Helvetica',
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 16,
+                                      color: purple,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: '${asset['quantity'].round()}',
+                                    style: const TextStyle(
+                                      fontFamily: 'Helvetica',
+                                      color: green,
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -331,13 +327,8 @@ class _PortfolioState extends State<Portfolio> {
                         ),
                         child: Center(
                           child: Transform.scale(
-                            scale:
-                                0.75, // Adjust the scale factor to make the image smaller
-                            child: Image.asset(
-                              portfolio[index].iconPath,
-                              width: 40, // Adjust the width of the image
-                              height: 40, // Adjust the height of the image
-                            ),
+                            scale: 0.75,
+                            child: iconStock(asset),
                           ),
                         ),
                       ),
@@ -346,7 +337,7 @@ class _PortfolioState extends State<Portfolio> {
                       bottom: 5,
                       left: 30,
                       child: Text(
-                        formattedDate,
+                        formatter.format(asset['date']),
                         style: const TextStyle(
                           fontFamily: 'Helvetica',
                           color: darkPurple,
@@ -357,21 +348,113 @@ class _PortfolioState extends State<Portfolio> {
                         ),
                       ),
                     ),
-                    Positioned(child: accept(context, index, portfolio)),
+                    Positioned(
+                      child: accept(context, symbol, asset['type']),
+                    ),
                   ],
                 ),
               );
-            },
+            }).toList(),
           ),
         ),
       ],
     );
   }
 
-  ElevatedButton accept(BuildContext context, index, portfolio) {
+  Widget iconStock(Map<String, dynamic> asset) {
+    String type = asset['type'];
+    String symbol = asset['result'].symbol.toUpperCase();
+
+    switch (type) {
+      case 'crypto':
+        {
+          return Image.network(
+            asset['result'].image,
+            width: 40,
+            height: 40,
+            errorBuilder: (context, error, stackTrace) {
+              // Return a placeholder widget in case of error
+              return const Icon(Icons.error, size: 40);
+            },
+          );
+        }
+      default:
+        {
+          return Image.network(
+            'https://eodhd.com/img/logos/US/$symbol.png',
+            width: 40,
+            height: 40,
+            errorBuilder: (context, error, stackTrace) {
+              // Return a placeholder widget in case of error
+              return const Icon(Icons.error, size: 40);
+            },
+          );
+        }
+    }
+  }
+
+  double getPercentageChange(
+      String symbol, String type, PortfolioProvider portfolioProvider) {
+    // Fetch the relevant provider based on the type (stock, etf, or crypto)
+
+    double currentPrice = 0.0;
+    switch (type) {
+      case 'stock':
+        StocksProvider provider =
+            Provider.of<StocksProvider>(context, listen: false);
+        currentPrice = provider.stocks
+            .firstWhere((stock) => stock.symbol == symbol)
+            .regularMarketPrice!;
+        break;
+      case 'etf':
+        ETFProvider provider = Provider.of<ETFProvider>(context, listen: false);
+        currentPrice = provider.stocks
+            .firstWhere((stock) => stock.symbol == symbol)
+            .regularMarketPrice!;
+        break;
+      case 'crypto':
+        CryptoProvider provider =
+            Provider.of<CryptoProvider>(context, listen: false);
+        currentPrice = provider.cryptocurrencies
+            .firstWhere((stock) => stock.symbol == symbol)
+            .regularMarketPrice;
+        break;
+    }
+
+    // Fetch all the entries for the given symbol from the portfolio
+    List<Map<String, dynamic>> purchases = portfolioProvider.portfolio.entries
+        .where((entry) => entry.key == symbol)
+        .map((entry) => entry.value)
+        .toList();
+
+    double totalQuantity = 0;
+    double weightedPercentageChangeSum = 0;
+
+    // Calculate the weighted percentage change
+    for (var purchase in purchases) {
+      double purchasePrice = purchase['purchasePrice'];
+      double quantity = purchase['quantity'];
+
+      double purchasePercentageChange =
+          ((currentPrice - purchasePrice) / purchasePrice) * 100;
+
+      // Add the weighted percentage change to the sum
+      weightedPercentageChangeSum += purchasePercentageChange * quantity;
+      // Keep track of the total quantity for the symbol
+      totalQuantity += quantity;
+    }
+
+    // Calculate the overall weighted average percentage change
+    double overallPercentageChange =
+        weightedPercentageChangeSum / totalQuantity;
+
+    return overallPercentageChange;
+  }
+
+  ElevatedButton accept(BuildContext context, symbol, type) {
     return ElevatedButton(
       onPressed: () {
-        openAnimatedDialog(context, 3, index);
+        openPortfolioDialog(context, symbol, type);
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(0),
@@ -402,81 +485,32 @@ class _PortfolioState extends State<Portfolio> {
     );
   }
 
-  Stack money() {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Positioned(
-          child: Container(
-            padding: const EdgeInsets.only(right: 10),
-            alignment: Alignment.bottomRight,
-            width: 150,
-            height: 45,
-            decoration: BoxDecoration(
-              color: lightGreen,
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(
-                color: green,
-                width: 4,
-              ),
-            ),
-            child: const StrokeText(
-              text: "10.000k",
-              textStyle: TextStyle(fontSize: 25, color: Colors.white),
-              strokeColor: Colors.black,
-              strokeWidth: 3,
-            ),
-          ),
-        ),
-        Positioned(
-          top: 0,
-          left: -20,
-          child: Container(
-            width: 50,
-            height: 50,
-            decoration: const BoxDecoration(
-              shape: BoxShape.rectangle,
-              image: DecorationImage(
-                image: AssetImage('assets/images/money.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  ElevatedButton back(BuildContext context) {
+  ElevatedButton help(BuildContext context) {
+    final pageController = PageController(initialPage: 1);
     return ElevatedButton(
       onPressed: () {
-        // Add the action to be performed when the button is pressed
-        Get.to(() => const MainMenu());
+        openStockHelpDialog(context, pageController);
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(0),
         backgroundColor: Colors.transparent,
         elevation: 0,
         shape: const CircleBorder(
-          side: BorderSide(color: Colors.white, width: 2),
+          side: BorderSide(color: darkPurple, width: 4),
         ),
       ),
       child: Container(
         width: 40,
         height: 40,
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [purple, darkPurple],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          color: purple,
           shape: BoxShape.circle,
         ),
         child: const Center(
           child: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Colors.white,
-            size: 20,
+            Icons.help_outline,
+            color: white,
+            size: 40,
           ),
         ),
       ),
