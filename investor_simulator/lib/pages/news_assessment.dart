@@ -205,8 +205,8 @@ class NewsAssessment extends StatelessWidget {
       Uri.parse('https://api.openai.com/v1/chat/completions'),
 
       headers: {
-        'Authorization':
-        'Bearer hellothisistheapikeyyoucannotusehaha',
+        //'Authorization':
+        //'Bearer hellothisistheapikeyyoucannotusehaha',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
