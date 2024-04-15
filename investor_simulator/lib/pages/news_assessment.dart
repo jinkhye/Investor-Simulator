@@ -202,14 +202,14 @@ class NewsAssessment extends StatelessWidget {
 
   Future<List<String>> fetchText(NewsDetails newss) async {
     final response = await http.post(
-      Uri.parse('https://api.chatanywhere.cn/v1/chat/completions'),
+      Uri.parse('https://api.openai.com/v1/chat/completions'),
       headers: {
         'Authorization':
-            'Bearer sk-3AfXb4qpHinspY3jGEuCarfvXRp82smqBIYCDqrpJ0JBYOd9',
+            'Bearer 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',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
-        'model': 'gpt-3.5-turbo-0125',
+        'model': 'gpt-3.5-turbo-0125	 ',
         'messages': [
           {
             'role': "user",

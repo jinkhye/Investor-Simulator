@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/constant/string_format.dart';
 import 'package:investor_simulator/dialog/portfolio_dialog.dart';
 import 'package:investor_simulator/dialog/stock_help_dialog.dart';
 
 import 'package:investor_simulator/menu/topMenu.dart';
+import 'package:investor_simulator/pages/assessment.dart';
 import 'package:investor_simulator/provider/crypto_provider.dart';
 import 'package:investor_simulator/provider/etf_provider.dart';
 import 'package:investor_simulator/provider/portfolio_provider.dart';
@@ -142,53 +144,53 @@ class _PortfolioState extends State<Portfolio> {
             }
           },
         ),
-        // Padding(
-        //   padding: const EdgeInsets.only(bottom: 15.0, top: 10),
-        //   child: aiAssessment(context, portfolio),
-        // )
+        Padding(
+          padding: const EdgeInsets.only(bottom: 15.0, top: 10),
+          child: aiAssessment(context, portfolioProvider),
+        )
       ],
     );
   }
 
-  // ElevatedButton aiAssessment(
-  //     BuildContext context, List<PortfolioModel> portfolio) {
-  //   return ElevatedButton(
-  //     onPressed: () {
-  //       Get.to(() => const Assessment(),
-  //           transition: Transition.circularReveal,
-  //           duration: const Duration(milliseconds: 800));
-  //     },
-  //     style: ElevatedButton.styleFrom(
-  //       padding: const EdgeInsets.all(0),
-  //       backgroundColor:
-  //           Colors.transparent, // Set the background color to transparent
-  //       elevation: 0, // Remove the elevation
-  //     ),
-  //     child: Container(
-  //       alignment: Alignment.center,
-  //       height: 70,
-  //       width: 280,
-  //       decoration: BoxDecoration(
-  //         color: yellow,
-  //         borderRadius: BorderRadius.circular(10),
-  //         border: Border.all(
-  //           color: orangeRed,
-  //           width: 3,
-  //         ),
-  //       ),
-  //       child: const StrokeText(
-  //         text: 'BEGIN AI ASSESSMENT',
-  //         textStyle: TextStyle(
-  //           fontSize: 24,
-  //           color: white,
-  //           letterSpacing: 1,
-  //         ),
-  //         strokeColor: black,
-  //         strokeWidth: 4,
-  //       ),
-  //     ),
-  //   );
-  // }
+  ElevatedButton aiAssessment(
+      BuildContext context, PortfolioProvider portfolio) {
+    return ElevatedButton(
+      onPressed: () {
+        Get.to(() => Assessment(portfolioProvider: portfolio),
+            transition: Transition.circularReveal,
+            duration: const Duration(milliseconds: 800));
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.all(0),
+        backgroundColor:
+            Colors.transparent, // Set the background color to transparent
+        elevation: 0, // Remove the elevation
+      ),
+      child: Container(
+        alignment: Alignment.center,
+        height: 70,
+        width: 280,
+        decoration: BoxDecoration(
+          color: yellow,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: orangeRed,
+            width: 3,
+          ),
+        ),
+        child: const StrokeText(
+          text: 'BEGIN AI ASSESSMENT',
+          textStyle: TextStyle(
+            fontSize: 24,
+            color: white,
+            letterSpacing: 1,
+          ),
+          strokeColor: black,
+          strokeWidth: 4,
+        ),
+      ),
+    );
+  }
 
   Column _stocksSection(PortfolioProvider portfolioProvider) {
     // Format the date using a DateFormat object
