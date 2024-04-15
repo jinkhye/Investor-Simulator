@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/constant/string_format.dart';
@@ -87,7 +86,7 @@ class _StocksMenuPageState extends State<StocksMenuPage> {
                   children: <Widget>[
                     Container(
                       alignment: Alignment.topRight,
-                      height: 100,
+                      height: 120,
                       width: 330,
                       decoration: BoxDecoration(
                         color: white,
@@ -95,8 +94,8 @@ class _StocksMenuPageState extends State<StocksMenuPage> {
                       ),
                     ),
                     Positioned(
-                      top: 70,
-                      right: 35,
+                      bottom: 5,
+                      right: 25,
                       child: StrokeText(
                         text: formatPercentageString(
                             stock.regularMarketChangePercent.toString()),
@@ -111,8 +110,8 @@ class _StocksMenuPageState extends State<StocksMenuPage> {
                       ),
                     ),
                     Positioned(
-                      top: 15,
-                      right: 35,
+                      top: 8,
+                      right: 25,
                       child: StrokeText(
                         text:
                             '\$${stock.regularMarketPrice?.toStringAsFixed(2)}',
@@ -129,10 +128,10 @@ class _StocksMenuPageState extends State<StocksMenuPage> {
                       ),
                     ),
                     Positioned(
-                      top: 15,
+                      top: 8,
                       left: 115,
                       child: SizedBox(
-                        width: 130,
+                        width: 135,
                         child: Text(
                           stock.longName ?? '',
                           style: const TextStyle(
@@ -143,6 +142,22 @@ class _StocksMenuPageState extends State<StocksMenuPage> {
                             color: darkPurple,
                             overflow: TextOverflow.clip,
                           ),
+                          maxLines: 4,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 25,
+                      bottom: 5,
+                      child: Text(
+                        '(${stock.symbol})',
+                        style: TextStyle(
+                          letterSpacing: 0,
+                          fontFamily: 'Helvetica',
+                          fontWeight: FontWeight.w800,
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                          overflow: TextOverflow.clip,
                         ),
                       ),
                     ),

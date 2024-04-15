@@ -86,7 +86,7 @@ class _ETFMenuPageState extends State<ETFMenuPage> {
                   children: <Widget>[
                     Container(
                       alignment: Alignment.topRight,
-                      height: 100,
+                      height: 120,
                       width: 330,
                       decoration: BoxDecoration(
                         color: white,
@@ -94,8 +94,8 @@ class _ETFMenuPageState extends State<ETFMenuPage> {
                       ),
                     ),
                     Positioned(
-                      top: 70,
-                      right: 35,
+                      bottom: 5,
+                      right: 25,
                       child: StrokeText(
                         text: formatPercentageString(
                             stock.regularMarketChangePercent.toString()),
@@ -110,8 +110,8 @@ class _ETFMenuPageState extends State<ETFMenuPage> {
                       ),
                     ),
                     Positioned(
-                      top: 15,
-                      right: 35,
+                      top: 8,
+                      right: 25,
                       child: StrokeText(
                         text:
                             '\$${stock.regularMarketPrice?.toStringAsFixed(2)}',
@@ -128,14 +128,12 @@ class _ETFMenuPageState extends State<ETFMenuPage> {
                       ),
                     ),
                     Positioned(
-                      top: 15,
+                      top: 8,
                       left: 115,
                       child: SizedBox(
-                        width: 130,
+                        width: 135,
                         child: Text(
                           stock.longName ?? '',
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 3,
                           style: const TextStyle(
                             letterSpacing: 0,
                             fontFamily: 'Helvetica',
@@ -144,6 +142,22 @@ class _ETFMenuPageState extends State<ETFMenuPage> {
                             color: darkPurple,
                             overflow: TextOverflow.clip,
                           ),
+                          maxLines: 4,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 25,
+                      bottom: 5,
+                      child: Text(
+                        '(${stock.symbol})',
+                        style: TextStyle(
+                          letterSpacing: 0,
+                          fontFamily: 'Helvetica',
+                          fontWeight: FontWeight.w800,
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                          overflow: TextOverflow.clip,
                         ),
                       ),
                     ),
