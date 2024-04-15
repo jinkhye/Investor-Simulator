@@ -204,8 +204,7 @@ class NewsAssessment extends StatelessWidget {
     final response = await http.post(
       Uri.parse('https://api.openai.com/v1/chat/completions'),
       headers: {
-        'Authorization':
-            'Bearer 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',
+        'Authorization': 'Bearer [api key]',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
