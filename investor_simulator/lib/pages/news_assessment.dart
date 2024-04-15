@@ -206,7 +206,7 @@ class NewsAssessment extends StatelessWidget {
 
       headers: {
         'Authorization':
-        'Bearer ',
+        'Bearer hellothisistheapikeyyoucannotusehaha',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
