@@ -59,7 +59,7 @@ class NewsAssessment extends StatelessWidget {
                                   child: StrokeText(
                                     text: "NEWS ASSESSMENT",
                                     textStyle:
-                                        TextStyle(fontSize: 40, color: yellow),
+                                    TextStyle(fontSize: 40, color: yellow),
                                     strokeColor: darkPurple,
                                     strokeWidth: 7,
                                   ),
@@ -91,9 +91,9 @@ class NewsAssessment extends StatelessWidget {
                                       ),
                                       border: const Border.fromBorderSide(
                                           BorderSide(
-                                        color: black,
-                                        width: 4,
-                                      )),
+                                            color: black,
+                                            width: 4,
+                                          )),
                                     ),
                                   ),
                                 ),
@@ -203,13 +203,12 @@ class NewsAssessment extends StatelessWidget {
   Future<List<String>> fetchText(NewsDetails newss) async {
     final response = await http.post(
       Uri.parse('https://api.openai.com/v1/chat/completions'),
-
       headers: {
-        'Authorization': 'Bearer hellothisistheapikeyyoucannotusehaha',
+        'Authorization': 'Bearer [api key]',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
-        'model': 'gpt-4',
+        'model': 'gpt-3.5-turbo-0125	 ',
         'messages': [
           {
             'role': "user",
@@ -219,22 +218,18 @@ class NewsAssessment extends StatelessWidget {
           {
             'role': "user",
             'content':
-            "These are the few main question that you have to answer : Q1. How will the news impacting the specific stocks ? (the stock is more likely to rise or drop?) Q2. How is the market confidence? (how would the investors react to the news?) Q3. How is company performance ? Q4. what is your investment recommendations, you must choose an options between buy , hold ,and sell and answer it in your response"
+            "These are the few main question that you have to answer : Q1. How will the news impacting the specific stocks ? (the stock is more likely to rise or drop?) Q2. How is the market confidence? (how would the investors react to the news?) Q3. How is company performance ? Q4. what is your investment recommendations ?(buy , hold , sell)"
           },
-          {
-            'role': "user",
-            'content': "News: ${newss.title}"
-          },
+          {'role': "user", 'content': "News: ${newss.text}"},
           {
             'role': "user",
             'content':
             "Answer each questions in sentence with brief and informative. I want only the answer in your response without labelling the question number. "
           },
         ],
-        'max_tokens': 2000,
+        'max_tokens': 1700,
       }),
     );
-
 
     if (response.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(response.body);
