@@ -202,39 +202,40 @@ class NewsAssessment extends StatelessWidget {
 
   Future<List<String>> fetchText(NewsDetails newss) async {
     final response = await http.post(
-      Uri.parse('https://api.chatanywhere.cn/v1/chat/completions'),
+      Uri.parse('https://api.openai.com/v1/chat/completions'),
+
       headers: {
         'Authorization':
-            'Bearer sk-3AfXb4qpHinspY3jGEuCarfvXRp82smqBIYCDqrpJ0JBYOd9',
+        'Bearer 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',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
-        'model': 'gpt-3.5-turbo-0125',
+        'model': 'gpt-4',
         'messages': [
           {
             'role': "user",
             'content':
-                "You are now an AI stock's news analyzer . I strictly require you to analyze the news and give your opinion on the news. "
+            "You are now an AI stock's news analyzer . I strictly require you to analyze the news and give your opinion on the news. "
           },
           {
             'role': "user",
             'content':
-                "These are the few main question that you have to answer : Q1. How will the news impacting the specific stocks ? (the stock is more likely to rise or drop?) Q2. How is the market confidence? (how would the investors react to the news?) Q3. How is company performance ? Q4. what is your investment recommendations ?(buy , hold , sell)"
+            "These are the few main question that you have to answer : Q1. How will the news impacting the specific stocks ? (the stock is more likely to rise or drop?) Q2. How is the market confidence? (how would the investors react to the news?) Q3. How is company performance ? Q4. what is your investment recommendations, you must choose an options between buy , hold ,and sell and answer it in your response"
+          },
+          {
+            'role': "user",
+            'content': "News: ${newss.title}"
           },
           {
             'role': "user",
             'content':
-                "News: In a groundbreaking announcement today, Tesla revealed a revolutionary advancement in battery technology that promises to reshape the electric vehicle industry and significantly accelerate the global transition to sustainable energy. The unveiling of this cutting-edge innovation sent shockwaves through the financial markets, propelling Tesla's stock price to new heights.CEO Elon Musk introduced the world a next-generation battery cell with unparalleled energy density and longevity. This leap forward in battery technology is aimed to address the longstanding challenges of range anxiety and charging times, effectively eliminating barriers to widespread EV adoption."
-          },
-          {
-            'role': "user",
-            'content':
-                "Answer each questions in sentence with brief and informative. I want only the answer in your response without labelling the question number. "
+            "Answer each questions in sentence with brief and informative. I want only the answer in your response without labelling the question number. "
           },
         ],
-        'max_tokens': 1700,
+        'max_tokens': 2000,
       }),
     );
+
 
     if (response.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(response.body);
