@@ -85,7 +85,7 @@ class _CryptoMenuPageState extends State<CryptoMenuPage> {
                   children: <Widget>[
                     Container(
                       alignment: Alignment.topRight,
-                      height: 100,
+                      height: 120,
                       width: 330,
                       decoration: BoxDecoration(
                         color: white,
@@ -93,8 +93,8 @@ class _CryptoMenuPageState extends State<CryptoMenuPage> {
                       ),
                     ),
                     Positioned(
-                      top: 70,
-                      right: 35,
+                      bottom: 5,
+                      right: 25,
                       child: StrokeText(
                         text: formatPercentageString(
                             coin.regularMarketChangePercent.toString()),
@@ -109,8 +109,8 @@ class _CryptoMenuPageState extends State<CryptoMenuPage> {
                       ),
                     ),
                     Positioned(
-                      top: 15,
-                      right: 35,
+                      top: 8,
+                      right: 25,
                       child: StrokeText(
                         text: '\$${coin.regularMarketPrice.toStringAsFixed(2)}',
                         textStyle: const TextStyle(
@@ -126,7 +126,7 @@ class _CryptoMenuPageState extends State<CryptoMenuPage> {
                       ),
                     ),
                     Positioned(
-                      top: 15,
+                      top: 8,
                       left: 115,
                       child: SizedBox(
                         width: 120,
@@ -140,6 +140,21 @@ class _CryptoMenuPageState extends State<CryptoMenuPage> {
                             color: darkPurple,
                             overflow: TextOverflow.clip,
                           ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 25,
+                      bottom: 5,
+                      child: Text(
+                        '(${coin.symbol.toUpperCase()})',
+                        style: TextStyle(
+                          letterSpacing: 0,
+                          fontFamily: 'Helvetica',
+                          fontWeight: FontWeight.w800,
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                          overflow: TextOverflow.clip,
                         ),
                       ),
                     ),
