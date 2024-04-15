@@ -221,11 +221,7 @@ class NewsAssessment extends StatelessWidget {
             'content':
                 "These are the few main question that you have to answer : Q1. How will the news impacting the specific stocks ? (the stock is more likely to rise or drop?) Q2. How is the market confidence? (how would the investors react to the news?) Q3. How is company performance ? Q4. what is your investment recommendations ?(buy , hold , sell)"
           },
-          {
-            'role': "user",
-            'content':
-                "News: In a groundbreaking announcement today, Tesla revealed a revolutionary advancement in battery technology that promises to reshape the electric vehicle industry and significantly accelerate the global transition to sustainable energy. The unveiling of this cutting-edge innovation sent shockwaves through the financial markets, propelling Tesla's stock price to new heights.CEO Elon Musk introduced the world a next-generation battery cell with unparalleled energy density and longevity. This leap forward in battery technology is aimed to address the longstanding challenges of range anxiety and charging times, effectively eliminating barriers to widespread EV adoption."
-          },
+          {'role': "user", 'content': "News: ${newss.text}"},
           {
             'role': "user",
             'content':
