@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:investor_simulator/constant/color.dart';
@@ -107,263 +106,325 @@ class _MainMenuState extends State<MainMenu> {
     );
   }
 
-  ElevatedButton news(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // Add the action to be performed when the button is pressed
-        Get.to(() => const News(),
-            transition: Transition.circularReveal,
-            duration: const Duration(milliseconds: 800));
-      },
-      style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(0),
-          backgroundColor:
-              Colors.transparent, // Set the background color to transparent
-          elevation: 0, // Remove the elevation
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: const BorderSide(color: white, width: 7),
-          )),
-      child: Container(
-        alignment: Alignment.topCenter,
-        width: 100, // Adjust width to make the icon smaller
-        height: 100, // Adjust height to make the icon smaller
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [yellow, orange], // Adjust colors as needed
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+  Widget news(BuildContext context) {
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            // Add the action to be performed when the button is pressed
+            Get.to(() => const News(),
+                transition: Transition.circularReveal,
+                duration: const Duration(milliseconds: 800));
+          },
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(0),
+            backgroundColor:
+                Colors.transparent, // Set the background color to transparent
+            elevation: 0, // Remove the elevation
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+              side: const BorderSide(color: white, width: 5),
+            ),
+            foregroundColor: Colors.white,
           ),
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: orangeRed, width: 12),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              'assets/icons/news.svg',
-              width: 40,
-              height: 40,
+          child: Container(
+            alignment: Alignment.topCenter,
+            width: 90, // Adjust width to make the icon smaller
+            height: 90, // Adjust height to make the icon smaller
+            decoration: BoxDecoration(
+              color: yellow,
+              gradient: const LinearGradient(
+                colors: [
+                  yellow,
+                  yellow,
+                  yellow,
+                  orange
+                ], // Adjust colors as needed
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(color: orangeRed, width: 10),
             ),
-            const StrokeText(
-              text: "NEWS",
-              textStyle: TextStyle(fontSize: 17, color: white),
-              strokeColor: black,
-              strokeWidth: 5,
+            child: Center(
+              child: Transform.scale(
+                  scale: 0.65,
+                  child: Image.asset('assets/icons/newspaper.png')),
             ),
-          ],
+          ),
         ),
-      ),
+        const StrokeText(
+          text: "NEWS",
+          textStyle: TextStyle(
+            fontSize: 25,
+            color: yellow,
+            letterSpacing: 1.5,
+          ),
+          strokeColor: black,
+          strokeWidth: 5,
+        ),
+      ],
     );
   }
 
-  ElevatedButton portfolio(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // Add the action to be performed when the button is pressed
-        Get.to(() => const Portfolio(),
-            transition: Transition.circularReveal,
-            duration: const Duration(milliseconds: 800));
-      },
-      style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(0),
-          backgroundColor:
-              Colors.transparent, // Set the background color to transparent
-          elevation: 0, // Remove the elevation
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: const BorderSide(color: white, width: 7),
-          )),
-      child: Container(
-        alignment: Alignment.topCenter,
-        width: 100, // Adjust width to make the icon smaller
-        height: 100, // Adjust height to make the icon smaller
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [yellow, orange], // Adjust colors as needed
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+  Widget portfolio(BuildContext context) {
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            // Add the action to be performed when the button is pressed
+            Get.to(() => const Portfolio(),
+                transition: Transition.circularReveal,
+                duration: const Duration(milliseconds: 800));
+          },
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(0),
+            backgroundColor:
+                Colors.transparent, // Set the background color to transparent
+            elevation: 0, // Remove the elevation
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+              side: const BorderSide(color: white, width: 5),
+            ),
+            foregroundColor: Colors.white,
           ),
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: orangeRed, width: 12),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              'assets/icons/portfolio.svg',
-              width: 40,
-              height: 40,
+          child: Container(
+            alignment: Alignment.topCenter,
+            width: 90, // Adjust width to make the icon smaller
+            height: 90, // Adjust height to make the icon smaller
+            decoration: BoxDecoration(
+              color: yellow,
+              gradient: const LinearGradient(
+                colors: [
+                  yellow,
+                  yellow,
+                  yellow,
+                  orange
+                ], // Adjust colors as needed
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(color: orangeRed, width: 10),
             ),
-            const StrokeText(
-              text: "PORTFOLIO",
-              textStyle: TextStyle(fontSize: 17, color: white),
-              strokeColor: black,
-              strokeWidth: 5,
+            child: Center(
+              child: Transform.scale(
+                scale: 0.65,
+                child: Image.asset(
+                  'assets/icons/portfolio.png',
+                ),
+              ),
             ),
-          ],
+          ),
         ),
-      ),
+        const StrokeText(
+          text: "PORTFOLIO",
+          textStyle: TextStyle(
+            fontSize: 25,
+            color: yellow,
+            letterSpacing: 1.5,
+          ),
+          strokeColor: black,
+          strokeWidth: 5,
+        ),
+      ],
     );
   }
 
-  ElevatedButton clothes(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // Add the action to be performed when the button is pressed
-        Get.to(() => const Clothes(),
-            transition: Transition.circularReveal,
-            duration: const Duration(milliseconds: 800));
-      },
-      style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(0),
-          backgroundColor:
-              Colors.transparent, // Set the background color to transparent
-          elevation: 0, // Remove the elevation
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: const BorderSide(color: white, width: 7),
-          )),
-      child: Container(
-        alignment: Alignment.topCenter,
-        width: 100, // Adjust width to make the icon smaller
-        height: 100, // Adjust height to make the icon smaller
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [yellow, orange], // Adjust colors as needed
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+  Widget clothes(BuildContext context) {
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            // Add the action to be performed when the button is pressed
+            Get.to(() => const Clothes(),
+                transition: Transition.circularReveal,
+                duration: const Duration(milliseconds: 800));
+          },
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(0),
+            backgroundColor:
+                Colors.transparent, // Set the background color to transparent
+            elevation: 0, // Remove the elevation
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+              side: const BorderSide(color: white, width: 5),
+            ),
+            foregroundColor: Colors.white,
           ),
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: orangeRed, width: 12),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              'assets/icons/shirt.svg',
-              width: 40,
-              height: 40,
+          child: Container(
+            alignment: Alignment.topCenter,
+            width: 90, // Adjust width to make the icon smaller
+            height: 90, // Adjust height to make the icon smaller
+            decoration: BoxDecoration(
+              color: yellow,
+              gradient: const LinearGradient(
+                colors: [
+                  yellow,
+                  yellow,
+                  yellow,
+                  orange
+                ], // Adjust colors as needed
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(color: orangeRed, width: 10),
             ),
-            const StrokeText(
-              text: "CLOTHES",
-              textStyle: TextStyle(fontSize: 20, color: white),
-              strokeColor: black,
-              strokeWidth: 5,
+            child: Center(
+              child: Transform.scale(
+                scale: 0.65,
+                child: Image.asset(
+                  'assets/icons/shirt.png',
+                ),
+              ),
             ),
-          ],
+          ),
         ),
-      ),
+        const StrokeText(
+          text: "CLOTHES",
+          textStyle: TextStyle(
+            fontSize: 25,
+            color: yellow,
+            letterSpacing: 1.5,
+          ),
+          strokeColor: black,
+          strokeWidth: 5,
+        ),
+      ],
     );
   }
 
-  ElevatedButton accomodation(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // Add the action to be performed when the button is pressed
-        Get.to(() => const Accomodation(),
-            transition: Transition.circularReveal,
-            duration: const Duration(milliseconds: 800));
-      },
-      style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(0),
-          backgroundColor:
-              Colors.transparent, // Set the background color to transparent
-          elevation: 0, // Remove the elevation
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: const BorderSide(color: white, width: 7),
-          )),
-      child: Container(
-        alignment: Alignment.topCenter,
-        width: 100, // Adjust width to make the icon smaller
-        height: 100, // Adjust height to make the icon smaller
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [yellow, orange], // Adjust colors as needed
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+  Widget accomodation(BuildContext context) {
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            // Add the action to be performed when the button is pressed
+            Get.to(() => const Accomodation(),
+                transition: Transition.circularReveal,
+                duration: const Duration(milliseconds: 800));
+          },
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(0),
+            backgroundColor:
+                Colors.transparent, // Set the background color to transparent
+            elevation: 0, // Remove the elevation
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+              side: const BorderSide(color: white, width: 5),
+            ),
+            foregroundColor: Colors.white,
           ),
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: orangeRed, width: 12),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              'assets/icons/house.svg',
-              width: 40,
-              height: 40,
+          child: Container(
+            alignment: Alignment.topCenter,
+            width: 90, // Adjust width to make the icon smaller
+            height: 90, // Adjust height to make the icon smaller
+            decoration: BoxDecoration(
+              color: yellow,
+              gradient: const LinearGradient(
+                colors: [
+                  yellow,
+                  yellow,
+                  yellow,
+                  orange
+                ], // Adjust colors as needed
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(color: orangeRed, width: 10),
             ),
-            const StrokeText(
-              text: "ACCOMODATION",
-              textStyle: TextStyle(fontSize: 12, color: white),
-              strokeColor: black,
-              strokeWidth: 5,
+            child: Center(
+              child: Transform.scale(
+                scale: 0.65,
+                child: Image.asset(
+                  'assets/icons/house2.png',
+                ),
+              ),
             ),
-          ],
+          ),
         ),
-      ),
+        const StrokeText(
+          text: "HOUSE",
+          textStyle: TextStyle(
+            fontSize: 25,
+            color: yellow,
+            letterSpacing: 1.5,
+          ),
+          strokeColor: black,
+          strokeWidth: 5,
+        ),
+      ],
     );
   }
 
-  ElevatedButton invest(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // Add the action to be performed when the button is pressed
-        Get.to(() => const Invest(),
-            transition: Transition.circularReveal,
-            duration: const Duration(milliseconds: 800));
-      },
-      style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(0),
-          backgroundColor:
-              Colors.transparent, // Set the background color to transparent
-          elevation: 0, // Remove the elevation
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-            side: const BorderSide(color: white, width: 7),
-          )),
-      child: Container(
-        alignment: Alignment.topCenter,
-        width: 100, // Adjust width to make the icon smaller
-        height: 100, // Adjust height to make the icon smaller
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [yellow, orange], // Adjust colors as needed
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+  Widget invest(BuildContext context) {
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            // Add the action to be performed when the button is pressed
+            Get.to(() => const Invest(),
+                transition: Transition.circularReveal,
+                duration: const Duration(milliseconds: 800));
+          },
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(0),
+            backgroundColor:
+                Colors.transparent, // Set the background color to transparent
+            elevation: 0, // Remove the elevation
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+              side: const BorderSide(color: white, width: 5),
+            ),
+            foregroundColor: Colors.white,
           ),
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: orangeRed, width: 12),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              'assets/icons/graph.svg',
-              width: 40,
-              height: 40,
+          child: Container(
+            alignment: Alignment.topCenter,
+            width: 90, // Adjust width to make the icon smaller
+            height: 90, // Adjust height to make the icon smaller
+            decoration: BoxDecoration(
+              color: yellow,
+              gradient: const LinearGradient(
+                colors: [
+                  yellow,
+                  yellow,
+                  yellow,
+                  orange
+                ], // Adjust colors as needed
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(color: orangeRed, width: 10),
             ),
-            const StrokeText(
-              text: "INVEST",
-              textStyle: TextStyle(fontSize: 20, color: white),
-              strokeColor: black,
-              strokeWidth: 5,
+            child: Center(
+              child: Transform.scale(
+                scale: 0.65,
+                child: Image.asset(
+                  'assets/icons/invest.png',
+                ),
+              ),
             ),
-          ],
+          ),
         ),
-      ),
+        const StrokeText(
+          text: "INVEST",
+          textStyle: TextStyle(
+            fontSize: 25,
+            color: yellow,
+            letterSpacing: 1.5,
+          ),
+          strokeColor: black,
+          strokeWidth: 5,
+        ),
+      ],
     );
   }
 
@@ -404,69 +465,6 @@ class _MainMenuState extends State<MainMenu> {
     );
   }
 
-  Widget pause(context) {
-    return GestureDetector(
-      onTap: () {
-        Get.offAll(const HomePage());
-      },
-      child: SizedBox(
-        width: 36,
-        height: 36,
-        child: Container(
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: AssetImage('assets/images/pause.png'),
-              fit: BoxFit.contain, // Adjust the fit to contain
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget play(context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: SizedBox(
-        width: 36,
-        height: 36,
-        child: Container(
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: AssetImage('assets/images/play.png'),
-              fit: BoxFit.contain, // Adjust the fit to contain
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget fastForward(context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: SizedBox(
-        width: 36,
-        height: 36,
-        child: Container(
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: AssetImage('assets/images/fastForward.png'),
-              fit: BoxFit.contain, // Adjust the fit to contain
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Stack backgroundMax(BuildContext context, imagePath, maxPath) {
     return Stack(
       clipBehavior: Clip.none,
@@ -478,9 +476,8 @@ class _MainMenuState extends State<MainMenu> {
     );
   }
 
-  Container area(BuildContext context, imagePath) {
-    // ignore: sized_box_for_whitespace
-    return Container(
+  SizedBox area(BuildContext context, imagePath) {
+    return SizedBox(
       height: MediaQuery.of(context).size.height - 400,
       child: Stack(
         fit: StackFit.expand,

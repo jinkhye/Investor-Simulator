@@ -104,7 +104,6 @@ class HomePage extends StatelessWidget {
   }
 
   ElevatedButton newGame(context) {
-    final pageController = PageController();
     return ElevatedButton(
       onPressed: () async {
         // Add the action to be performed when the button is pressed
@@ -112,7 +111,7 @@ class HomePage extends StatelessWidget {
         Get.to(() => const MainMenu(),
             transition: Transition.circularReveal,
             duration: const Duration(milliseconds: 800));
-        openOpeningDialog(context, pageController);
+        openOpeningDialog(context);
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(

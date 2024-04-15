@@ -380,8 +380,8 @@ class _PortfolioState extends State<Portfolio> {
         }
       default:
         {
-          return Image.network(
-            'https://eodhd.com/img/logos/US/$symbol.png',
+          return Image.asset(
+            'assets/stocks/$symbol.png',
             width: 40,
             height: 40,
             errorBuilder: (context, error, stackTrace) {
