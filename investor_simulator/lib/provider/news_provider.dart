@@ -27,7 +27,7 @@ class NewsProvider with ChangeNotifier {
   NewsProvider() {
     fetchNews();
     // Start the timer when the provider is initialized
-    _timer = Timer.periodic(const Duration(minutes: 10), (_) {
+    _timer = Timer.periodic(const Duration(minutes: 100), (_) {
       fetchNews();
     });
   }
@@ -95,7 +95,7 @@ class NewsProvider with ChangeNotifier {
         headers: {
           'X-RapidAPI-Host': 'newsnow.p.rapidapi.com',
           'X-RapidAPI-Key':
-              '848f129c0dmsh0d073bda7a4d6bdp141534jsne6d34b58595a',
+              'db6a0970ccmsh0f5067e3d31cf07p1cc59djsn96c676c0db70',
           'Content-Type': 'application/json', // Specify JSON content type
         },
         body: requestBody,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:investor_simulator/constant/color.dart';
+import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:investor_simulator/provider/portfolio_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
@@ -115,7 +116,7 @@ class _SellDialogState extends State<SellDialog> {
                 height: 5,
               ),
               Text(
-                'Total: \$$totalPrice',
+                'Total: \$${totalPrice.toStringAsFixed(2)}',
                 style: const TextStyle(
                   fontFamily: 'Helvetica',
                   fontSize: 16,
@@ -139,6 +140,7 @@ class _SellDialogState extends State<SellDialog> {
   }
 
   Widget confirmSellButton(PortfolioProvider portfolioProvider, int quantity) {
+    final provider = Provider.of<GameProvider>(context, listen: false);
     return ElevatedButton(
       onPressed: () {
         if (quantity > 0) {
@@ -146,14 +148,17 @@ class _SellDialogState extends State<SellDialog> {
             case 'stock':
               portfolioProvider.sellStockInvestment(
                   widget.stock.symbol, quantity);
+              provider.addMoney(totalPrice);
               break;
             case 'etf':
               portfolioProvider.sellETFInvestment(
                   widget.stock.symbol, quantity);
+              provider.addMoney(totalPrice);
               break;
             case 'crypto':
               portfolioProvider.sellCryptoInvestment(
                   widget.stock.symbol, quantity);
+              provider.addMoney(totalPrice);
               break;
           }
           Navigator.pop(context); // Close the dialog after buying

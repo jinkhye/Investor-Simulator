@@ -1,17 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/models/news_details_model.dart';
-import 'package:investor_simulator/models/news_model.dart';
-import 'package:investor_simulator/pages/news_assessment.dart';
 import 'package:investor_simulator/provider/news_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 void openNewsDialog(BuildContext context, String newsURL, String pubDate) {
   final provider = Provider.of<NewsProvider>(context, listen: false);
