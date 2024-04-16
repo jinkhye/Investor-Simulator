@@ -133,7 +133,7 @@ SingleChildScrollView stockDetails(
         ),
         SizedBox(
           width: 300,
-          height: 85,
+          height: 105,
           child: stockDetailsLogoName(context, stock),
         ),
         const SizedBox(
@@ -210,7 +210,6 @@ SingleChildScrollView stockDetails(
           ],
         ),
         const SizedBox(height: 5),
-
         Consumer<StocksProvider>(
           builder: (context, provider, _) {
             if (provider.itemChart != null) {
@@ -233,9 +232,7 @@ SingleChildScrollView stockDetails(
             }
           },
         ),
-
         const SizedBox(height: 10),
-
         SizedBox(
           height: 30,
           width: 311,
@@ -269,9 +266,14 @@ SingleChildScrollView stockDetails(
             },
           ),
         ),
-
         const SizedBox(height: 10),
-        buyStock(context, stock),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            sellStock(context, stock, quantity),
+            buyStock(context, stock),
+          ],
+        ),
         const Divider(
           thickness: 4,
         ),
@@ -290,21 +292,39 @@ SingleChildScrollView stockDetails(
             ],
           ),
         ),
-        Row(
+        Column(
           children: [
-            marketcap(stock),
-            Expanded(child: Container()),
-            dividend(stock),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                marketcap(stock),
+                dividend(stock),
+              ],
+            ),
+            const SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                peRatio(stock),
+                forwardPE(stock),
+              ],
+            ),
+            const SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                priceToBook(stock),
+                marketState(stock),
+              ],
+            ),
           ],
         ),
-        const SizedBox(height: 10),
-        peRatio(stock),
         const SizedBox(height: 10),
         const Divider(
           thickness: 4,
         ),
         const SizedBox(height: 10),
-        // revenueReport(context, stocks, index),
+        revenueReport(context, stock),
         const SizedBox(height: 10),
       ],
     ),
@@ -399,10 +419,10 @@ ElevatedButton statsHelp(BuildContext context) {
   );
 }
 
-ElevatedButton revenueReport(BuildContext context, stocks, index) {
+ElevatedButton revenueReport(BuildContext context, Result stock) {
   return ElevatedButton(
     onPressed: () {
-      openRevenueDialog(context, stocks[index].iconPath, stocks[index].name);
+      openRevenueDialog(context, stock);
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),
@@ -436,9 +456,30 @@ ElevatedButton revenueReport(BuildContext context, stocks, index) {
   );
 }
 
-Container peRatio(Result stock) {
+Container marketState(Result stock) {
+  String market = '';
+
+  Color color = green;
+
+  if (stock.marketState == 'PRE') {
+    market = 'Pre-Market';
+    color = green;
+  } else if (stock.marketState == 'REGULAR') {
+    market = 'Regular Market';
+  } else {
+    market = 'Post-Market';
+  }
+
+  if (stock.marketState == 'PRE') {
+    color = blue;
+  } else if (stock.marketState == 'REGULAR') {
+    color = green;
+  } else {
+    color = orangeRed;
+  }
+
   return Container(
-    width: 200,
+    width: 140,
     height: 100,
     decoration: BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(16)),
@@ -452,7 +493,184 @@ Container peRatio(Result stock) {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text(
-          'Price-to-Earnings-to-Growth (PEG) Ratio',
+          'Market State',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Helvetica',
+            fontSize: 16,
+            color: black,
+            letterSpacing: 0,
+            height: 0,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          market,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Helvetica',
+            fontSize: 16,
+            color: color,
+            letterSpacing: 0,
+            height: 0,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Container forwardPE(Result stock) {
+  double forwardPERatio = stock.forwardPE;
+  Color color = red;
+
+  if (forwardPERatio < 15.0) {
+    // Forward P/E ratio below 15 is considered undervalued (green)
+    color = green;
+  } else if (forwardPERatio >= 15.0 && forwardPERatio <= 25.0) {
+    // Forward P/E ratio between 15 and 25 is considered fairly valued (yellow)
+    color = orangeRed;
+  } else {
+    // Forward P/E ratio above 25 is considered overvalued (red)
+    color = red;
+  }
+
+  return Container(
+    width: 140,
+    height: 100,
+    decoration: BoxDecoration(
+      borderRadius: const BorderRadius.all(Radius.circular(16)),
+      color: Colors.transparent,
+      border: Border.all(
+        color: darkPurple,
+        width: 4,
+      ),
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          'Forward P/E Ratio',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Helvetica',
+            fontSize: 16,
+            color: black,
+            letterSpacing: 0,
+            height: 0,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          stock.forwardPE.toString(),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Helvetica',
+            fontSize: 16,
+            color: color,
+            letterSpacing: 0,
+            height: 0,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Container priceToBook(Result stock) {
+  double pbRatio = stock.priceToBook;
+  Color color = red;
+
+  if (pbRatio < 1.0) {
+    // P/B ratio less than 1.0 is considered undervalued (green)
+    color = green;
+  } else if (pbRatio >= 1.0 && pbRatio <= 3.0) {
+    // P/B ratio between 1.0 and 3.0 is considered fairly valued (yellow)
+    color = orangeRed;
+  } else {
+    // P/B ratio above 3.0 is considered overvalued (red)
+    color = red;
+  }
+
+  return Container(
+    width: 140,
+    height: 100,
+    decoration: BoxDecoration(
+      borderRadius: const BorderRadius.all(Radius.circular(16)),
+      color: Colors.transparent,
+      border: Border.all(
+        color: darkPurple,
+        width: 4,
+      ),
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          'Price-To-Book Ratio',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Helvetica',
+            fontSize: 16,
+            color: black,
+            letterSpacing: 0,
+            height: 0,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          stock.priceToBook.toString(),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Helvetica',
+            fontSize: 16,
+            color: color,
+            letterSpacing: 0,
+            height: 0,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Container peRatio(Result stock) {
+  double pegRatio = stock.pegRatio ?? 0.0;
+  Color color = red;
+
+  if (pegRatio < 1.0) {
+    // PEG ratio below 1.0 is considered good (green)
+    color = green;
+  } else if (pegRatio >= 1.0 && pegRatio <= 2.0) {
+    // PEG ratio between 1.0 and 2.0 is considered reasonable (yellow)
+    color = orangeRed;
+  } else {
+    // PEG ratio above 2.0 is considered high and potentially overvalued (red)
+    color = red;
+  }
+
+  return Container(
+    width: 140,
+    height: 100,
+    decoration: BoxDecoration(
+      borderRadius: const BorderRadius.all(Radius.circular(16)),
+      color: Colors.transparent,
+      border: Border.all(
+        color: darkPurple,
+        width: 4,
+      ),
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          'PEG Ratio',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: 'Helvetica',
@@ -467,10 +685,10 @@ Container peRatio(Result stock) {
         Text(
           stock.pegRatio.toString(),
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'Helvetica',
             fontSize: 16,
-            color: red,
+            color: color,
             letterSpacing: 0,
             height: 0,
             fontWeight: FontWeight.w600,
@@ -482,8 +700,28 @@ Container peRatio(Result stock) {
 }
 
 Container dividend(Result stock) {
+  double dividendYield = stock.dividendYield ?? 0.0;
+  Color color = red;
+
+  if (dividendYield < 1.0) {
+    // Dividend yield below 1% is considered too low (red)
+    color = red;
+  } else if (dividendYield >= 1.0 && dividendYield < 2.0) {
+    // Dividend yield between 1% and 2% is in the caution range (yellow)
+    color = orangeRed;
+  } else if (dividendYield >= 2.0 && dividendYield <= 6.0) {
+    // Dividend yield between 2% and 6% is considered ideal (green)
+    color = green;
+  } else if (dividendYield > 6.0 && dividendYield <= 8.0) {
+    // Dividend yield between 6% and 8% is in the caution range (yellow)
+    color = orangeRed;
+  } else {
+    // Dividend yield above 8% is considered too high (red)
+    color = red;
+  }
+
   return Container(
-    width: 150,
+    width: 140,
     height: 100,
     decoration: BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(16)),
@@ -512,10 +750,10 @@ Container dividend(Result stock) {
         Text(
           stock.dividendYield.toString(),
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'Helvetica',
             fontSize: 16,
-            color: red,
+            color: color,
             letterSpacing: 0,
             height: 0,
             fontWeight: FontWeight.w600,
@@ -527,8 +765,22 @@ Container dividend(Result stock) {
 }
 
 Container marketcap(Result stock) {
+  Color color = red;
+  int marketCap = stock.marketCap ?? 0;
+
+  if (marketCap > 10000000000) {
+    // Market cap greater than $10 billion (Large Cap) is considered green (good)
+    color = green;
+  } else if (marketCap >= 2000000000 && marketCap <= 10000000000) {
+    // Market cap between $2 billion and $10 billion (Mid Cap) is considered yellow (caution)
+    color = orangeRed;
+  } else {
+    // Market cap less than $2 billion (Small Cap or smaller) is considered red (bad)
+    color = red;
+  }
+
   return Container(
-    width: 150,
+    width: 140,
     height: 100,
     decoration: BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(16)),
@@ -558,10 +810,10 @@ Container marketcap(Result stock) {
           NumberFormat.compactSimpleCurrency(locale: 'en-US')
               .format(stock.marketCap),
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'Helvetica',
             fontSize: 16,
-            color: green,
+            color: color,
             letterSpacing: 0,
             height: 0,
             fontWeight: FontWeight.w600,
@@ -578,36 +830,54 @@ Stack stockDetailsLogoName(BuildContext context, Result stock) {
       Positioned(
         top: 8,
         left: 2,
-        child: Container(
-          height: 70,
-          width: 70,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.transparent,
-            border: Border.all(
-              color: darkPurple,
-              width: 4,
-            ),
-          ),
-          child: Center(
-            child: Transform.scale(
-              scale: 1.0, // Adjust the scale factor to make the image smaller
-              child: Image.asset(
-                'assets/stocks/${stock.symbol}.png',
-                width: 40,
-                height: 40,
-                errorBuilder: (context, error, stackTrace) {
-                  // Return a placeholder widget in case of error
-                  return const Icon(Icons.error, size: 40);
-                },
+        child: Column(
+          children: [
+            Container(
+              height: 70,
+              width: 70,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.transparent,
+                border: Border.all(
+                  color: darkPurple,
+                  width: 4,
+                ),
+              ),
+              child: Center(
+                child: Transform.scale(
+                  scale:
+                      1.0, // Adjust the scale factor to make the image smaller
+                  child: Image.asset(
+                    'assets/stocks/${stock.symbol}.png',
+                    width: 40,
+                    height: 40,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Return a placeholder widget in case of error
+                      return const Icon(Icons.error, size: 40);
+                    },
+                  ),
+                ),
               ),
             ),
-          ),
+            const SizedBox(height: 8),
+            Text(
+              '(${stock.symbol})',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Helvetica',
+                fontWeight: FontWeight.w800,
+                fontSize: 14,
+                color: Colors.grey[600],
+                letterSpacing: 0,
+                height: 0,
+              ),
+            ),
+          ],
         ),
       ),
       Positioned(
         left: 80,
-        top: 5,
+        top: 0,
         child: SizedBox(
           height: 80,
           width: 218,
@@ -616,9 +886,11 @@ Stack stockDetailsLogoName(BuildContext context, Result stock) {
             child: Text(
               stock.longName ?? '',
               textAlign: TextAlign.left,
-              maxLines: 3,
+              maxLines: 4,
               style: const TextStyle(
-                fontSize: 22,
+                fontFamily: 'Helvetica',
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
                 color: purple,
                 overflow: TextOverflow.clip,
                 height: 0,
@@ -631,10 +903,10 @@ Stack stockDetailsLogoName(BuildContext context, Result stock) {
   );
 }
 
-ElevatedButton sellStock(BuildContext context, Result stock) {
+ElevatedButton sellStock(BuildContext context, Result stock, int quantity) {
   return ElevatedButton(
     onPressed: () {
-      openSellDialog(context, stock, 'stock');
+      openSellDialog(context, stock, 'stock', quantity);
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),
@@ -677,7 +949,7 @@ ElevatedButton buyStock(BuildContext context, Result stock) {
     child: Container(
       alignment: Alignment.center,
       height: 40,
-      width: 311,
+      width: 100,
       decoration: BoxDecoration(
         color: lightGreen,
         borderRadius: BorderRadius.circular(10),

@@ -56,6 +56,11 @@ class Result {
   final double? dividendYield;
   final int? marketCap;
   final String? symbol;
+  final double preMarketPrice;
+  final double priceToBook;
+  final double forwardPE;
+  final String marketState;
+  QuoteSummary quoteSummary;
 
   Result({
     required this.regularMarketChangePercent,
@@ -65,6 +70,11 @@ class Result {
     required this.dividendYield,
     required this.marketCap,
     required this.symbol,
+    required this.quoteSummary,
+    required this.preMarketPrice,
+    required this.priceToBook,
+    required this.forwardPE,
+    required this.marketState,
   });
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
@@ -76,6 +86,11 @@ class Result {
         dividendYield: json["dividendYield"]?.toDouble() ?? 0.0,
         marketCap: json["marketCap"]?.toInt() ?? 0,
         symbol: json["symbol"]?.toString() ?? '',
+        quoteSummary: QuoteSummary.fromJson(json["quoteSummary"]),
+        preMarketPrice: json["preMarketPrice"]?.toDouble() ?? 0.0,
+        priceToBook: json["priceToBook"]?.toDouble() ?? 0.0,
+        forwardPE: json["forwardPE"]?.toDouble() ?? 0.0,
+        marketState: json["marketState"]?.toString() ?? '',
       );
 
   Map<String, dynamic> toJson() => {
@@ -86,109 +101,114 @@ class Result {
         "dividendYield": dividendYield,
         "marketCap": marketCap,
         "symbol": symbol,
+        "quoteSummary": quoteSummary.toJson(),
+        "preMarketPrice": preMarketPrice,
+        "priceToBook": priceToBook,
+        "forwardPE": forwardPE,
+        "marketState": marketState,
       };
 }
 
-// class QuoteSummary {
-//   Earnings earnings;
+class QuoteSummary {
+  Earnings earnings;
 
-//   QuoteSummary({
-//     required this.earnings,
-//   });
+  QuoteSummary({
+    required this.earnings,
+  });
 
-//   factory QuoteSummary.fromJson(Map<String, dynamic> json) => QuoteSummary(
-//         earnings: Earnings.fromJson(json["earnings"]),
-//       );
+  factory QuoteSummary.fromJson(Map<String, dynamic> json) => QuoteSummary(
+        earnings: Earnings.fromJson(json["earnings"]),
+      );
 
-//   Map<String, dynamic> toJson() => {
-//         "earnings": earnings.toJson(),
-//       };
-// }
+  Map<String, dynamic> toJson() => {
+        "earnings": earnings.toJson(),
+      };
+}
 
-// class Earnings {
-//   FinancialsChart financialsChart;
+class Earnings {
+  FinancialsChart financialsChart;
 
-//   Earnings({
-//     required this.financialsChart,
-//   });
+  Earnings({
+    required this.financialsChart,
+  });
 
-//   factory Earnings.fromJson(Map<String, dynamic> json) => Earnings(
-//         financialsChart: FinancialsChart.fromJson(json["financialsChart"]),
-//       );
+  factory Earnings.fromJson(Map<String, dynamic> json) => Earnings(
+        financialsChart: FinancialsChart.fromJson(json["financialsChart"]),
+      );
 
-//   Map<String, dynamic> toJson() => {
-//         "financialsChart": financialsChart.toJson(),
-//       };
-// }
+  Map<String, dynamic> toJson() => {
+        "financialsChart": financialsChart.toJson(),
+      };
+}
 
-// class FinancialsChart {
-//   List<Yearly> yearly;
-//   List<FinancialsChartQuarterly> quarterly;
+class FinancialsChart {
+  List<Yearly> yearly;
+  List<FinancialsChartQuarterly> quarterly;
 
-//   FinancialsChart({
-//     required this.yearly,
-//     required this.quarterly,
-//   });
+  FinancialsChart({
+    required this.yearly,
+    required this.quarterly,
+  });
 
-//   factory FinancialsChart.fromJson(Map<String, dynamic> json) =>
-//       FinancialsChart(
-//         yearly:
-//             List<Yearly>.from(json["yearly"].map((x) => Yearly.fromJson(x))),
-//         quarterly: List<FinancialsChartQuarterly>.from(
-//             json["quarterly"].map((x) => FinancialsChartQuarterly.fromJson(x))),
-//       );
+  factory FinancialsChart.fromJson(Map<String, dynamic> json) =>
+      FinancialsChart(
+        yearly:
+            List<Yearly>.from(json["yearly"].map((x) => Yearly.fromJson(x))),
+        quarterly: List<FinancialsChartQuarterly>.from(
+            json["quarterly"].map((x) => FinancialsChartQuarterly.fromJson(x))),
+      );
 
-//   Map<String, dynamic> toJson() => {
-//         "yearly": List<dynamic>.from(yearly.map((x) => x.toJson())),
-//         "quarterly": List<dynamic>.from(quarterly.map((x) => x.toJson())),
-//       };
-// }
+  Map<String, dynamic> toJson() => {
+        "yearly": List<dynamic>.from(yearly.map((x) => x.toJson())),
+        "quarterly": List<dynamic>.from(quarterly.map((x) => x.toJson())),
+      };
+}
 
-// class FinancialsChartQuarterly {
-//   String? date;
-//   int? revenue;
-//   int? earnings;
+class FinancialsChartQuarterly {
+  String date;
+  int revenue;
+  int earnings;
 
-//   FinancialsChartQuarterly({
-//     required this.date,
-//     required this.revenue,
-//     required this.earnings,
-//   });
+  FinancialsChartQuarterly({
+    required this.date,
+    required this.revenue,
+    required this.earnings,
+  });
 
-//   factory FinancialsChartQuarterly.fromJson(Map<String, dynamic> json) =>
-//       FinancialsChartQuarterly(
-//         date: json["date"]?.toString() ?? '',
-//         revenue: json["revenue"] as int?,
-//         earnings: json["earnings"] as int?,
-//       );
+  factory FinancialsChartQuarterly.fromJson(Map<String, dynamic> json) =>
+      FinancialsChartQuarterly(
+        date: json["date"]?.toString() ?? '',
+        revenue: json["revenue"]?.toInt() ?? 0,
+        earnings: json["earnings"]?.toInt() ?? 0,
+      );
 
-//   Map<String, dynamic> toJson() => {
-//         "date": date,
-//         "revenue": revenue,
-//         "earnings": earnings,
-//       };
-// }
+  Map<String, dynamic> toJson() => {
+        "date": date,
+        "revenue": revenue,
+        "earnings": earnings,
+      };
+}
 
-// class Yearly {
-//   int? date;
-//   int? revenue;
-//   int? earnings;
+class Yearly {
+  int date;
+  int revenue;
+  int earnings;
 
-//   Yearly({
-//     required this.date,
-//     required this.revenue,
-//     required this.earnings,
-//   });
+  Yearly({
+    required this.date,
+    required this.revenue,
+    required this.earnings,
+  });
 
-//   factory Yearly.fromJson(Map<String, dynamic> json) => Yearly(
-//         date: json["date"] as int?,
-//         revenue: json["revenue"] as int?,
-//         earnings: json["earnings"] as int?,
-//       );
+  factory Yearly.fromJson(Map<String, dynamic> json) => Yearly(
+        date: json["date"]?.toInt() ?? 0,
+        revenue: json["revenue"]?.toInt() ?? 0,
+        earnings: json["earnings"]?.toInt() ?? 0,
+      );
 
-//   Map<String, dynamic> toJson() => {
-//         "date": date,
-//         "revenue": revenue,
-//         "earnings": earnings,
-//       };
-// }
+  Map<String, dynamic> toJson() => {
+        "date": date,
+        "revenue": revenue,
+        "earnings": earnings,
+      };
+}

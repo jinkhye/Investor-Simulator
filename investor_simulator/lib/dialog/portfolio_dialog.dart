@@ -291,7 +291,7 @@ SingleChildScrollView stockDetails(BuildContext context, dynamic stock,
         const SizedBox(height: 10),
         Row(
           children: [
-            sellStock(context, stock),
+            sellStock(context, stock, quantity),
             Expanded(child: Container()),
             buyStock(context, stock),
           ],
@@ -762,10 +762,10 @@ Stack stockDetailsLogoName(BuildContext context, dynamic stock) {
   );
 }
 
-ElevatedButton sellStock(BuildContext context, dynamic stock) {
+ElevatedButton sellStock(BuildContext context, dynamic stock, int quantity) {
   return ElevatedButton(
     onPressed: () {
-      openSellDialog(context, stock, stock.type);
+      openSellDialog(context, stock, stock.type, quantity);
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),

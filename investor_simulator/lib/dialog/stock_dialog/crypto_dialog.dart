@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/dialog/buy_dialog.dart';
 import 'package:investor_simulator/dialog/keystats_help_dialog.dart';
-import 'package:investor_simulator/dialog/revenue_dialog.dart';
 import 'package:investor_simulator/dialog/sell_dialog.dart';
 import 'package:investor_simulator/models/chart_model.dart';
 import 'package:investor_simulator/models/crypto_model.dart';
@@ -147,7 +146,7 @@ SingleChildScrollView stockDetails(
         ),
         SizedBox(
           width: 300,
-          height: 85,
+          height: 105,
           child: stockDetailsLogoName(context, coin),
         ),
         const SizedBox(
@@ -223,7 +222,6 @@ SingleChildScrollView stockDetails(
           ],
         ),
         const SizedBox(height: 5),
-
         Consumer<CryptoProvider>(
           builder: (context, provider, _) {
             if (provider.itemChart != null) {
@@ -246,9 +244,7 @@ SingleChildScrollView stockDetails(
             }
           },
         ),
-
         const SizedBox(height: 10),
-
         SizedBox(
           height: 30,
           width: 311,
@@ -280,9 +276,14 @@ SingleChildScrollView stockDetails(
             },
           ),
         ),
-
         const SizedBox(height: 10),
-        buyStock(context, coin),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            sellStock(context, coin, quantity),
+            buyStock(context, coin),
+          ],
+        ),
         const Divider(
           thickness: 4,
         ),
@@ -310,12 +311,6 @@ SingleChildScrollView stockDetails(
         ),
         const SizedBox(height: 10),
         peRatio(),
-        const SizedBox(height: 10),
-        const Divider(
-          thickness: 4,
-        ),
-        const SizedBox(height: 10),
-        // revenueReport(context, stocks, index),
         const SizedBox(height: 10),
       ],
     ),
@@ -388,43 +383,6 @@ ElevatedButton statsHelp(BuildContext context) {
           color: Colors.white,
           size: 40,
         ),
-      ),
-    ),
-  );
-}
-
-ElevatedButton revenueReport(BuildContext context, stocks, index) {
-  return ElevatedButton(
-    onPressed: () {
-      openRevenueDialog(context, stocks[index].iconPath, stocks[index].name);
-    },
-    style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.all(0),
-      backgroundColor:
-          Colors.transparent, // Set the background color to transparent
-      elevation: 0, // Remove the elevation
-    ),
-    child: Container(
-      alignment: Alignment.center,
-      height: 50,
-      width: 220,
-      decoration: BoxDecoration(
-        color: yellow,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: orangeRed,
-          width: 3,
-        ),
-      ),
-      child: const StrokeText(
-        text: 'VIEW REVENUE GROWTH',
-        textStyle: TextStyle(
-          fontSize: 18,
-          color: white,
-          letterSpacing: 1,
-        ),
-        strokeColor: black,
-        strokeWidth: 4,
       ),
     ),
   );
@@ -571,32 +529,54 @@ Stack stockDetailsLogoName(BuildContext context, CoinModel coin) {
       Positioned(
         top: 8,
         left: 2,
-        child: Container(
-          height: 70,
-          width: 70,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.transparent,
-            border: Border.all(
-              color: darkPurple,
-              width: 4,
-            ),
-          ),
-          child: Center(
-            child: Transform.scale(
-              scale: 1.0, // Adjust the scale factor to make the image smaller
-              child: Image.network(
-                coin.image,
-                width: 40, // Adjust the width of the image
-                height: 40, // Adjust the height of the image
+        child: Column(
+          children: [
+            Container(
+              height: 70,
+              width: 70,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.transparent,
+                border: Border.all(
+                  color: darkPurple,
+                  width: 4,
+                ),
+              ),
+              child: Center(
+                child: Transform.scale(
+                  scale:
+                      1.0, // Adjust the scale factor to make the image smaller
+                  child: Image.network(
+                    coin.image,
+                    width: 40,
+                    height: 40,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Return a placeholder widget in case of error
+                      return const Icon(Icons.error, size: 40);
+                    },
+                  ),
+                ),
               ),
             ),
-          ),
+            const SizedBox(height: 8),
+            Text(
+              '(${coin.symbol.toUpperCase()})',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Helvetica',
+                fontWeight: FontWeight.w800,
+                fontSize: 14,
+                color: Colors.grey[600],
+                letterSpacing: 0,
+                height: 0,
+              ),
+            ),
+          ],
         ),
       ),
       Positioned(
         left: 80,
-        top: 5,
+        top: 0,
         child: SizedBox(
           height: 80,
           width: 218,
@@ -605,9 +585,11 @@ Stack stockDetailsLogoName(BuildContext context, CoinModel coin) {
             child: Text(
               coin.longName,
               textAlign: TextAlign.left,
-              maxLines: 3,
+              maxLines: 4,
               style: const TextStyle(
-                fontSize: 22,
+                fontFamily: 'Helvetica',
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
                 color: purple,
                 overflow: TextOverflow.clip,
                 height: 0,
@@ -620,10 +602,10 @@ Stack stockDetailsLogoName(BuildContext context, CoinModel coin) {
   );
 }
 
-ElevatedButton sellStock(BuildContext context, CoinModel coin) {
+ElevatedButton sellStock(BuildContext context, CoinModel stock, int quantity) {
   return ElevatedButton(
     onPressed: () {
-      openSellDialog(context, coin, 'crypto');
+      openSellDialog(context, stock, 'crypto', quantity);
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),
@@ -666,7 +648,7 @@ ElevatedButton buyStock(BuildContext context, CoinModel coin) {
     child: Container(
       alignment: Alignment.center,
       height: 40,
-      width: 311,
+      width: 100,
       decoration: BoxDecoration(
         color: lightGreen,
         borderRadius: BorderRadius.circular(10),

@@ -13,6 +13,7 @@ class NewsProvider with ChangeNotifier {
   bool _hasError = false;
   bool _hasErrorDetails = false;
   String _errorMessage = '';
+  String api = '1651139c27msh71996520d0ed192p1eb3b8jsn7c67cea4d8db';
 
   List<n.Stream> get news => _news;
   List<NewsDetails> get newsDetails => _newsDetails;
@@ -51,8 +52,7 @@ class NewsProvider with ChangeNotifier {
         ),
         headers: {
           'X-RapidAPI-Host': 'apidojo-yahoo-finance-v1.p.rapidapi.com',
-          'X-RapidAPI-Key':
-              '069ef2ff4cmshe7ff45ac80918a3p1700dcjsn80be8f1ccec4',
+          'X-RapidAPI-Key': api,
         },
       );
       if (response.statusCode == 200) {

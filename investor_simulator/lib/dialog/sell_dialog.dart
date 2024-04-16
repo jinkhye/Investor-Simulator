@@ -5,10 +5,12 @@ import 'package:investor_simulator/provider/portfolio_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 
-void openSellDialog(BuildContext context, dynamic stock, String type) {
+void openSellDialog(
+    BuildContext context, dynamic stock, String type, int quantity) {
   showDialog(
     context: context,
-    builder: (context) => SellDialog(stock: stock, type: type),
+    builder: (context) =>
+        SellDialog(stock: stock, type: type, quantity: quantity),
   );
 }
 
@@ -16,11 +18,13 @@ void openSellDialog(BuildContext context, dynamic stock, String type) {
 class SellDialog extends StatefulWidget {
   final dynamic stock;
   String type = '';
+  int quantity = 0;
 
   SellDialog({
     super.key,
     required this.stock,
     required this.type,
+    required this.quantity,
   });
 
   @override
@@ -143,24 +147,24 @@ class _SellDialogState extends State<SellDialog> {
     final provider = Provider.of<GameProvider>(context, listen: false);
     return ElevatedButton(
       onPressed: () {
-        if (quantity > 0) {
+        if (quantity > 0 && quantity <= widget.quantity) {
           switch (widget.type) {
             case 'stock':
               portfolioProvider.sellStockInvestment(
                   widget.stock.symbol, quantity);
-              provider.addMoney(totalPrice);
+
               break;
             case 'etf':
               portfolioProvider.sellETFInvestment(
                   widget.stock.symbol, quantity);
-              provider.addMoney(totalPrice);
+
               break;
             case 'crypto':
               portfolioProvider.sellCryptoInvestment(
                   widget.stock.symbol, quantity);
-              provider.addMoney(totalPrice);
               break;
           }
+          provider.addMoney(totalPrice);
           Navigator.pop(context); // Close the dialog after buying
         } else {
           // Show error or handle invalid quantity
