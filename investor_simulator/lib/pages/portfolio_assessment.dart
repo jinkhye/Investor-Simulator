@@ -111,7 +111,7 @@ class Assessment extends StatelessWidget {
       Uri.parse('https://api.openai.com/v1/chat/completions'),
       headers: {
         'Authorization':
-        'Bearer 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',
+        'Bearer [API_KEY]',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
