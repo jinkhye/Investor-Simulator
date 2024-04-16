@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:investor_simulator/constant/color.dart';
+import 'package:investor_simulator/models/stocks_model.dart';
 import 'package:stroke_text/stroke_text.dart';
 
-void openRevenueDialog(BuildContext context, image, stockName) {
+void openRevenueDialog(BuildContext context, Result stock) {
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -46,7 +47,7 @@ void openRevenueDialog(BuildContext context, image, stockName) {
                         width: 400,
                         height: 80,
                         color: Colors.transparent,
-                        child: stockDetailsLogoName(image, stockName)),
+                        child: stockDetailsLogoName(stock)),
                     const SizedBox(
                       height: 15,
                     ),
@@ -112,23 +113,56 @@ Center revenueText() {
   );
 }
 
-Stack stockDetailsLogoName(image, stockName) {
+Stack stockDetailsLogoName(Result stock) {
   return Stack(
     children: [
-      Center(
+      Positioned(
+        top: 8,
+        left: 2,
         child: Container(
           height: 70,
           width: 70,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
+            color: Colors.transparent,
+            border: Border.all(
+              color: darkPurple,
+              width: 4,
+            ),
           ),
           child: Center(
             child: Transform.scale(
-              scale: 1.5, // Adjust the scale factor to make the image smaller
+              scale: 1.0, // Adjust the scale factor to make the image smaller
               child: Image.asset(
-                image,
-                width: 40, // Adjust the width of the image
-                height: 40, // Adjust the height of the image
+                'assets/stocks/${stock.symbol}.png',
+                width: 40,
+                height: 40,
+                errorBuilder: (context, error, stackTrace) {
+                  // Return a placeholder widget in case of error
+                  return const Icon(Icons.error, size: 40);
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+      Positioned(
+        left: 80,
+        top: 5,
+        child: SizedBox(
+          height: 80,
+          width: 218,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              stock.longName ?? '',
+              textAlign: TextAlign.left,
+              maxLines: 3,
+              style: const TextStyle(
+                fontSize: 22,
+                color: purple,
+                overflow: TextOverflow.clip,
+                height: 0,
               ),
             ),
           ),

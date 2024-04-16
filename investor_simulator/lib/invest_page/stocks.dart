@@ -259,7 +259,7 @@ class _StocksMenuPageState extends State<StocksMenuPage> {
         elevation: 0,
       ),
       child: Container(
-        height: 100,
+        height: 120,
         width: 330,
         decoration: const BoxDecoration(
           shape: BoxShape.rectangle,

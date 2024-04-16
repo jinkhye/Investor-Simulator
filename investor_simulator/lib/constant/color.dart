@@ -12,6 +12,7 @@ const Color black = Color(0xFF000000);
 const Color red = Color(0xFFEE4B2B);
 const Color darkRed = Color(0xFF9D0208);
 const Color lightPurple = Color(0xFFCBC3E3);
+const Color blue = Color(0xFF0096FF);
 
 Color getColorFromString(String input) {
   double value = double.tryParse(input) ?? 0.0;

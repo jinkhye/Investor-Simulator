@@ -84,6 +84,7 @@ class ETFProvider with ChangeNotifier {
   Future<void> fetchChartData(String? symbol) async {
     String apiDay = getApiDay();
 
+    _isLoadingChartData = true;
     _hasChartError = true;
     _hasError = false;
     _errorMessage = '';
