@@ -178,7 +178,7 @@ SingleChildScrollView stockDetails(BuildContext context, dynamic stock,
         ),
         SizedBox(
           width: 300,
-          height: 85,
+          height: 105,
           child: stockDetailsLogoName(context, stock),
         ),
         const SizedBox(
@@ -506,7 +506,7 @@ SizedBox transactions(
                             ),
                             TextSpan(
                               text:
-                                  '\$${stocks[index].purchasePrice.toString()}',
+                                  '\$${stocks[index].purchasePrice.toStringAsFixed(2)}',
                               style: const TextStyle(
                                 fontFamily: 'Helvetica',
                                 fontWeight: FontWeight.w800,
@@ -537,7 +537,7 @@ SizedBox transactions(
                             ),
                             TextSpan(
                               text:
-                                  '\$${stocks[index].purchasePrice.toString()}',
+                                  '\$${stocks[index].purchasePrice.toStringAsFixed(2)}',
                               style: const TextStyle(
                                 fontFamily: 'Helvetica',
                                 fontWeight: FontWeight.w800,
@@ -568,7 +568,7 @@ SizedBox transactions(
                             ),
                             TextSpan(
                               text:
-                                  '\$${stocks[index].purchasePrice * stocks[index].shares}',
+                                  '\$${(stocks[index].purchasePrice * stocks[index].shares).toStringAsFixed(2)}',
                               style: const TextStyle(
                                 fontFamily: 'Helvetica',
                                 fontWeight: FontWeight.w800,
@@ -614,6 +614,7 @@ SizedBox stockChart(
     height: 200,
     width: 311,
     child: SfCartesianChart(
+      enableAxisAnimation: true,
       trackballBehavior: trackballBehavior,
       zoomPanBehavior:
           ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x),
@@ -717,39 +718,67 @@ Stack stockDetailsLogoName(BuildContext context, dynamic stock) {
       Positioned(
         top: 8,
         left: 2,
-        child: Container(
-          height: 70,
-          width: 70,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.transparent,
-            border: Border.all(
-              color: darkPurple,
-              width: 4,
+        child: Column(
+          children: [
+            Container(
+              height: 70,
+              width: 70,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.transparent,
+                border: Border.all(
+                  color: darkPurple,
+                  width: 4,
+                ),
+              ),
+              child: Center(
+                child: Transform.scale(
+                  scale:
+                      1.0, // Adjust the scale factor to make the image smaller
+                  child: Image.asset(
+                    'assets/stocks/${stock.symbol}.png',
+                    width: 40,
+                    height: 40,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Return a placeholder widget in case of error
+                      return const Icon(Icons.error, size: 40);
+                    },
+                  ),
+                ),
+              ),
             ),
-          ),
-          child: Center(
-            child: Transform.scale(
-              scale: 1.0, // Adjust the scale factor to make the image smaller
-              child: iconStock(stock),
+            const SizedBox(height: 8),
+            Text(
+              '(${stock.symbol})',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Helvetica',
+                fontWeight: FontWeight.w800,
+                fontSize: 14,
+                color: Colors.grey[600],
+                letterSpacing: 0,
+                height: 0,
+              ),
             ),
-          ),
+          ],
         ),
       ),
       Positioned(
         left: 80,
-        top: 5,
+        top: 0,
         child: SizedBox(
           height: 80,
           width: 218,
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              stock.longName?.toUpperCase() ?? '',
+              stock.longName ?? '',
               textAlign: TextAlign.left,
-              maxLines: 3,
+              maxLines: 4,
               style: const TextStyle(
-                fontSize: 22,
+                fontFamily: 'Helvetica',
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
                 color: purple,
                 overflow: TextOverflow.clip,
                 height: 0,

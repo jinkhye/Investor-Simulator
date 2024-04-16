@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/models/stocks_model.dart';
 import 'package:stroke_text/stroke_text.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 void openRevenueDialog(BuildContext context, Result stock) {
+  late TrackballBehavior trackballBehavior;
+  trackballBehavior = TrackballBehavior(
+      enable: true,
+      activationMode: ActivationMode.singleTap,
+      tooltipSettings: const InteractiveTooltip(
+        enable: true,
+        textStyle: TextStyle(
+          fontFamily: 'Helvetica', // Set font family
+          fontSize: 12, // Adjust font size as needed,
+        ),
+      ));
+
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -36,7 +50,11 @@ void openRevenueDialog(BuildContext context, Result stock) {
                         children: [
                           Positioned(
                               top: -2, left: -10, child: revenueBack(context)),
-                          revenueText(),
+                          Align(
+                              alignment: Alignment.center,
+                              child: revenueText("REVENUE GROWTH")),
+                          Positioned(
+                              top: -2, right: -12, child: statsHelp(context)),
                         ],
                       ),
                     ),
@@ -45,31 +63,50 @@ void openRevenueDialog(BuildContext context, Result stock) {
                     ),
                     Container(
                         width: 400,
-                        height: 80,
+                        height: 100,
                         color: Colors.transparent,
-                        child: stockDetailsLogoName(stock)),
+                        child: stockDetailsLogoName(context, stock)),
                     const SizedBox(
                       height: 15,
                     ),
-                    Container(
-                      width: 311,
-                      height: 150,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/revenue.png'),
-                          fit: BoxFit.fill,
-                        ),
-                        border: Border.fromBorderSide(
-                          BorderSide(
-                            color: black,
-                            width: 4,
-                          ),
-                        ),
+                    const Divider(
+                      thickness: 4,
+                    ),
+                    const Text(
+                      'QUARTERLY EARNINGS',
+                      style: TextStyle(
+                        fontSize: 23,
+                        color: purple,
                       ),
                     ),
-                    const SizedBox(
-                      height: 15,
+                    quarterlyChart(trackballBehavior,
+                        stock.quoteSummary.earnings.earningsChart.quarterly),
+                    const Divider(
+                      thickness: 4,
+                    ),
+                    const Text(
+                      'YEARLY FINANCIALS',
+                      style: TextStyle(
+                        fontSize: 23,
+                        color: purple,
+                      ),
+                    ),
+                    yearlyChart(trackballBehavior,
+                        stock.quoteSummary.earnings.financialsChart.yearly),
+                    const Divider(
+                      thickness: 4,
+                    ),
+                    const Text(
+                      'QUARTERLY FINANCIALS',
+                      style: TextStyle(
+                        fontSize: 23,
+                        color: purple,
+                      ),
+                    ),
+                    quarterlyFinancialChart(trackballBehavior,
+                        stock.quoteSummary.earnings.financialsChart.quarterly),
+                    const Divider(
+                      thickness: 4,
                     ),
                     const Text(
                       'REVENUE GROWTH',
@@ -83,7 +120,7 @@ void openRevenueDialog(BuildContext context, Result stock) {
                     ),
                     const Text(
                       'It shows an increase in a company\'s total revenue over a specific period compared to previous periods. \n\nThis growth indicates that the company is generating more income from its core business activities',
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.left,
                       style: TextStyle(
                         fontFamily: 'Helvetica',
                         fontSize: 18,
@@ -102,53 +139,277 @@ void openRevenueDialog(BuildContext context, Result stock) {
   );
 }
 
-Center revenueText() {
-  return const Center(
-    child: StrokeText(
-      text: "REVENUE REPORT",
-      textStyle: TextStyle(fontSize: 30, color: yellow),
-      strokeColor: darkPurple,
-      strokeWidth: 7,
+ElevatedButton statsHelp(BuildContext context) {
+  final pageController = PageController(initialPage: 0);
+  return ElevatedButton(
+    onPressed: () {
+      // openKeyStatsHelpDialog(context, pageController);
+    },
+    style: ElevatedButton.styleFrom(
+      padding: const EdgeInsets.all(0),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      shape: const CircleBorder(
+        side: BorderSide(color: darkPurple, width: 4),
+      ),
+    ),
+    child: Container(
+      width: 40,
+      height: 40,
+      decoration: const BoxDecoration(
+        color: purple,
+        shape: BoxShape.circle,
+      ),
+      child: const Center(
+        child: Icon(
+          Icons.help_outline,
+          color: Colors.white,
+          size: 40,
+        ),
+      ),
     ),
   );
 }
 
-Stack stockDetailsLogoName(Result stock) {
+SizedBox quarterlyFinancialChart(TrackballBehavior trackballBehavior,
+    List<FinancialsChartQuarterly> itemChart) {
+  return SizedBox(
+    height: 200,
+    width: 311,
+    child: SfCartesianChart(
+      legend: const Legend(
+          textStyle: TextStyle(
+              fontFamily: 'Helvetica',
+              fontSize: 12,
+              fontWeight: FontWeight.w600),
+          isVisible: true,
+          position: LegendPosition.bottom,
+          toggleSeriesVisibility: false),
+      palette: const <Color>[Color(0xFF1E90FF), Color(0xFFFF69B4)],
+      trackballBehavior: trackballBehavior,
+      zoomPanBehavior:
+          ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x),
+      primaryXAxis: const CategoryAxis(
+        interval: 1,
+        labelStyle: TextStyle(
+            fontFamily: 'Helvetica', fontSize: 12, fontWeight: FontWeight.w600),
+      ),
+      primaryYAxis: NumericAxis(
+        numberFormat: NumberFormat.compactSimpleCurrency(),
+        decimalPlaces: 2,
+        isVisible: false,
+        labelStyle: const TextStyle(
+            fontFamily: 'Helvetica', fontSize: 12, fontWeight: FontWeight.w600),
+      ),
+      series: <BarSeries<FinancialsChartQuarterly, String>>[
+        BarSeries<FinancialsChartQuarterly, String>(
+          name: 'Revenue',
+          enableTooltip: true,
+          dataLabelSettings: const DataLabelSettings(
+              isVisible: true,
+              useSeriesColor: false,
+              textStyle: TextStyle(
+                  fontFamily: 'Helvetica',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600)),
+          dataSource: itemChart,
+          xValueMapper: (FinancialsChartQuarterly data, _) =>
+              data.date.toString(),
+          yValueMapper: (FinancialsChartQuarterly data, _) => data.revenue,
+          animationDuration: 55,
+        ),
+        BarSeries<FinancialsChartQuarterly, String>(
+          name: 'Earnings',
+          enableTooltip: true,
+          dataLabelSettings: const DataLabelSettings(
+              isVisible: true,
+              useSeriesColor: false,
+              textStyle: TextStyle(
+                  fontFamily: 'Helvetica',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600)),
+          dataSource: itemChart,
+          xValueMapper: (FinancialsChartQuarterly data, _) =>
+              data.date.toString(),
+          yValueMapper: (FinancialsChartQuarterly data, _) => data.earnings,
+          animationDuration: 55,
+        ),
+      ],
+    ),
+  );
+}
+
+SizedBox yearlyChart(
+    TrackballBehavior trackballBehavior, List<Yearly> itemChart) {
+  return SizedBox(
+    height: 200,
+    width: 311,
+    child: SfCartesianChart(
+      legend: const Legend(
+          textStyle: TextStyle(
+              fontFamily: 'Helvetica',
+              fontSize: 12,
+              fontWeight: FontWeight.w600),
+          isVisible: true,
+          position: LegendPosition.bottom,
+          toggleSeriesVisibility: false),
+      palette: const <Color>[Colors.teal, Colors.orange],
+      trackballBehavior: trackballBehavior,
+      zoomPanBehavior:
+          ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x),
+      primaryXAxis: const CategoryAxis(
+        interval: 1,
+        labelStyle: TextStyle(
+            fontFamily: 'Helvetica', fontSize: 12, fontWeight: FontWeight.w600),
+      ),
+      primaryYAxis: NumericAxis(
+        numberFormat: NumberFormat.compactSimpleCurrency(),
+        decimalPlaces: 2,
+        isVisible: false,
+        labelStyle: const TextStyle(
+            fontFamily: 'Helvetica', fontSize: 12, fontWeight: FontWeight.w600),
+      ),
+      series: <BarSeries<Yearly, String>>[
+        BarSeries<Yearly, String>(
+          name: 'Revenue',
+          enableTooltip: true,
+          dataLabelSettings: const DataLabelSettings(
+              isVisible: true,
+              useSeriesColor: false,
+              textStyle: TextStyle(
+                  fontFamily: 'Helvetica',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600)),
+          dataSource: itemChart,
+          xValueMapper: (Yearly data, _) => data.date.toString(),
+          yValueMapper: (Yearly data, _) => data.revenue,
+          animationDuration: 55,
+        ),
+        BarSeries<Yearly, String>(
+          name: 'Earnings',
+          enableTooltip: true,
+          dataLabelSettings: const DataLabelSettings(
+              isVisible: true,
+              useSeriesColor: false,
+              textStyle: TextStyle(
+                  fontFamily: 'Helvetica',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600)),
+          dataSource: itemChart,
+          xValueMapper: (Yearly data, _) => data.date.toString(),
+          yValueMapper: (Yearly data, _) => data.earnings,
+          animationDuration: 55,
+        ),
+      ],
+    ),
+  );
+}
+
+SizedBox quarterlyChart(TrackballBehavior trackballBehavior,
+    List<EarningsChartQuarterly> itemChart) {
+  return SizedBox(
+    height: 200,
+    width: 311,
+    child: SfCartesianChart(
+      palette: const <Color>[Colors.teal],
+      trackballBehavior: trackballBehavior,
+      zoomPanBehavior:
+          ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x),
+      primaryXAxis: const CategoryAxis(
+        interval: 1,
+        labelStyle: TextStyle(
+            fontFamily: 'Helvetica', fontSize: 12, fontWeight: FontWeight.w600),
+      ),
+      primaryYAxis: NumericAxis(
+        numberFormat: NumberFormat.compactSimpleCurrency(),
+        isVisible: false,
+        decimalPlaces: 2,
+        labelStyle: const TextStyle(
+            fontFamily: 'Helvetica', fontSize: 12, fontWeight: FontWeight.w600),
+      ),
+      series: <CartesianSeries>[
+        LineSeries<EarningsChartQuarterly, String>(
+          enableTooltip: true,
+          dataLabelSettings: const DataLabelSettings(
+              isVisible: true,
+              useSeriesColor: true,
+              textStyle: TextStyle(
+                  fontFamily: 'Helvetica',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600)),
+          dataSource: itemChart,
+          xValueMapper: (EarningsChartQuarterly data, _) => data.date,
+          yValueMapper: (EarningsChartQuarterly data, _) => data.actual,
+          animationDuration: 55,
+        )
+      ],
+    ),
+  );
+}
+
+StrokeText revenueText(String text) {
+  return StrokeText(
+    text: text,
+    textStyle: const TextStyle(fontSize: 30, color: yellow),
+    strokeColor: darkPurple,
+    strokeWidth: 7,
+  );
+}
+
+Stack stockDetailsLogoName(BuildContext context, Result stock) {
   return Stack(
     children: [
       Positioned(
         top: 8,
         left: 2,
-        child: Container(
-          height: 70,
-          width: 70,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.transparent,
-            border: Border.all(
-              color: darkPurple,
-              width: 4,
-            ),
-          ),
-          child: Center(
-            child: Transform.scale(
-              scale: 1.0, // Adjust the scale factor to make the image smaller
-              child: Image.asset(
-                'assets/stocks/${stock.symbol}.png',
-                width: 40,
-                height: 40,
-                errorBuilder: (context, error, stackTrace) {
-                  // Return a placeholder widget in case of error
-                  return const Icon(Icons.error, size: 40);
-                },
+        child: Column(
+          children: [
+            Container(
+              height: 70,
+              width: 70,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.transparent,
+                border: Border.all(
+                  color: darkPurple,
+                  width: 4,
+                ),
+              ),
+              child: Center(
+                child: Transform.scale(
+                  scale:
+                      1.0, // Adjust the scale factor to make the image smaller
+                  child: Image.asset(
+                    'assets/stocks/${stock.symbol}.png',
+                    width: 40,
+                    height: 40,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Return a placeholder widget in case of error
+                      return const Icon(Icons.error, size: 40);
+                    },
+                  ),
+                ),
               ),
             ),
-          ),
+            const SizedBox(height: 8),
+            Text(
+              '(${stock.symbol})',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Helvetica',
+                fontWeight: FontWeight.w800,
+                fontSize: 14,
+                color: Colors.grey[600],
+                letterSpacing: 0,
+                height: 0,
+              ),
+            ),
+          ],
         ),
       ),
       Positioned(
         left: 80,
-        top: 5,
+        top: 0,
         child: SizedBox(
           height: 80,
           width: 218,
@@ -157,9 +418,11 @@ Stack stockDetailsLogoName(Result stock) {
             child: Text(
               stock.longName ?? '',
               textAlign: TextAlign.left,
-              maxLines: 3,
+              maxLines: 4,
               style: const TextStyle(
-                fontSize: 22,
+                fontFamily: 'Helvetica',
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
                 color: purple,
                 overflow: TextOverflow.clip,
                 height: 0,

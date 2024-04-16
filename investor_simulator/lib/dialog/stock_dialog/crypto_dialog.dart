@@ -323,6 +323,7 @@ SizedBox stockChart(
     height: 200,
     width: 311,
     child: SfCartesianChart(
+      enableAxisAnimation: true,
       trackballBehavior: trackballBehavior,
       zoomPanBehavior:
           ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x),
