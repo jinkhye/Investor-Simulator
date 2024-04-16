@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/models/news_details_model.dart';
 import 'package:investor_simulator/provider/news_provider.dart';
+import 'package:investor_simulator/pages/news_assessment.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:get/get.dart';
 
 void openNewsDialog(BuildContext context, String newsURL, String pubDate) {
   final provider = Provider.of<NewsProvider>(context, listen: false);
@@ -62,7 +64,6 @@ void openNewsDialog(BuildContext context, String newsURL, String pubDate) {
                         ),
                       ),
                     ),
-                    aiAssessment(context),
                   ],
                 ),
               ),
@@ -174,6 +175,7 @@ SingleChildScrollView newsPage(
           const SizedBox(
             height: 10,
           ),
+          aiAssessment(context, content),
         ],
       ),
     ),
@@ -208,12 +210,18 @@ Widget webBrowser(String url) {
   );
 }
 
-ElevatedButton aiAssessment(BuildContext context) {
+ElevatedButton aiAssessment(
+  BuildContext context,
+  NewsDetails content,
+) {
   return ElevatedButton(
     onPressed: () {
-      // Get.to(() => NewsAssessment(news: news, index: index),
-      //     transition: Transition.circularReveal,
-      //     duration: const Duration(milliseconds: 800));
+      Get.to(
+          () => NewsAssessment(
+                news: content,
+              ),
+          transition: Transition.circularReveal,
+          duration: const Duration(milliseconds: 800));
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),
