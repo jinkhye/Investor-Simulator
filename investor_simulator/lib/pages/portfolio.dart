@@ -6,7 +6,7 @@ import 'package:investor_simulator/dialog/portfolio_dialog.dart';
 import 'package:investor_simulator/dialog/stock_help_dialog.dart';
 
 import 'package:investor_simulator/menu/topMenu.dart';
-import 'package:investor_simulator/pages/assessment.dart';
+import 'package:investor_simulator/pages/portfolio_assessment.dart';
 import 'package:investor_simulator/provider/crypto_provider.dart';
 import 'package:investor_simulator/provider/etf_provider.dart';
 import 'package:investor_simulator/provider/portfolio_provider.dart';

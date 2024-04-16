@@ -204,11 +204,11 @@ class NewsAssessment extends StatelessWidget {
     final response = await http.post(
       Uri.parse('https://api.openai.com/v1/chat/completions'),
       headers: {
-        'Authorization': 'Bearer [api key]',
+        'Authorization': 'Bearer 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',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
-        'model': 'gpt-3.5-turbo-0125	 ',
+        'model': 'gpt-3.5-turbo-0125',
         'messages': [
           {
             'role': "user",
