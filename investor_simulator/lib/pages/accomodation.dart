@@ -180,14 +180,17 @@ class _AccomodationState extends State<Accomodation> {
     );
   }
 
-  ElevatedButton accept(BuildContext context, index, imagePath) {
+  ElevatedButton accept(BuildContext context, index, GameProvider imagePath) {
     return ElevatedButton(
       onPressed: () {
         String image = accommodation[index].iconPath;
+        double price = accommodation[index].price.toDouble();
         // Add the action to be performed when the button is pressed
-        imagePath.setImagePath(image);
-        imagePath.subtractMoney(accommodation[index].price.toDouble());
-        imagePath.setAccommodationUse(index);
+        if (imagePath.money >= price) {
+          imagePath.setImagePath(image);
+          imagePath.subtractMoney(price);
+          imagePath.setAccommodationUse(index);
+        }
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(0),

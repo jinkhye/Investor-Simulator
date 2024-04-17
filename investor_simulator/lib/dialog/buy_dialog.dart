@@ -152,6 +152,9 @@ class _BuyDialogState extends State<BuyDialog> {
             case 'etf':
               portfolioProvider.addETFInvestment(widget.stock, quantity);
               break;
+            case 'forex':
+              portfolioProvider.addForexInvestment(widget.stock, quantity);
+              break;
             case 'crypto':
               portfolioProvider.addCryptoInvestment(widget.stock, quantity);
               break;

@@ -43,6 +43,7 @@ class QuoteResponse {
 }
 
 class Result {
+  final String type = 'forex';
   // String language;
   // String region;
   // String quoteType;

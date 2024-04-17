@@ -325,7 +325,7 @@ class PortfolioProvider extends ChangeNotifier {
           'name': 'null',
           'quantity': 0.0,
           'date': investment.purchaseDate,
-          'type': 'etf',
+          'type': 'forex',
           'result': stock,
           'purchasePrice': purchasePrice,
         };

@@ -17,7 +17,7 @@ class ETFProvider with ChangeNotifier {
   List<ChartResult>? _itemChart;
   List<ChartModel>? _chartModel = [];
   String _days = 'W';
-  String api = '1651139c27msh71996520d0ed192p1eb3b8jsn7c67cea4d8db';
+  String api = '40d7312818mshddd6877a4da2e17p190b63jsncfe0a925f21a';
 
   List<Result> get stocks => _stocks;
   bool get isLoadingStocks => _isLoadingStocks;

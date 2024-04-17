@@ -159,6 +159,10 @@ class _SellDialogState extends State<SellDialog> {
                   widget.stock.symbol, quantity);
 
               break;
+            case 'forex':
+              portfolioProvider.sellForexInvestment(
+                  widget.stock.symbol, quantity);
+              break;
             case 'crypto':
               portfolioProvider.sellCryptoInvestment(
                   widget.stock.symbol, quantity);

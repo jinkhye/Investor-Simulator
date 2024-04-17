@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 class Assessment extends StatelessWidget {
   final PortfolioProvider portfolioProvider;
 
-  const Assessment({super.key, required this.portfolioProvider});
+  Assessment({super.key, required this.portfolioProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +77,7 @@ class Assessment extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: Scrollbar(
+                  controller: ScrollController(),
                   thumbVisibility: true,
                   child: SingleChildScrollView(
                     child: Column(
@@ -165,7 +166,7 @@ class Assessment extends StatelessWidget {
       Uri.parse('https://api.openai.com/v1/chat/completions'),
       headers: {
         'Authorization':
-            'Bearer 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',
+            'Bearer sk-proj-IuZJM0Qxv3tzoyQNx15UT3BlbkFJ289u6N8DjSpJsBUKTQtr',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({

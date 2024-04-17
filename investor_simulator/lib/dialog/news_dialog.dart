@@ -185,10 +185,6 @@ SingleChildScrollView newsPage(
               ),
             ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          aiAssessment(context, content),
         ],
       ),
     ),
@@ -251,7 +247,7 @@ ElevatedButton aiAssessment(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: orangeRed,
-          width: 3,
+          width: 5,
         ),
       ),
       child: const StrokeText(

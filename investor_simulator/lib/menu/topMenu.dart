@@ -16,7 +16,10 @@ Padding topMenu(BuildContext context) {
     child: Row(
       children: <Widget>[
         back(context),
-        Expanded(child: Container()), // Empty Expanded widget for empty space
+        const SizedBox(width: 10),
+        level(gameProvider.level, gameProvider.currentXp,
+            gameProvider.requiredXp),
+        Expanded(child: Container()),
         money(currentMoney),
       ],
     ),
@@ -68,6 +71,65 @@ Stack money(double currentMoney) {
           ),
         ),
       )
+    ],
+  );
+}
+
+Stack level(int currentLevel, double currentXp, double requiredXp) {
+  int current = currentXp.round();
+  int req = requiredXp.round();
+  return Stack(
+    clipBehavior: Clip.none,
+    children: [
+      Positioned(
+        top: 6,
+        left: 20,
+        child: Container(
+          padding: const EdgeInsets.only(right: 10),
+          alignment: Alignment.bottomRight,
+          width: 100,
+          height: 30,
+          decoration: BoxDecoration(
+            color: const Color(0xFFFCD800),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: const Color(0xFFF5861D),
+              width: 4,
+            ),
+          ),
+          child: StrokeText(
+            text: '$current / $req',
+            textStyle: const TextStyle(
+              fontSize: 14,
+              color: white,
+            ),
+            strokeColor: Colors.black,
+            strokeWidth: 3,
+          ),
+        ),
+      ),
+      Container(
+        width: 45,
+        height: 45,
+        decoration: const BoxDecoration(
+          shape: BoxShape.rectangle,
+          image: DecorationImage(
+            image: AssetImage('assets/images/level.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: StrokeText(
+            text: currentLevel.toString(),
+            textStyle: const TextStyle(
+              fontSize: 23,
+              color: white,
+            ),
+            strokeColor: Colors.black,
+            strokeWidth: 3,
+          ),
+        ),
+      ),
     ],
   );
 }

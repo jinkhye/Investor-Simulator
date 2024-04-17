@@ -9,6 +9,7 @@ import 'package:investor_simulator/menu/topMenu.dart';
 import 'package:investor_simulator/pages/assessment.dart';
 import 'package:investor_simulator/provider/crypto_provider.dart';
 import 'package:investor_simulator/provider/etf_provider.dart';
+import 'package:investor_simulator/provider/forex_provider.dart';
 import 'package:investor_simulator/provider/portfolio_provider.dart';
 import 'package:investor_simulator/provider/stocks_provider.dart';
 import 'package:provider/provider.dart';
@@ -121,21 +122,15 @@ class _PortfolioState extends State<Portfolio> {
           builder: (context) {
             if (portfolioProvider.portfolio.isEmpty) {
               return const Expanded(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          'YOUR PORTFOLIO IS EMPTY!',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                child: Center(
+                  child: Text(
+                    'YOUR PORTFOLIO IS EMPTY!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
                     ),
-                  ],
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               );
             } else {
@@ -144,10 +139,6 @@ class _PortfolioState extends State<Portfolio> {
             }
           },
         ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 15.0, top: 10),
-          child: aiAssessment(context, portfolioProvider),
-        )
       ],
     );
   }
@@ -197,7 +188,7 @@ class _PortfolioState extends State<Portfolio> {
     DateFormat formatter = DateFormat('dd/MM/yyyy hh:mm a');
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(height: 10),
         Expanded(
@@ -212,152 +203,328 @@ class _PortfolioState extends State<Portfolio> {
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    Container(
-                      alignment: Alignment.topRight,
-                      height: 120,
-                      width: 330,
-                      decoration: BoxDecoration(
-                        color: white,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 5,
-                      right: 35,
-                      child: Text(
-                        formatPercentageString(percentage.toString()),
-                        style: TextStyle(
-                          fontFamily: 'Helvetica',
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.5,
-                          fontSize: 18,
-                          color: getColorFromPercentage(percentage),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        maxLines: 1,
-                      ),
-                    ),
-                    Positioned(
-                      top: 5,
-                      left: 105,
-                      child: SizedBox(
-                        width: 210,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              asset['name'],
-                              style: const TextStyle(
-                                fontFamily: 'Helvetica',
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 0.5,
-                                fontSize: 20,
-                                color: darkPurple,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              maxLines: 1,
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: 'Total: ',
-                                    style: TextStyle(
-                                      fontFamily: 'Helvetica',
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 18,
-                                      color: purple,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        '\$${asset['totalValue'].toStringAsFixed(2)}',
-                                    style: const TextStyle(
-                                      fontFamily: 'Helvetica',
-                                      color: green,
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: 'Quantity: ',
-                                    style: TextStyle(
-                                      fontFamily: 'Helvetica',
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 16,
-                                      color: purple,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: '${asset['quantity'].round()}',
-                                    style: const TextStyle(
-                                      fontFamily: 'Helvetica',
-                                      color: green,
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 8,
-                      left: 30,
-                      child: Container(
-                        height: 60,
-                        width: 60,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: white,
-                          border: Border.all(
-                            color: darkPurple,
-                            width: 4,
-                          ),
-                        ),
-                        child: Center(
-                          child: Transform.scale(
-                            scale: 0.75,
-                            child: iconStock(asset),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 5,
-                      left: 30,
-                      child: Text(
-                        formatter.format(asset['date']),
-                        style: const TextStyle(
-                          fontFamily: 'Helvetica',
-                          color: darkPurple,
-                          fontSize: 14,
-                          letterSpacing: 0,
-                          wordSpacing: 0,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      child: accept(context, symbol, asset['type']),
-                    ),
-                  ],
-                ),
+                child: portfolioItem(
+                    percentage, asset, formatter, symbol, asset['type']),
               );
             }).toList(),
           ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 15.0, top: 10),
+          child: aiAssessment(context, portfolioProvider),
+        )
+      ],
+    );
+  }
+
+  Widget portfolioItem(double percentage, Map<String, dynamic> asset,
+      DateFormat formatter, String symbol, String type) {
+    if (type == 'forex') {
+      return noIconItem(percentage, asset, formatter, symbol);
+    } else {
+      return iconItem(percentage, asset, formatter, symbol);
+    }
+  }
+
+  Stack noIconItem(double percentage, Map<String, dynamic> asset,
+      DateFormat formatter, String symbol) {
+    return Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        Container(
+          alignment: Alignment.topRight,
+          height: 120,
+          width: 330,
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        Positioned(
+          bottom: 5,
+          right: 35,
+          child: Text(
+            formatPercentageString(percentage.toString()),
+            style: TextStyle(
+              fontFamily: 'Helvetica',
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.5,
+              fontSize: 18,
+              color: getColorFromPercentage(percentage),
+              overflow: TextOverflow.ellipsis,
+            ),
+            maxLines: 1,
+          ),
+        ),
+        Positioned(
+          top: 5,
+          left: 30,
+          child: SizedBox(
+            width: 210,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      asset['name'],
+                      style: const TextStyle(
+                        fontFamily: 'Helvetica',
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.5,
+                        fontSize: 20,
+                        color: darkPurple,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      maxLines: 1,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      '(${asset['result'].symbol.toUpperCase()})',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Helvetica',
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                        letterSpacing: 0,
+                        height: 0,
+                      ),
+                    ),
+                  ],
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      const TextSpan(
+                        text: 'Total: ',
+                        style: TextStyle(
+                          fontFamily: 'Helvetica',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                          color: purple,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '\$${asset['totalValue'].toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontFamily: 'Helvetica',
+                          color: green,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      const TextSpan(
+                        text: 'Quantity: ',
+                        style: TextStyle(
+                          fontFamily: 'Helvetica',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                          color: purple,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '${asset['quantity'].round()}',
+                        style: const TextStyle(
+                          fontFamily: 'Helvetica',
+                          color: green,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 5,
+          left: 30,
+          child: Text(
+            formatter.format(asset['date']),
+            style: const TextStyle(
+              fontFamily: 'Helvetica',
+              color: darkPurple,
+              fontSize: 14,
+              letterSpacing: 0,
+              wordSpacing: 0,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+        Positioned(
+          child: accept(context, symbol, asset['type']),
+        ),
+      ],
+    );
+  }
+
+  Stack iconItem(double percentage, Map<String, dynamic> asset,
+      DateFormat formatter, String symbol) {
+    return Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        Container(
+          alignment: Alignment.topRight,
+          height: 120,
+          width: 330,
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        Positioned(
+          bottom: 5,
+          right: 35,
+          child: Text(
+            formatPercentageString(percentage.toString()),
+            style: TextStyle(
+              fontFamily: 'Helvetica',
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.5,
+              fontSize: 18,
+              color: getColorFromPercentage(percentage),
+              overflow: TextOverflow.ellipsis,
+            ),
+            maxLines: 1,
+          ),
+        ),
+        Positioned(
+          top: 5,
+          left: 105,
+          child: SizedBox(
+            width: 210,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  asset['name'],
+                  style: const TextStyle(
+                    fontFamily: 'Helvetica',
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.5,
+                    fontSize: 20,
+                    color: darkPurple,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  maxLines: 1,
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      const TextSpan(
+                        text: 'Total: ',
+                        style: TextStyle(
+                          fontFamily: 'Helvetica',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                          color: purple,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '\$${asset['totalValue'].toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontFamily: 'Helvetica',
+                          color: green,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      const TextSpan(
+                        text: 'Quantity: ',
+                        style: TextStyle(
+                          fontFamily: 'Helvetica',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                          color: purple,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '${asset['quantity'].round()}',
+                        style: const TextStyle(
+                          fontFamily: 'Helvetica',
+                          color: green,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Positioned(
+          top: 8,
+          left: 30,
+          child: Column(
+            children: [
+              Container(
+                height: 60,
+                width: 60,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: white,
+                  border: Border.all(
+                    color: darkPurple,
+                    width: 4,
+                  ),
+                ),
+                child: Center(
+                  child: Transform.scale(
+                    scale: 0.75,
+                    child: iconStock(asset),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '(${asset['result'].symbol.toUpperCase()})',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Helvetica',
+                  fontWeight: FontWeight.w800,
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                  letterSpacing: 0,
+                  height: 0,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          bottom: 5,
+          left: 30,
+          child: Text(
+            formatter.format(asset['date']),
+            style: const TextStyle(
+              fontFamily: 'Helvetica',
+              color: darkPurple,
+              fontSize: 14,
+              letterSpacing: 0,
+              wordSpacing: 0,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+        Positioned(
+          child: accept(context, symbol, asset['type']),
         ),
       ],
     );
@@ -413,6 +580,13 @@ class _PortfolioState extends State<Portfolio> {
         currentPrice = provider.stocks
             .firstWhere((stock) => stock.symbol == symbol)
             .regularMarketPrice!;
+        break;
+      case 'forex':
+        ForexProvider provider =
+            Provider.of<ForexProvider>(context, listen: false);
+        currentPrice = provider.stocks
+            .firstWhere((stock) => stock.symbol == symbol)
+            .regularMarketPrice;
         break;
       case 'crypto':
         CryptoProvider provider =
