@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/dialog/buy_dialog.dart';
 import 'package:investor_simulator/dialog/keystats_help_dialog.dart';
-import 'package:investor_simulator/dialog/revenue_dialog.dart';
 import 'package:investor_simulator/dialog/sell_dialog.dart';
 import 'package:investor_simulator/models/chart_model.dart';
 import 'package:investor_simulator/models/crypto_model.dart';
@@ -147,7 +146,7 @@ SingleChildScrollView stockDetails(
         ),
         SizedBox(
           width: 300,
-          height: 85,
+          height: 105,
           child: stockDetailsLogoName(context, coin),
         ),
         const SizedBox(
@@ -223,7 +222,6 @@ SingleChildScrollView stockDetails(
           ],
         ),
         const SizedBox(height: 5),
-
         Consumer<CryptoProvider>(
           builder: (context, provider, _) {
             if (provider.itemChart != null) {
@@ -246,9 +244,7 @@ SingleChildScrollView stockDetails(
             }
           },
         ),
-
         const SizedBox(height: 10),
-
         SizedBox(
           height: 30,
           width: 311,
@@ -280,9 +276,14 @@ SingleChildScrollView stockDetails(
             },
           ),
         ),
-
         const SizedBox(height: 10),
-        buyStock(context, coin),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            sellStock(context, coin, quantity),
+            buyStock(context, coin),
+          ],
+        ),
         const Divider(
           thickness: 4,
         ),
@@ -302,21 +303,22 @@ SingleChildScrollView stockDetails(
           ),
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            marketcap(),
-            Expanded(child: Container()),
-            dividend(),
+            marketcap(coin),
+            marketCapRank(coin),
           ],
         ),
-        const SizedBox(height: 10),
-        peRatio(),
-        const SizedBox(height: 10),
-        const Divider(
-          thickness: 4,
+        const SizedBox(height: 5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            marketCapChangePercentage(coin),
+            totalVolume(coin),
+          ],
         ),
-        const SizedBox(height: 10),
-        // revenueReport(context, stocks, index),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
+        circulatingSupply(coin),
       ],
     ),
   );
@@ -328,6 +330,7 @@ SizedBox stockChart(
     height: 200,
     width: 311,
     child: SfCartesianChart(
+      enableAxisAnimation: true,
       trackballBehavior: trackballBehavior,
       zoomPanBehavior:
           ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x),
@@ -393,46 +396,24 @@ ElevatedButton statsHelp(BuildContext context) {
   );
 }
 
-ElevatedButton revenueReport(BuildContext context, stocks, index) {
-  return ElevatedButton(
-    onPressed: () {
-      openRevenueDialog(context, stocks[index].iconPath, stocks[index].name);
-    },
-    style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.all(0),
-      backgroundColor:
-          Colors.transparent, // Set the background color to transparent
-      elevation: 0, // Remove the elevation
-    ),
-    child: Container(
-      alignment: Alignment.center,
-      height: 50,
-      width: 220,
-      decoration: BoxDecoration(
-        color: yellow,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: orangeRed,
-          width: 3,
-        ),
-      ),
-      child: const StrokeText(
-        text: 'VIEW REVENUE GROWTH',
-        textStyle: TextStyle(
-          fontSize: 18,
-          color: white,
-          letterSpacing: 1,
-        ),
-        strokeColor: black,
-        strokeWidth: 4,
-      ),
-    ),
-  );
-}
+Container circulatingSupply(CoinModel coin) {
+  int circulatingSupply = coin.circulatingSupply;
+  Color color = red;
 
-Container peRatio() {
+  if (circulatingSupply > 10000000000) {
+    // Circulating supply greater than 10 billion is considered high (green)
+    color = green;
+  } else if (circulatingSupply >= 1000000000 &&
+      circulatingSupply <= 10000000000) {
+    // Circulating supply between 1 billion and 10 billion is considered moderate (yellow)
+    color = orangeRed;
+  } else {
+    // Circulating supply less than 1 billion is considered low (red)
+    color = red;
+  }
+
   return Container(
-    width: 200,
+    width: 140,
     height: 100,
     decoration: BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(16)),
@@ -442,11 +423,11 @@ Container peRatio() {
         width: 4,
       ),
     ),
-    child: const Column(
+    child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          'Price-to-Earnings (P/E) Ratio',
+        const Text(
+          'Circulating Supply',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: 'Helvetica',
@@ -457,14 +438,14 @@ Container peRatio() {
             fontWeight: FontWeight.w800,
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Text(
-          '39.75',
+          NumberFormat.compact().format(circulatingSupply),
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: 'Helvetica',
             fontSize: 16,
-            color: red,
+            color: color,
             letterSpacing: 0,
             height: 0,
             fontWeight: FontWeight.w600,
@@ -475,9 +456,23 @@ Container peRatio() {
   );
 }
 
-Container dividend() {
+Container marketCapChangePercentage(CoinModel coin) {
+  double changePercentage = coin.marketCapChangePercentage24H;
+  Color color = red;
+
+  if (changePercentage > 5.0) {
+    // Change percentage greater than 5% is considered a strong positive change (green)
+    color = green;
+  } else if (changePercentage >= -5.0 && changePercentage <= 5.0) {
+    // Change percentage between -5% and 5% is considered neutral change (yellow)
+    color = orangeRed;
+  } else {
+    // Change percentage less than -5% is considered a strong negative change (red)
+    color = red;
+  }
+
   return Container(
-    width: 150,
+    width: 140,
     height: 100,
     decoration: BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(16)),
@@ -487,11 +482,11 @@ Container dividend() {
         width: 4,
       ),
     ),
-    child: const Column(
+    child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          'Dividend Yield',
+        const Text(
+          'Market Cap Change Percentage (24H)',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: 'Helvetica',
@@ -502,14 +497,14 @@ Container dividend() {
             fontWeight: FontWeight.w800,
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Text(
-          '0.00%',
+          '${changePercentage.toStringAsFixed(2)}%',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: 'Helvetica',
             fontSize: 16,
-            color: red,
+            color: color,
             letterSpacing: 0,
             height: 0,
             fontWeight: FontWeight.w600,
@@ -520,9 +515,23 @@ Container dividend() {
   );
 }
 
-Container marketcap() {
+Container totalVolume(CoinModel coin) {
+  Color color = red;
+  double totalVolume = coin.totalVolume;
+
+  if (totalVolume > 1000000000) {
+    // Volume greater than $1 billion is considered high volume (green)
+    color = green;
+  } else if (totalVolume >= 100000000 && totalVolume <= 1000000000) {
+    // Volume between $100 million and $1 billion is considered moderate volume (yellow)
+    color = orangeRed;
+  } else {
+    // Volume less than $100 million is considered low volume (red)
+    color = red;
+  }
+
   return Container(
-    width: 150,
+    width: 140,
     height: 100,
     decoration: BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(16)),
@@ -532,10 +541,126 @@ Container marketcap() {
         width: 4,
       ),
     ),
-    child: const Column(
+    child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        const Text(
+          'Total Volume',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Helvetica',
+            fontSize: 16,
+            color: black,
+            letterSpacing: 0,
+            height: 0,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 5),
         Text(
+          NumberFormat.compactSimpleCurrency(locale: 'en-US')
+              .format(coin.totalVolume),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Helvetica',
+            fontSize: 16,
+            color: color,
+            letterSpacing: 0,
+            height: 0,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Container marketCapRank(CoinModel coin) {
+  int marketCapRank = coin.marketCapRank;
+  Color color = red;
+
+  if (marketCapRank < 9) {
+    color = green;
+  } else if (marketCapRank >= 9 && marketCapRank <= 20) {
+    color = orangeRed;
+  } else {
+    color = red;
+  }
+
+  return Container(
+    width: 140,
+    height: 100,
+    decoration: BoxDecoration(
+      borderRadius: const BorderRadius.all(Radius.circular(16)),
+      color: Colors.transparent,
+      border: Border.all(
+        color: darkPurple,
+        width: 4,
+      ),
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          'Market Cap Rank',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Helvetica',
+            fontSize: 16,
+            color: black,
+            letterSpacing: 0,
+            height: 0,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          coin.marketCapRank.toString(),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Helvetica',
+            fontSize: 16,
+            color: color,
+            letterSpacing: 0,
+            height: 0,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Container marketcap(CoinModel coin) {
+  Color color = red;
+  int marketCap = coin.marketCap;
+
+  if (marketCap > 10000000000) {
+    // Market cap greater than $10 billion (Large Cap) is considered green (good)
+    color = green;
+  } else if (marketCap >= 2000000000 && marketCap <= 10000000000) {
+    // Market cap between $2 billion and $10 billion (Mid Cap) is considered yellow (caution)
+    color = orangeRed;
+  } else {
+    // Market cap less than $2 billion (Small Cap or smaller) is considered red (bad)
+    color = red;
+  }
+
+  return Container(
+    width: 140,
+    height: 100,
+    decoration: BoxDecoration(
+      borderRadius: const BorderRadius.all(Radius.circular(16)),
+      color: Colors.transparent,
+      border: Border.all(
+        color: darkPurple,
+        width: 4,
+      ),
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
           'Market Capitalization',
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -547,14 +672,15 @@ Container marketcap() {
             fontWeight: FontWeight.w800,
           ),
         ),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         Text(
-          '536.83 billion USD',
+          NumberFormat.compactSimpleCurrency(locale: 'en-US')
+              .format(coin.marketCap),
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: 'Helvetica',
             fontSize: 16,
-            color: green,
+            color: color,
             letterSpacing: 0,
             height: 0,
             fontWeight: FontWeight.w600,
@@ -571,32 +697,54 @@ Stack stockDetailsLogoName(BuildContext context, CoinModel coin) {
       Positioned(
         top: 8,
         left: 2,
-        child: Container(
-          height: 70,
-          width: 70,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.transparent,
-            border: Border.all(
-              color: darkPurple,
-              width: 4,
-            ),
-          ),
-          child: Center(
-            child: Transform.scale(
-              scale: 1.0, // Adjust the scale factor to make the image smaller
-              child: Image.network(
-                coin.image,
-                width: 40, // Adjust the width of the image
-                height: 40, // Adjust the height of the image
+        child: Column(
+          children: [
+            Container(
+              height: 70,
+              width: 70,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.transparent,
+                border: Border.all(
+                  color: darkPurple,
+                  width: 4,
+                ),
+              ),
+              child: Center(
+                child: Transform.scale(
+                  scale:
+                      1.0, // Adjust the scale factor to make the image smaller
+                  child: Image.network(
+                    coin.image,
+                    width: 40,
+                    height: 40,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Return a placeholder widget in case of error
+                      return const Icon(Icons.error, size: 40);
+                    },
+                  ),
+                ),
               ),
             ),
-          ),
+            const SizedBox(height: 8),
+            Text(
+              '(${coin.symbol.toUpperCase()})',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Helvetica',
+                fontWeight: FontWeight.w800,
+                fontSize: 14,
+                color: Colors.grey[600],
+                letterSpacing: 0,
+                height: 0,
+              ),
+            ),
+          ],
         ),
       ),
       Positioned(
         left: 80,
-        top: 5,
+        top: 0,
         child: SizedBox(
           height: 80,
           width: 218,
@@ -605,9 +753,11 @@ Stack stockDetailsLogoName(BuildContext context, CoinModel coin) {
             child: Text(
               coin.longName,
               textAlign: TextAlign.left,
-              maxLines: 3,
+              maxLines: 4,
               style: const TextStyle(
-                fontSize: 22,
+                fontFamily: 'Helvetica',
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
                 color: purple,
                 overflow: TextOverflow.clip,
                 height: 0,
@@ -620,10 +770,10 @@ Stack stockDetailsLogoName(BuildContext context, CoinModel coin) {
   );
 }
 
-ElevatedButton sellStock(BuildContext context, CoinModel coin) {
+ElevatedButton sellStock(BuildContext context, CoinModel stock, int quantity) {
   return ElevatedButton(
     onPressed: () {
-      openSellDialog(context, coin, 'crypto');
+      openSellDialog(context, stock, 'crypto', quantity);
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),
@@ -666,7 +816,7 @@ ElevatedButton buyStock(BuildContext context, CoinModel coin) {
     child: Container(
       alignment: Alignment.center,
       height: 40,
-      width: 311,
+      width: 100,
       decoration: BoxDecoration(
         color: lightGreen,
         borderRadius: BorderRadius.circular(10),
