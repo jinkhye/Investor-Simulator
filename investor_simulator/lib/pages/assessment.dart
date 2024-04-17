@@ -112,18 +112,26 @@ class Assessment extends StatelessWidget {
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: fetchedText1.length,
                           itemBuilder: (context, index) {
-                            return Text(
-                              fetchedText1[index],
-                              style: TextStyle(
-                                fontFamily: 'Helvetica',
-                                fontSize: 20,
-                                color: white,
-                                fontWeight: index % 2 == 0
-                                    ? FontWeight.w800
-                                    : FontWeight.w600,
-                                wordSpacing: 0,
-                                letterSpacing: 0,
-                              ),
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  fetchedText1[index],
+                                  style: TextStyle(
+                                    fontFamily: 'Helvetica',
+                                    fontSize: 20,
+                                    color: fetchedText1[index].contains(':') &
+                                            fetchedText2[index].contains(':')
+                                        ? yellow
+                                        : white,
+                                    fontWeight: FontWeight.w800,
+                                    wordSpacing: 0,
+                                    letterSpacing: 0,
+                                  ),
+                                ),
+                                // You can adjust the height of the SizedBox as needed
+                                SizedBox(height: 10),
+                              ],
                             );
                           },
                         ),
@@ -143,18 +151,26 @@ class Assessment extends StatelessWidget {
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: fetchedText2.length,
                           itemBuilder: (context, index) {
-                            return Text(
-                              fetchedText2[index],
-                              style: TextStyle(
-                                fontFamily: 'Helvetica',
-                                fontSize: 20,
-                                color: white,
-                                fontWeight: index % 2 == 0
-                                    ? FontWeight.w800
-                                    : FontWeight.w600,
-                                wordSpacing: 0,
-                                letterSpacing: 0,
-                              ),
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  fetchedText2[index],
+                                  style: TextStyle(
+                                    fontFamily: 'Helvetica',
+                                    fontSize: 20,
+                                    color: fetchedText2[index].contains(')') &
+                                            fetchedText2[index].contains(':')
+                                        ? yellow
+                                        : white,
+                                    fontWeight: FontWeight.w800,
+                                    wordSpacing: 0,
+                                    letterSpacing: 0,
+                                  ),
+                                ),
+                                // You can adjust the height of the SizedBox as needed
+                                SizedBox(height: 10),
+                              ],
                             );
                           },
                         ),
@@ -206,7 +222,7 @@ class Assessment extends StatelessWidget {
           {
             'role': "user",
             'content':
-                "DO NOT INCLUDE ANYTHING HERE 1) [ Title of ${format}]:   [YOUR ANSWER HERE]   \n\n 2) [ (Title of ${format}]: [Description] )\n\n "
+                "DO NOT INCLUDE ANYTHING HERE 1) [Title of ${format}]:   [YOUR ANSWER HERE]   \n\n 2) [(Title of ${format}]: [YOUR ANSWER HERE] )\n\n "
           },
           {'role': "user", 'content': ""},
         ],
@@ -222,15 +238,21 @@ class Assessment extends StatelessWidget {
       // Initialize list to store split parts
       List<String> allAnswers = [];
       for (String message in messages) {
-        // Split the message into parts
-        List<String> parts = message.split(':');
-        for (int i = 0; i < parts.length; i++) {
-          if (i == 0) {
-            // Add the first part with index prefix
-            allAnswers.add('${parts[i].trim()} :');
-          } else {
+        // Check if the message ends with a colon
+        if (message.endsWith(':')) {
+          // If it does, add it directly to allAnswers
+          allAnswers.add(message.trim());
+        } else {
+          // If not, split the message into parts
+          List<String> parts = message.split(':');
+          if (parts.length > 1) {
+            // If the message contains a colon, add the first part with index prefix
+            allAnswers.add('${parts[0].trim()} :');
             // Add the remaining parts without any modification
-            allAnswers.add(parts[i].trim());
+            allAnswers.addAll(parts.sublist(1).map((part) => part.trim()));
+          } else {
+            // If the message doesn't contain a colon, add it directly to allAnswers
+            allAnswers.add(message.trim());
           }
         }
       }
