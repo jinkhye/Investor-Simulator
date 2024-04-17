@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/invest_page/crypto.dart';
 import 'package:investor_simulator/invest_page/etf.dart';
+import 'package:investor_simulator/invest_page/forex.dart';
 import 'package:investor_simulator/invest_page/stocks.dart';
 import 'package:investor_simulator/menu/topMenu.dart';
 import 'package:stroke_text/stroke_text.dart';
@@ -60,7 +61,8 @@ class _InvestState extends State<Invest> {
                     children: [
                       navigationButton('STOCKS', 0),
                       navigationButton('ETF', 1),
-                      navigationButton('CRYPTO', 2),
+                      navigationButton('FOREX', 2),
+                      navigationButton('CRYPTO', 3),
                     ],
                   ),
                 ),
@@ -72,6 +74,7 @@ class _InvestState extends State<Invest> {
                   children: const [
                     StocksMenuPage(),
                     ETFMenuPage(),
+                    ForexMenuPage(),
                     CryptoMenuPage(),
                   ],
                 ),
