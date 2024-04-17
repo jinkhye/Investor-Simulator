@@ -7,17 +7,18 @@ import 'package:investor_simulator/dialog/buy_dialog.dart';
 import 'package:investor_simulator/dialog/keystats_help_dialog.dart';
 import 'package:investor_simulator/dialog/sell_dialog.dart';
 import 'package:investor_simulator/models/chart_model.dart';
-import 'package:investor_simulator/models/crypto_model.dart';
-import 'package:investor_simulator/provider/crypto_provider.dart';
+import 'package:investor_simulator/models/forex_model.dart';
+import 'package:investor_simulator/provider/forex_provider.dart';
+
 import 'package:investor_simulator/provider/portfolio_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-void openCryptoDialog(BuildContext context, CoinModel coin) {
-  final provider = Provider.of<CryptoProvider>(context, listen: false);
+void openForexDialog(BuildContext context, Result stock) {
+  final provider = Provider.of<ForexProvider>(context, listen: false);
   provider.emptyChart();
-  provider.fetchChartData(coin.id);
+  provider.fetchChartData(stock.symbol);
 
   Timer? timer;
 
@@ -36,7 +37,7 @@ void openCryptoDialog(BuildContext context, CoinModel coin) {
   void fetchDataPeriodically() {
     // Fetch chart data every 1 minute
     timer = Timer.periodic(const Duration(minutes: 10), (timer) {
-      provider.fetchChartData(coin.id);
+      provider.fetchChartData(stock.symbol);
     });
   }
 
@@ -64,7 +65,7 @@ void openCryptoDialog(BuildContext context, CoinModel coin) {
               width: 400,
               height: 600,
               child: Scrollbar(
-                  child: stockDetails(context, coin, trackballBehavior)),
+                  child: stockDetails(context, stock, trackballBehavior)),
             ),
           ),
         ),
@@ -124,10 +125,10 @@ int getSharesForSymbol(PortfolioProvider portfolioProvider, String? symbol) {
 }
 
 SingleChildScrollView stockDetails(
-    BuildContext context, CoinModel coin, TrackballBehavior trackballBehavior) {
-  final provider = Provider.of<CryptoProvider>(context);
+    BuildContext context, Result stock, TrackballBehavior trackballBehavior) {
+  final provider = Provider.of<ForexProvider>(context);
   final portfolio = Provider.of<PortfolioProvider>(context);
-  int quantity = getSharesForSymbol(portfolio, coin.symbol);
+  int quantity = getSharesForSymbol(portfolio, stock.symbol);
   List<String> text = ['D', 'W', 'M', '3M', '6M', 'Y'];
 
   return SingleChildScrollView(
@@ -144,11 +145,7 @@ SingleChildScrollView stockDetails(
             ],
           ),
         ),
-        SizedBox(
-          width: 300,
-          height: 105,
-          child: stockDetailsLogoName(context, coin),
-        ),
+        stockDetailsLogoName(context, stock),
         const SizedBox(
           height: 10,
         ),
@@ -165,7 +162,7 @@ SingleChildScrollView stockDetails(
                 ),
               ),
               TextSpan(
-                text: getSharesForSymbol(portfolio, coin.symbol).toString(),
+                text: quantity.toString(),
                 style: TextStyle(
                   fontFamily: 'Helvetica',
                   fontWeight: FontWeight.w800,
@@ -196,7 +193,7 @@ SingleChildScrollView stockDetails(
           children: [
             const SizedBox(width: 15),
             StrokeText(
-              text: '\$${coin.regularMarketPrice.toStringAsFixed(2)}',
+              text: '\$${stock.regularMarketPrice.toStringAsFixed(2)}',
               textStyle: const TextStyle(
                 fontFamily: 'Helvetica',
                 fontWeight: FontWeight.w800,
@@ -209,10 +206,10 @@ SingleChildScrollView stockDetails(
             ),
             Expanded(child: Container()),
             StrokeText(
-              text: '(${coin.regularMarketChangePercent}%)',
+              text: '(${stock.regularMarketChangePercent.toStringAsFixed(2)}%)',
               textStyle: TextStyle(
                   fontSize: 16,
-                  color: getColour(coin.regularMarketChangePercent),
+                  color: getColour(stock.regularMarketChangePercent),
                   fontFamily: 'Helvetica',
                   fontWeight: FontWeight.w700),
               strokeColor: Colors.transparent,
@@ -222,11 +219,11 @@ SingleChildScrollView stockDetails(
           ],
         ),
         const SizedBox(height: 5),
-        Consumer<CryptoProvider>(
+        Consumer<ForexProvider>(
           builder: (context, provider, _) {
             if (provider.itemChart != null) {
               // Data loaded, return chart
-              return stockChart(trackballBehavior, provider.itemChart!);
+              return stockChart(trackballBehavior, provider.chartModel);
             } else if (provider.isLoadingChartData) {
               // Data loading, return loading indicator
               return const Center(child: CircularProgressIndicator());
@@ -256,8 +253,10 @@ SingleChildScrollView stockDetails(
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    provider.setDays(text[index]);
-                    provider.fetchChartData(coin.id);
+                    if (provider.isLoadingChartData == false) {
+                      provider.setDays(text[index]);
+                      provider.fetchChartData(stock.symbol);
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(0),
@@ -280,8 +279,8 @@ SingleChildScrollView stockDetails(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            sellStock(context, coin, quantity),
-            buyStock(context, coin),
+            sellStock(context, stock, quantity),
+            buyStock(context, stock),
           ],
         ),
         const Divider(
@@ -302,30 +301,33 @@ SingleChildScrollView stockDetails(
             ],
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            marketcap(coin),
-            marketCapRank(coin),
-          ],
-        ),
-        const SizedBox(height: 5),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            marketCapChangePercentage(coin),
-            totalVolume(coin),
-          ],
-        ),
-        const SizedBox(height: 5),
-        circulatingSupply(coin),
+        // Column(
+        //   children: [
+        //     Row(
+        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //       children: [
+        //         marketcap(stock),
+        //         dividend(stock),
+        //       ],
+        //     ),
+        //     const SizedBox(height: 5),
+        //     Row(
+        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //       children: [
+        //         priceToBook(stock),
+        //         marketState(stock),
+        //       ],
+        //     ),
+        //   ],
+        // ),
+        const SizedBox(height: 10),
       ],
     ),
   );
 }
 
 SizedBox stockChart(
-    TrackballBehavior trackballBehavior, List<ChartModel> itemChart) {
+    TrackballBehavior trackballBehavior, List<ChartModel>? itemChart) {
   return SizedBox(
     height: 200,
     width: 311,
@@ -335,7 +337,7 @@ SizedBox stockChart(
       zoomPanBehavior:
           ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x),
       primaryXAxis: DateTimeCategoryAxis(
-        interval: 1,
+        interval: 5,
         dateFormat: DateFormat('d/M HH:mm'),
         labelStyle: const TextStyle(
             fontFamily: 'Helvetica', fontSize: 12, fontWeight: FontWeight.w600),
@@ -352,7 +354,7 @@ SizedBox stockChart(
           bearColor: Colors.red,
           dataSource: itemChart,
           xValueMapper: (ChartModel sales, _) =>
-              DateTime.fromMillisecondsSinceEpoch((sales.time ~/ 1000) * 1000),
+              DateTime.fromMillisecondsSinceEpoch((sales.time) * 1000),
           lowValueMapper: (ChartModel sales, _) => sales.low,
           highValueMapper: (ChartModel sales, _) => sales.high,
           openValueMapper: (ChartModel sales, _) => sales.open,
@@ -396,20 +398,26 @@ ElevatedButton statsHelp(BuildContext context) {
   );
 }
 
-Container circulatingSupply(CoinModel coin) {
-  int circulatingSupply = coin.circulatingSupply;
-  Color color = red;
+Container marketState(Result stock) {
+  String market = '';
 
-  if (circulatingSupply > 10000000000) {
-    // Circulating supply greater than 10 billion is considered high (green)
+  Color color = green;
+
+  if (stock.marketState == 'PRE') {
+    market = 'Pre-Market';
     color = green;
-  } else if (circulatingSupply >= 1000000000 &&
-      circulatingSupply <= 10000000000) {
-    // Circulating supply between 1 billion and 10 billion is considered moderate (yellow)
-    color = orangeRed;
+  } else if (stock.marketState == 'REGULAR') {
+    market = 'Regular Market';
   } else {
-    // Circulating supply less than 1 billion is considered low (red)
-    color = red;
+    market = 'Post-Market';
+  }
+
+  if (stock.marketState == 'PRE') {
+    color = blue;
+  } else if (stock.marketState == 'REGULAR') {
+    color = green;
+  } else {
+    color = orangeRed;
   }
 
   return Container(
@@ -427,7 +435,7 @@ Container circulatingSupply(CoinModel coin) {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text(
-          'Circulating Supply',
+          'Market State',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: 'Helvetica',
@@ -440,7 +448,7 @@ Container circulatingSupply(CoinModel coin) {
         ),
         const SizedBox(height: 5),
         Text(
-          NumberFormat.compact().format(circulatingSupply),
+          market,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: 'Helvetica',
@@ -456,324 +464,230 @@ Container circulatingSupply(CoinModel coin) {
   );
 }
 
-Container marketCapChangePercentage(CoinModel coin) {
-  double changePercentage = coin.marketCapChangePercentage24H;
-  Color color = red;
+// Container priceToBook(Result stock) {
+//   double pbRatio = stock.priceToBook;
+//   Color color = red;
 
-  if (changePercentage > 5.0) {
-    // Change percentage greater than 5% is considered a strong positive change (green)
-    color = green;
-  } else if (changePercentage >= -5.0 && changePercentage <= 5.0) {
-    // Change percentage between -5% and 5% is considered neutral change (yellow)
-    color = orangeRed;
-  } else {
-    // Change percentage less than -5% is considered a strong negative change (red)
-    color = red;
-  }
+//   if (pbRatio < 1.0) {
+//     // P/B ratio less than 1.0 is considered undervalued (green)
+//     color = green;
+//   } else if (pbRatio >= 1.0 && pbRatio <= 3.0) {
+//     // P/B ratio between 1.0 and 3.0 is considered fairly valued (yellow)
+//     color = orangeRed;
+//   } else {
+//     // P/B ratio above 3.0 is considered overvalued (red)
+//     color = red;
+//   }
 
-  return Container(
-    width: 140,
-    height: 100,
-    decoration: BoxDecoration(
-      borderRadius: const BorderRadius.all(Radius.circular(16)),
-      color: Colors.transparent,
-      border: Border.all(
-        color: darkPurple,
-        width: 4,
-      ),
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          'Market Cap Change Percentage (24H)',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'Helvetica',
-            fontSize: 16,
-            color: black,
-            letterSpacing: 0,
-            height: 0,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          '${changePercentage.toStringAsFixed(2)}%',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'Helvetica',
-            fontSize: 16,
-            color: color,
-            letterSpacing: 0,
-            height: 0,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    ),
-  );
-}
+//   return Container(
+//     width: 140,
+//     height: 100,
+//     decoration: BoxDecoration(
+//       borderRadius: const BorderRadius.all(Radius.circular(16)),
+//       color: Colors.transparent,
+//       border: Border.all(
+//         color: darkPurple,
+//         width: 4,
+//       ),
+//     ),
+//     child: Column(
+//       mainAxisAlignment: MainAxisAlignment.center,
+//       children: [
+//         const Text(
+//           'Price-To-Book Ratio',
+//           textAlign: TextAlign.center,
+//           style: TextStyle(
+//             fontFamily: 'Helvetica',
+//             fontSize: 16,
+//             color: black,
+//             letterSpacing: 0,
+//             height: 0,
+//             fontWeight: FontWeight.w800,
+//           ),
+//         ),
+//         const SizedBox(height: 5),
+//         Text(
+//           stock.priceToBook.toString(),
+//           textAlign: TextAlign.center,
+//           style: TextStyle(
+//             fontFamily: 'Helvetica',
+//             fontSize: 16,
+//             color: color,
+//             letterSpacing: 0,
+//             height: 0,
+//             fontWeight: FontWeight.w600,
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+// }
 
-Container totalVolume(CoinModel coin) {
-  Color color = red;
-  double totalVolume = coin.totalVolume;
+// Container dividend(Result stock) {
+//   double dividendYield = stock.dividendYield ?? 0.0;
+//   Color color = red;
 
-  if (totalVolume > 1000000000) {
-    // Volume greater than $1 billion is considered high volume (green)
-    color = green;
-  } else if (totalVolume >= 100000000 && totalVolume <= 1000000000) {
-    // Volume between $100 million and $1 billion is considered moderate volume (yellow)
-    color = orangeRed;
-  } else {
-    // Volume less than $100 million is considered low volume (red)
-    color = red;
-  }
+//   if (dividendYield < 1.0) {
+//     // Dividend yield below 1% is considered too low (red)
+//     color = red;
+//   } else if (dividendYield >= 1.0 && dividendYield < 2.0) {
+//     // Dividend yield between 1% and 2% is in the caution range (yellow)
+//     color = orangeRed;
+//   } else if (dividendYield >= 2.0 && dividendYield <= 6.0) {
+//     // Dividend yield between 2% and 6% is considered ideal (green)
+//     color = green;
+//   } else if (dividendYield > 6.0 && dividendYield <= 8.0) {
+//     // Dividend yield between 6% and 8% is in the caution range (yellow)
+//     color = orangeRed;
+//   } else {
+//     // Dividend yield above 8% is considered too high (red)
+//     color = red;
+//   }
 
-  return Container(
-    width: 140,
-    height: 100,
-    decoration: BoxDecoration(
-      borderRadius: const BorderRadius.all(Radius.circular(16)),
-      color: Colors.transparent,
-      border: Border.all(
-        color: darkPurple,
-        width: 4,
-      ),
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          'Total Volume',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'Helvetica',
-            fontSize: 16,
-            color: black,
-            letterSpacing: 0,
-            height: 0,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          NumberFormat.compactSimpleCurrency(locale: 'en-US')
-              .format(coin.totalVolume),
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'Helvetica',
-            fontSize: 16,
-            color: color,
-            letterSpacing: 0,
-            height: 0,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    ),
-  );
-}
+//   return Container(
+//     width: 140,
+//     height: 100,
+//     decoration: BoxDecoration(
+//       borderRadius: const BorderRadius.all(Radius.circular(16)),
+//       color: Colors.transparent,
+//       border: Border.all(
+//         color: darkPurple,
+//         width: 4,
+//       ),
+//     ),
+//     child: Column(
+//       mainAxisAlignment: MainAxisAlignment.center,
+//       children: [
+//         const Text(
+//           'Dividend Yield',
+//           textAlign: TextAlign.center,
+//           style: TextStyle(
+//             fontFamily: 'Helvetica',
+//             fontSize: 16,
+//             color: black,
+//             letterSpacing: 0,
+//             height: 0,
+//             fontWeight: FontWeight.w800,
+//           ),
+//         ),
+//         const SizedBox(height: 5),
+//         Text(
+//           stock.dividendYield.toString(),
+//           textAlign: TextAlign.center,
+//           style: TextStyle(
+//             fontFamily: 'Helvetica',
+//             fontSize: 16,
+//             color: color,
+//             letterSpacing: 0,
+//             height: 0,
+//             fontWeight: FontWeight.w600,
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+// }
 
-Container marketCapRank(CoinModel coin) {
-  int marketCapRank = coin.marketCapRank;
-  Color color = red;
+// Container marketcap(Result stock) {
+//   Color color = red;
+//   int marketCap = stock.marketCap ?? 0;
 
-  if (marketCapRank < 9) {
-    color = green;
-  } else if (marketCapRank >= 9 && marketCapRank <= 20) {
-    color = orangeRed;
-  } else {
-    color = red;
-  }
+//   if (marketCap > 10000000000) {
+//     // Market cap greater than $10 billion (Large Cap) is considered green (good)
+//     color = green;
+//   } else if (marketCap >= 2000000000 && marketCap <= 10000000000) {
+//     // Market cap between $2 billion and $10 billion (Mid Cap) is considered yellow (caution)
+//     color = orangeRed;
+//   } else {
+//     // Market cap less than $2 billion (Small Cap or smaller) is considered red (bad)
+//     color = red;
+//   }
 
-  return Container(
-    width: 140,
-    height: 100,
-    decoration: BoxDecoration(
-      borderRadius: const BorderRadius.all(Radius.circular(16)),
-      color: Colors.transparent,
-      border: Border.all(
-        color: darkPurple,
-        width: 4,
-      ),
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          'Market Cap Rank',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'Helvetica',
-            fontSize: 16,
-            color: black,
-            letterSpacing: 0,
-            height: 0,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          coin.marketCapRank.toString(),
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'Helvetica',
-            fontSize: 16,
-            color: color,
-            letterSpacing: 0,
-            height: 0,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    ),
-  );
-}
+//   return Container(
+//     width: 140,
+//     height: 100,
+//     decoration: BoxDecoration(
+//       borderRadius: const BorderRadius.all(Radius.circular(16)),
+//       color: Colors.transparent,
+//       border: Border.all(
+//         color: darkPurple,
+//         width: 4,
+//       ),
+//     ),
+//     child: Column(
+//       mainAxisAlignment: MainAxisAlignment.center,
+//       children: [
+//         const Text(
+//           'Market Capitalization',
+//           textAlign: TextAlign.center,
+//           style: TextStyle(
+//             fontFamily: 'Helvetica',
+//             fontSize: 16,
+//             color: black,
+//             letterSpacing: 0,
+//             height: 0,
+//             fontWeight: FontWeight.w800,
+//           ),
+//         ),
+//         const SizedBox(height: 5),
+//         Text(
+//           NumberFormat.compactSimpleCurrency(locale: 'en-US')
+//               .format(stock.marketCap),
+//           textAlign: TextAlign.center,
+//           style: TextStyle(
+//             fontFamily: 'Helvetica',
+//             fontSize: 16,
+//             color: color,
+//             letterSpacing: 0,
+//             height: 0,
+//             fontWeight: FontWeight.w600,
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+// }
 
-Container marketcap(CoinModel coin) {
-  Color color = red;
-  int marketCap = coin.marketCap;
-
-  if (marketCap > 10000000000) {
-    // Market cap greater than $10 billion (Large Cap) is considered green (good)
-    color = green;
-  } else if (marketCap >= 2000000000 && marketCap <= 10000000000) {
-    // Market cap between $2 billion and $10 billion (Mid Cap) is considered yellow (caution)
-    color = orangeRed;
-  } else {
-    // Market cap less than $2 billion (Small Cap or smaller) is considered red (bad)
-    color = red;
-  }
-
-  return Container(
-    width: 140,
-    height: 100,
-    decoration: BoxDecoration(
-      borderRadius: const BorderRadius.all(Radius.circular(16)),
-      color: Colors.transparent,
-      border: Border.all(
-        color: darkPurple,
-        width: 4,
-      ),
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          'Market Capitalization',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'Helvetica',
-            fontSize: 16,
-            color: black,
-            letterSpacing: 0,
-            height: 0,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          NumberFormat.compactSimpleCurrency(locale: 'en-US')
-              .format(coin.marketCap),
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: 'Helvetica',
-            fontSize: 16,
-            color: color,
-            letterSpacing: 0,
-            height: 0,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-Stack stockDetailsLogoName(BuildContext context, CoinModel coin) {
-  return Stack(
-    children: [
-      Positioned(
-        top: 8,
-        left: 2,
-        child: Column(
-          children: [
-            Container(
-              height: 70,
-              width: 70,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.transparent,
-                border: Border.all(
-                  color: darkPurple,
-                  width: 4,
-                ),
-              ),
-              child: Center(
-                child: Transform.scale(
-                  scale:
-                      1.0, // Adjust the scale factor to make the image smaller
-                  child: Image.network(
-                    coin.image,
-                    width: 40,
-                    height: 40,
-                    errorBuilder: (context, error, stackTrace) {
-                      // Return a placeholder widget in case of error
-                      return const Icon(Icons.error, size: 40);
-                    },
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '(${coin.symbol.toUpperCase()})',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Helvetica',
-                fontWeight: FontWeight.w800,
-                fontSize: 14,
-                color: Colors.grey[600],
-                letterSpacing: 0,
-                height: 0,
-              ),
-            ),
-          ],
-        ),
-      ),
-      Positioned(
-        left: 80,
-        top: 0,
-        child: SizedBox(
-          height: 80,
-          width: 218,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              coin.longName,
-              textAlign: TextAlign.left,
-              maxLines: 4,
-              style: const TextStyle(
-                fontFamily: 'Helvetica',
-                fontWeight: FontWeight.w800,
-                fontSize: 20,
-                color: purple,
-                overflow: TextOverflow.clip,
-                height: 0,
-              ),
+Widget stockDetailsLogoName(BuildContext context, Result stock) {
+  return SizedBox(
+      height: 60,
+      width: 311,
+      child: Column(
+        children: [
+          Text(
+            stock.longName,
+            textAlign: TextAlign.left,
+            maxLines: 4,
+            style: const TextStyle(
+              fontFamily: 'Helvetica',
+              fontWeight: FontWeight.w800,
+              fontSize: 30,
+              color: purple,
+              overflow: TextOverflow.clip,
+              height: 0,
             ),
           ),
-        ),
-      ),
-    ],
-  );
+          const SizedBox(height: 5),
+          Text(
+            '(${stock.symbol})',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'Helvetica',
+              fontWeight: FontWeight.w800,
+              fontSize: 16,
+              color: Colors.grey[600],
+              letterSpacing: 0,
+              height: 0,
+            ),
+          ),
+        ],
+      ));
 }
 
-ElevatedButton sellStock(BuildContext context, CoinModel stock, int quantity) {
+ElevatedButton sellStock(BuildContext context, Result stock, int quantity) {
   return ElevatedButton(
     onPressed: () {
-      openSellDialog(context, stock, 'crypto', quantity);
+      openSellDialog(context, stock, 'etf', quantity);
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),
@@ -803,10 +717,10 @@ ElevatedButton sellStock(BuildContext context, CoinModel stock, int quantity) {
   );
 }
 
-ElevatedButton buyStock(BuildContext context, CoinModel coin) {
+ElevatedButton buyStock(BuildContext context, Result stock) {
   return ElevatedButton(
     onPressed: () {
-      openBuyDialog(context, coin, 'crypto');
+      openBuyDialog(context, stock, 'etf');
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),
@@ -835,8 +749,8 @@ ElevatedButton buyStock(BuildContext context, CoinModel coin) {
   );
 }
 
-Color getColour(double percentage) {
-  if (percentage > 0) {
+Color getColour(double? percentage) {
+  if (percentage! > 0) {
     return green;
   } else if (percentage == 0) {
     return Colors.grey;

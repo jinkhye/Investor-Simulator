@@ -3,17 +3,20 @@ import 'package:investor_simulator/models/crypto_model.dart';
 import 'package:investor_simulator/models/portfolio_model.dart';
 import 'package:investor_simulator/models/stocks_model.dart';
 import 'package:investor_simulator/models/etf_model.dart' as etf;
+import 'package:investor_simulator/models/forex_model.dart' as forex;
 
 class PortfolioProvider extends ChangeNotifier {
   final List<StockInvestment> _stockInvestments = [];
   final List<ETFInvestment> _etfInvestments = [];
   final List<CryptoInvestment> _cryptoInvestments = [];
+  final List<ForexInvestment> _forexInvestments = [];
   final Map<String, Map<String, dynamic>> _portfolio = {};
   bool isLoadingPortfolio = false;
 
   List<StockInvestment> get stockInvestments => _stockInvestments;
   List<ETFInvestment> get etfInvestments => _etfInvestments;
   List<CryptoInvestment> get cryptoInvestments => _cryptoInvestments;
+  List<ForexInvestment> get forexInvestments => _forexInvestments;
   Map<String, Map<String, dynamic>> get portfolio => _portfolio;
   bool get loadingPortfolio => isLoadingPortfolio;
 
@@ -52,6 +55,19 @@ class PortfolioProvider extends ChangeNotifier {
       purchaseDate: DateTime.now(),
     );
     _cryptoInvestments.add(investment);
+    refreshPortfolio();
+    notifyListeners();
+  }
+
+  // Method to add an Forex investment and refresh the portfolio
+  void addForexInvestment(forex.Result forex, int shares) {
+    ForexInvestment investment = ForexInvestment(
+      stock: forex,
+      shares: shares,
+      purchasePrice: forex.regularMarketPrice,
+      purchaseDate: DateTime.now(),
+    );
+    _forexInvestments.add(investment);
     refreshPortfolio();
     notifyListeners();
   }
@@ -170,6 +186,44 @@ class PortfolioProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Method to sell an ETF investment
+  void sellForexInvestment(String forexSymbol, int sharesToSell) {
+    // Iterate through the investments list
+    int i = 0;
+    while (i < _forexInvestments.length && sharesToSell > 0) {
+      ForexInvestment investment = _forexInvestments[i];
+
+      // Check if the current investment matches the given ETF symbol
+      if (investment.stock.symbol == forexSymbol) {
+        // Calculate the amount to sell from this investment
+        int sharesToSellFromThisInvestment = sharesToSell;
+
+        // If the investment has fewer shares than sharesToSell, adjust the amount to sell
+        if (investment.shares < sharesToSell) {
+          sharesToSellFromThisInvestment = investment.shares;
+        }
+
+        // Deduct the shares to sell
+        investment.shares -= sharesToSellFromThisInvestment;
+        sharesToSell -= sharesToSellFromThisInvestment;
+
+        // If no shares left, remove the investment
+        if (investment.shares == 0) {
+          _forexInvestments.removeAt(i);
+          // Do not increment i since the list shrinks
+          continue;
+        }
+      }
+
+      // Increment the index
+      i++;
+    }
+
+    // Refresh the portfolio and notify listeners
+    refreshPortfolio();
+    notifyListeners();
+  }
+
   // Method to group investments by symbol and calculate total combined value for each symbol
   void refreshPortfolio() {
     isLoadingPortfolio = true;
@@ -245,6 +299,33 @@ class PortfolioProvider extends ChangeNotifier {
           'quantity': 0.0,
           'date': investment.purchaseDate,
           'type': 'crypto',
+          'result': stock,
+          'purchasePrice': purchasePrice,
+        };
+      }
+
+      _portfolio[symbol]?['totalValue'] += currentValue;
+      _portfolio[symbol]?['investments'].add(investment);
+      _portfolio[symbol]?['name'] = investment.stock.longName;
+      _portfolio[symbol]?['quantity'] += quantity;
+    }
+
+    // Group Forex investments
+    for (ForexInvestment investment in _forexInvestments) {
+      String? symbol = investment.stock.symbol;
+      double currentValue = investment.currentValue;
+      double quantity = investment.shares.toDouble();
+      double purchasePrice = investment.purchasePrice;
+      forex.Result stock = investment.stock;
+
+      if (!_portfolio.containsKey(symbol)) {
+        _portfolio[symbol] = {
+          'totalValue': 0.0,
+          'investments': [],
+          'name': 'null',
+          'quantity': 0.0,
+          'date': investment.purchaseDate,
+          'type': 'etf',
           'result': stock,
           'purchasePrice': purchasePrice,
         };
