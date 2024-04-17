@@ -62,7 +62,7 @@ class ForexInvestment {
     // Calculate the current value based on the current market price of the stock
     // You might need to implement a method to fetch the current market price
     double? currentMarketPrice = stock.regularMarketPrice;
-    return shares * currentMarketPrice!;
+    return shares * currentMarketPrice;
   }
 }
 
