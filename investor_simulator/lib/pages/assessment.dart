@@ -107,20 +107,26 @@ class Assessment extends StatelessWidget {
                         ),
                         SizedBox(height: 10),
                         // Display fetched risks from question 1
-                        for (int i = 0; i < fetchedText1.length; i++)
-                          Text(
-                            fetchedText1[i],
-                            style: TextStyle(
-                              fontFamily: 'Helvetica',
-                              fontSize: 20,
-                              color: white,
-                              fontWeight: i % 2 == 0
-                                  ? FontWeight.w800
-                                  : FontWeight.w600,
-                              wordSpacing: 0,
-                              letterSpacing: 0,
-                            ),
-                          ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: fetchedText1.length,
+                          itemBuilder: (context, index) {
+                            return Text(
+                              fetchedText1[index],
+                              style: TextStyle(
+                                fontFamily: 'Helvetica',
+                                fontSize: 20,
+                                color: white,
+                                fontWeight: index % 2 == 0
+                                    ? FontWeight.w800
+                                    : FontWeight.w600,
+                                wordSpacing: 0,
+                                letterSpacing: 0,
+                              ),
+                            );
+                          },
+                        ),
                         SizedBox(height: 20),
                         Divider(thickness: 4),
                         SizedBox(height: 20),
@@ -132,20 +138,26 @@ class Assessment extends StatelessWidget {
                         ),
                         SizedBox(height: 10),
                         // Display fetched improvements from question 2
-                        for (int i = 0; i < fetchedText2.length; i++)
-                          Text(
-                            fetchedText2[i],
-                            style: TextStyle(
-                              fontFamily: 'Helvetica',
-                              fontSize: 20,
-                              color: white,
-                              fontWeight: i % 2 == 0
-                                  ? FontWeight.w800
-                                  : FontWeight.w600,
-                              wordSpacing: 0,
-                              letterSpacing: 0,
-                            ),
-                          ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: fetchedText2.length,
+                          itemBuilder: (context, index) {
+                            return Text(
+                              fetchedText2[index],
+                              style: TextStyle(
+                                fontFamily: 'Helvetica',
+                                fontSize: 20,
+                                color: white,
+                                fontWeight: index % 2 == 0
+                                    ? FontWeight.w800
+                                    : FontWeight.w600,
+                                wordSpacing: 0,
+                                letterSpacing: 0,
+                              ),
+                            );
+                          },
+                        ),
                         SizedBox(height: 40),
                       ],
                     ),
@@ -161,11 +173,17 @@ class Assessment extends StatelessWidget {
 
   Future<List<String>> fetchText(
       List<Map<String, dynamic>> portfolioDetails, String message) async {
+    String format = "risk";
+
+    if (message.contains('Q2')) {
+      format = "improvements";
+    }
+
     final response = await http.post(
       Uri.parse('https://api.openai.com/v1/chat/completions'),
       headers: {
         'Authorization':
-            'Bearer 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',
+            'Bearer sk-proj-IuZJM0Qxv3tzoyQNx15UT3BlbkFJ289u6N8DjSpJsBUKTQtr',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
@@ -174,12 +192,23 @@ class Assessment extends StatelessWidget {
           {
             'role': "user",
             'content':
-                "You are now an AI stocks' portfolio analyzer. I strictly require you to analyze the portfolio and give your opinion on the following portfolio. These are the main questions that you have to answer: ${message} Answer each question in a sentence with brief and informative. I want only the answer in your response without labeling the question number but label it with a title on what you are explaining. Separate the title with your answers in sentences. Strictly follow the answer format: \n Description  1) Title of Description : Description  2) Title of Description : Description  3) Title of Description : Description   .Do not mention the question, do not give a summary. Answer each question in a sentence with brief and informative."
+                "You are now a stocks' portfolio analyzer. Pay detail to every single sentence that I provide you. I strictly require you to analyze the portfolio and give your opinion on the following portfolio. Do not return your answer in bold form. This is the main question that you have to answer : ${message} "
+          },
+          {
+            'role': "user",
+            'content':
+                "Answer each questions in sentence, briefly and informatively. Each response must be in between 30 to 50 words and only. At least 2 points for ${format}. 1 point should include only 1 paragraph description. I want only the answer in your response without labelling the question number but label it with a title on what are u explaining.  Separate the title with your answers in sentences. Strictly follow the answer format that i provide you."
           },
           {
             'role': "user",
             'content': "Portfolio: ${portfolioDetails.toString()}"
           },
+          {
+            'role': "user",
+            'content':
+                "DO NOT INCLUDE ANYTHING HERE 1) [ Title of ${format}]:   [YOUR ANSWER HERE]   \n\n 2) [ (Title of ${format}]: [Description] )\n\n "
+          },
+          {'role': "user", 'content': ""},
         ],
         'max_tokens': 1700,
       }),
