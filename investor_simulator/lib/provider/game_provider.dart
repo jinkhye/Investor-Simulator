@@ -7,9 +7,9 @@ class GameProvider extends ChangeNotifier {
   String get maxPath => _maxPath;
   double _money = 10000;
   double get money => _money;
-  int _accommodationUse = 0;
+  int _accommodationUse = -1;
   int get accommodationUse => _accommodationUse;
-  int _clothesUse = 0;
+  int _clothesUse = -1;
   int get clothesUse => _clothesUse;
   int _level = 1;
   int get level => _level;
@@ -18,9 +18,20 @@ class GameProvider extends ChangeNotifier {
   double get currentXp => _currentXp;
   double get requiredXp => _requiredXp;
 
+  void adminMoney(double money) {
+    _money += money;
+    notifyListeners();
+  }
+
+  void adminLevel(int level) {
+    _level += level;
+    _requiredXp += 200 * _level;
+    notifyListeners();
+  }
+
   void addLevel() {
     _level++;
-    _requiredXp += 100;
+    _requiredXp += 200;
     notifyListeners();
   }
 

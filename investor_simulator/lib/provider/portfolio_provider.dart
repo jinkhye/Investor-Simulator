@@ -73,7 +73,9 @@ class PortfolioProvider extends ChangeNotifier {
   }
 
   // Method to sell a stock investment
-  void sellStockInvestment(String stockSymbol, int sharesToSell) {
+  double sellStockInvestment(String stockSymbol, int sharesToSell) {
+    double totalPrice = 0.0;
+
     // Iterate through the investments list
     int i = 0;
     while (i < _stockInvestments.length && sharesToSell > 0) {
@@ -88,6 +90,10 @@ class PortfolioProvider extends ChangeNotifier {
         if (investment.shares < sharesToSell) {
           sharesToSellFromThisInvestment = investment.shares;
         }
+
+        double priceOfSharesSold =
+            sharesToSellFromThisInvestment * investment.purchasePrice;
+        totalPrice += priceOfSharesSold;
 
         // Deduct the shares to sell
         investment.shares -= sharesToSellFromThisInvestment;
@@ -108,10 +114,14 @@ class PortfolioProvider extends ChangeNotifier {
     // Refresh the portfolio and notify listeners
     refreshPortfolio();
     notifyListeners();
+
+    // Return double the total price of the stocks sold
+    return totalPrice;
   }
 
   // Method to sell an ETF investment
-  void sellETFInvestment(String etfSymbol, int sharesToSell) {
+  double sellETFInvestment(String etfSymbol, int sharesToSell) {
+    double totalPrice = 0;
     // Iterate through the investments list
     int i = 0;
     while (i < _etfInvestments.length && sharesToSell > 0) {
@@ -126,6 +136,10 @@ class PortfolioProvider extends ChangeNotifier {
         if (investment.shares < sharesToSell) {
           sharesToSellFromThisInvestment = investment.shares;
         }
+
+        double priceOfSharesSold =
+            sharesToSellFromThisInvestment * investment.purchasePrice;
+        totalPrice += priceOfSharesSold;
 
         // Deduct the shares to sell
         investment.shares -= sharesToSellFromThisInvestment;
@@ -146,10 +160,12 @@ class PortfolioProvider extends ChangeNotifier {
     // Refresh the portfolio and notify listeners
     refreshPortfolio();
     notifyListeners();
+    return totalPrice;
   }
 
   // Method to sell a crypto investment
-  void sellCryptoInvestment(String cryptoSymbol, int unitsToSell) {
+  double sellCryptoInvestment(String cryptoSymbol, int unitsToSell) {
+    double totalPrice = 0;
     // Iterate through the investments list
     int i = 0;
     while (i < _cryptoInvestments.length && unitsToSell > 0) {
@@ -164,6 +180,10 @@ class PortfolioProvider extends ChangeNotifier {
         if (investment.shares < unitsToSell) {
           unitsToSellFromThisInvestment = investment.shares;
         }
+
+        double priceOfSharesSold =
+            unitsToSellFromThisInvestment * investment.purchasePrice;
+        totalPrice += priceOfSharesSold;
 
         // Deduct the shares to sell
         investment.shares -= unitsToSellFromThisInvestment;
@@ -184,10 +204,12 @@ class PortfolioProvider extends ChangeNotifier {
     // Refresh the portfolio and notify listeners
     refreshPortfolio();
     notifyListeners();
+    return totalPrice;
   }
 
   // Method to sell an ETF investment
-  void sellForexInvestment(String forexSymbol, int sharesToSell) {
+  double sellForexInvestment(String forexSymbol, int sharesToSell) {
+    double totalPrice = 0;
     // Iterate through the investments list
     int i = 0;
     while (i < _forexInvestments.length && sharesToSell > 0) {
@@ -202,6 +224,10 @@ class PortfolioProvider extends ChangeNotifier {
         if (investment.shares < sharesToSell) {
           sharesToSellFromThisInvestment = investment.shares;
         }
+
+        double priceOfSharesSold =
+            sharesToSellFromThisInvestment * investment.purchasePrice;
+        totalPrice += priceOfSharesSold;
 
         // Deduct the shares to sell
         investment.shares -= sharesToSellFromThisInvestment;
@@ -222,6 +248,7 @@ class PortfolioProvider extends ChangeNotifier {
     // Refresh the portfolio and notify listeners
     refreshPortfolio();
     notifyListeners();
+    return totalPrice;
   }
 
   // Method to group investments by symbol and calculate total combined value for each symbol

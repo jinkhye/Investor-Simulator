@@ -67,7 +67,7 @@ class _MainMenuState extends State<MainMenu> {
   Column gameMenu(BuildContext context, imagePath, maxPath) {
     return Column(
       children: <Widget>[
-        topMenu(context),
+        topMainMenu(context),
         const SizedBox(
           height: 10,
         ),
@@ -85,22 +85,37 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   Padding bottomMenu(BuildContext context) {
+    final scrollController = ScrollController();
+
     return Padding(
       padding: const EdgeInsets.only(top: 5, left: 15, right: 10),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            invest(context),
-            const SizedBox(width: 20),
-            portfolio(context),
-            const SizedBox(width: 20),
-            news(context),
-            const SizedBox(width: 20),
-            accomodation(context),
-            const SizedBox(width: 20),
-            clothes(context),
-          ],
+      child: RawScrollbar(
+        thumbVisibility: true,
+        thumbColor: yellow,
+        mainAxisMargin: 10,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        controller: scrollController,
+        child: SingleChildScrollView(
+          controller: scrollController,
+          scrollDirection: Axis.horizontal,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 15.0),
+            child: Row(
+              children: [
+                invest(context),
+                const SizedBox(width: 20),
+                portfolio(context),
+                const SizedBox(width: 20),
+                news(context),
+                const SizedBox(width: 20),
+                accomodation(context),
+                const SizedBox(width: 20),
+                clothes(context),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -432,10 +447,15 @@ class _MainMenuState extends State<MainMenu> {
     return Padding(
       padding: const EdgeInsets.only(top: 5, left: 15, right: 10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          name(),
+          StrokeText(
+            text: DateFormat('dd MMMM').format(_dateTime).toUpperCase(),
+            textStyle: const TextStyle(fontSize: 25, color: yellow),
+            strokeColor: darkPurple,
+            strokeWidth: 6,
+          ),
           Expanded(child: Container()),
           dateTime(),
         ],

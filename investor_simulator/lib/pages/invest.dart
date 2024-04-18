@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/invest_page/crypto.dart';
 import 'package:investor_simulator/invest_page/etf.dart';
 import 'package:investor_simulator/invest_page/forex.dart';
 import 'package:investor_simulator/invest_page/stocks.dart';
 import 'package:investor_simulator/menu/topMenu.dart';
+import 'package:investor_simulator/provider/game_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 
 class Invest extends StatefulWidget {
@@ -63,6 +66,7 @@ class _InvestState extends State<Invest> {
                       navigationButton('ETF', 1),
                       navigationButton('FOREX', 2),
                       navigationButton('CRYPTO', 3),
+                      const SizedBox(width: 10),
                     ],
                   ),
                 ),
@@ -71,11 +75,11 @@ class _InvestState extends State<Invest> {
               Expanded(
                 child: PageView(
                   controller: pageController,
-                  children: const [
-                    StocksMenuPage(),
-                    ETFMenuPage(),
-                    ForexMenuPage(),
-                    CryptoMenuPage(),
+                  children: [
+                    const StocksMenuPage(),
+                    const ETFMenuPage(),
+                    lockForexPage(),
+                    lockCryptoPage(),
                   ],
                 ),
               ),
@@ -84,6 +88,102 @@ class _InvestState extends State<Invest> {
         ),
       ),
     );
+  }
+
+  Widget lockCryptoPage() {
+    final provider = Provider.of<GameProvider>(context);
+    int currentLevel = provider.level;
+    if (currentLevel >= 10) {
+      return const CryptoMenuPage();
+    } else {
+      return Stack(
+        children: [
+          const CryptoMenuPage(),
+          Container(
+            color: black.withOpacity(0.65),
+          ),
+          const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.lock,
+                  color: white,
+                  size: 100,
+                ),
+                SizedBox(
+                  width: 300,
+                  child: Column(
+                    children: [
+                      StrokeText(
+                        text: 'REACH LVL 10 TO',
+                        textStyle: TextStyle(color: yellow, fontSize: 30),
+                        strokeColor: black,
+                        strokeWidth: 6,
+                      ),
+                      StrokeText(
+                        text: 'UNLOCK CRYPTOCURRENCY',
+                        textStyle: TextStyle(color: yellow, fontSize: 30),
+                        strokeColor: black,
+                        strokeWidth: 6,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
+  Widget lockForexPage() {
+    final provider = Provider.of<GameProvider>(context);
+    int currentLevel = provider.level;
+    if (currentLevel >= 5) {
+      return const ForexMenuPage();
+    } else {
+      return Stack(
+        children: [
+          const ForexMenuPage(),
+          Container(
+            color: black.withOpacity(0.65),
+          ),
+          const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.lock,
+                  color: white,
+                  size: 100,
+                ),
+                SizedBox(
+                  width: 300,
+                  child: Column(
+                    children: [
+                      StrokeText(
+                        text: 'REACH LVL 5 TO',
+                        textStyle: TextStyle(color: yellow, fontSize: 30),
+                        strokeColor: black,
+                        strokeWidth: 6,
+                      ),
+                      StrokeText(
+                        text: 'UNLOCK FOREX MARKET',
+                        textStyle: TextStyle(color: yellow, fontSize: 30),
+                        strokeColor: black,
+                        strokeWidth: 6,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
   }
 
   Widget navigationButton(String text, int index) {

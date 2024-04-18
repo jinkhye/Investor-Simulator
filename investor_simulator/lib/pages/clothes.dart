@@ -106,9 +106,12 @@ class _ClothesState extends State<Clothes> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               StrokeText(
-                                text: clothes[index].name,
-                                textStyle:
-                                    const TextStyle(fontSize: 25, color: black),
+                                text: clothes[index].name.toUpperCase(),
+                                textStyle: const TextStyle(
+                                    fontSize: 25,
+                                    color: black,
+                                    fontWeight: FontWeight.w100,
+                                    letterSpacing: 0.3),
                                 strokeColor: darkPurple,
                                 strokeWidth: 0,
                               ),
@@ -121,14 +124,27 @@ class _ClothesState extends State<Clothes> {
                                     height: 30,
                                   ),
                                   const SizedBox(width: 5),
-                                  StrokeText(
-                                    text: "${clothes[index].price}/month",
-                                    textStyle: const TextStyle(
-                                      fontSize: 20,
-                                      color: black,
+                                  RichText(
+                                    text: TextSpan(
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                          text: '\$${clothes[index].price}',
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                            color: green,
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                        ),
+                                        const TextSpan(
+                                          text: '/month',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: black,
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    strokeColor: white,
-                                    strokeWidth: 4,
                                   ),
                                 ],
                               ),
