@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:investor_simulator/constant/color.dart';
+import 'package:investor_simulator/dialog/admin_dialog.dart';
 import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
@@ -16,6 +17,24 @@ Padding topMenu(BuildContext context) {
     child: Row(
       children: <Widget>[
         back(context),
+        const SizedBox(width: 10),
+        level(gameProvider.level, gameProvider.currentXp,
+            gameProvider.requiredXp),
+        Expanded(child: Container()),
+        money(currentMoney),
+      ],
+    ),
+  );
+}
+
+Padding topMainMenu(BuildContext context) {
+  final gameProvider = Provider.of<GameProvider>(context);
+  final currentMoney = gameProvider.money;
+  return Padding(
+    padding: const EdgeInsets.only(right: 10, top: 40),
+    child: Row(
+      children: <Widget>[
+        admin(context),
         const SizedBox(width: 10),
         level(gameProvider.level, gameProvider.currentXp,
             gameProvider.requiredXp),
@@ -84,29 +103,7 @@ Stack level(int currentLevel, double currentXp, double requiredXp) {
       Positioned(
         top: 6,
         left: 20,
-        child: Container(
-          padding: const EdgeInsets.only(right: 10),
-          alignment: Alignment.bottomRight,
-          width: 100,
-          height: 30,
-          decoration: BoxDecoration(
-            color: const Color(0xFFFCD800),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: const Color(0xFFF5861D),
-              width: 4,
-            ),
-          ),
-          child: StrokeText(
-            text: '$current / $req',
-            textStyle: const TextStyle(
-              fontSize: 14,
-              color: white,
-            ),
-            strokeColor: Colors.black,
-            strokeWidth: 3,
-          ),
-        ),
+        child: levelContainer(currentLevel, current, req),
       ),
       Container(
         width: 45,
@@ -119,18 +116,132 @@ Stack level(int currentLevel, double currentXp, double requiredXp) {
           ),
         ),
         child: Center(
-          child: StrokeText(
-            text: currentLevel.toString(),
-            textStyle: const TextStyle(
-              fontSize: 23,
-              color: white,
-            ),
-            strokeColor: Colors.black,
-            strokeWidth: 3,
-          ),
+          child: getLevel(currentLevel),
         ),
       ),
     ],
+  );
+}
+
+Container levelContainer(int currentLevel, int current, int req) {
+  if (currentLevel >= 20) {
+    return Container(
+      padding: const EdgeInsets.only(right: 10),
+      alignment: Alignment.bottomRight,
+      width: 80,
+      height: 30,
+      decoration: BoxDecoration(
+        color: const Color(0xFFFCD800),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: const Color(0xFFF5861D),
+          width: 4,
+        ),
+      ),
+      child: xp(currentLevel, current, req),
+    );
+  } else {
+    return Container(
+      padding: const EdgeInsets.only(right: 10),
+      alignment: Alignment.bottomRight,
+      width: 105,
+      height: 30,
+      decoration: BoxDecoration(
+        color: const Color(0xFFFCD800),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: const Color(0xFFF5861D),
+          width: 4,
+        ),
+      ),
+      child: xp(currentLevel, current, req),
+    );
+  }
+}
+
+Widget getLevel(int currentLevel) {
+  if (currentLevel > 20) {
+    return const StrokeText(
+      text: '20',
+      textStyle: TextStyle(
+        fontSize: 23,
+        color: white,
+      ),
+      strokeColor: Colors.black,
+      strokeWidth: 3,
+    );
+  } else {
+    return StrokeText(
+      text: currentLevel.toString(),
+      textStyle: const TextStyle(
+        fontSize: 23,
+        color: white,
+      ),
+      strokeColor: Colors.black,
+      strokeWidth: 3,
+    );
+  }
+}
+
+Widget xp(int level, int current, int req) {
+  if (level > 20) {
+    return const StrokeText(
+      text: 'MAX',
+      textStyle: TextStyle(
+        fontSize: 14,
+        color: white,
+      ),
+      strokeColor: Colors.black,
+      strokeWidth: 3,
+    );
+  } else {
+    return StrokeText(
+      text: '$current / $req',
+      textStyle: const TextStyle(
+        fontSize: 14,
+        color: white,
+        letterSpacing: 1,
+      ),
+      strokeColor: Colors.black,
+      strokeWidth: 3,
+    );
+  }
+}
+
+ElevatedButton admin(BuildContext context) {
+  return ElevatedButton(
+    onPressed: () {
+      openAdminDialog(context);
+    },
+    style: ElevatedButton.styleFrom(
+      padding: const EdgeInsets.all(0),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+    ),
+    child: Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [purple, darkPurple],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+        shape: BoxShape.rectangle,
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+        border: Border.all(
+          color: Colors.white,
+          width: 2,
+        ),
+      ),
+      child: const Center(
+        child: Icon(
+          Icons.menu_rounded,
+          color: Colors.white,
+          size: 20,
+        ),
+      ),
+    ),
   );
 }
 

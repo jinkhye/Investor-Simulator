@@ -148,26 +148,32 @@ class _SellDialogState extends State<SellDialog> {
     return ElevatedButton(
       onPressed: () {
         if (quantity > 0 && quantity <= widget.quantity) {
+          double portfolioWorth = 0;
           switch (widget.type) {
             case 'stock':
-              portfolioProvider.sellStockInvestment(
+              portfolioWorth = portfolioProvider.sellStockInvestment(
                   widget.stock.symbol, quantity);
 
               break;
             case 'etf':
-              portfolioProvider.sellETFInvestment(
+              portfolioWorth = portfolioProvider.sellETFInvestment(
                   widget.stock.symbol, quantity);
 
               break;
             case 'forex':
-              portfolioProvider.sellForexInvestment(
+              portfolioWorth = portfolioProvider.sellForexInvestment(
                   widget.stock.symbol, quantity);
               break;
             case 'crypto':
-              portfolioProvider.sellCryptoInvestment(
+              portfolioWorth = portfolioProvider.sellCryptoInvestment(
                   widget.stock.symbol, quantity);
               break;
           }
+          double totalEarned = portfolioWorth - totalPrice;
+          if (totalEarned > 0) {
+            provider.addXp(totalEarned);
+          }
+
           provider.addMoney(totalPrice);
           Navigator.pop(context); // Close the dialog after buying
         } else {

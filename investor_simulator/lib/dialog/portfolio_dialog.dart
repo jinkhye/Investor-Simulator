@@ -818,21 +818,13 @@ Stack stockDetailsLogoName(BuildContext context, dynamic stock) {
                 child: Transform.scale(
                   scale:
                       1.0, // Adjust the scale factor to make the image smaller
-                  child: Image.asset(
-                    'assets/stocks/${stock.symbol}.png',
-                    width: 40,
-                    height: 40,
-                    errorBuilder: (context, error, stackTrace) {
-                      // Return a placeholder widget in case of error
-                      return const Icon(Icons.error, size: 40);
-                    },
-                  ),
+                  child: iconStock(stock),
                 ),
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              '(${stock.symbol})',
+              '(${stock.symbol.toUpperCase()})',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Helvetica',

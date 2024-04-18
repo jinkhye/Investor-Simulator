@@ -71,109 +71,149 @@ class _AccomodationState extends State<Accomodation> {
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 5.0),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    Container(
-                      height: 170,
-                      width: 400,
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 30,
-                      child: Container(
-                        alignment: Alignment.topRight,
-                        height: 100,
-                        width: 320,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
-                              spreadRadius: 1,
-                              blurRadius: 5,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 10, right: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              StrokeText(
-                                text: accommodation[index].name,
-                                textStyle:
-                                    const TextStyle(fontSize: 25, color: black),
-                                strokeColor: darkPurple,
-                                strokeWidth: 0,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Image.asset(
-                                    'assets/images/money.png',
-                                    width: 30,
-                                    height: 30,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  StrokeText(
-                                    text: "${accommodation[index].price}/month",
-                                    textStyle: const TextStyle(
-                                      fontSize: 20,
-                                      color: black,
-                                    ),
-                                    strokeColor: white,
-                                    strokeWidth: 4,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 8,
-                      right: 14,
-                      child: accept(context, index, imagePath),
-                    ),
-                    Positioned(
-                      top: 0,
-                      left: 10,
-                      child: Container(
-                        height: 130,
-                        width: 130,
-                        decoration: BoxDecoration(
-                          color: purple,
-                          borderRadius: BorderRadius.circular(16),
-                          image: DecorationImage(
-                            image: AssetImage(accommodation[index].iconPath),
-                            fit: BoxFit.cover,
-                          ),
-                          border: Border.all(
-                            color: darkPurple,
-                            width: 4,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
-                              spreadRadius: 1,
-                              blurRadius: 5,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                child: lockedAccomodation(index, context, imagePath),
               );
             },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget lockedAccomodation(index, context, GameProvider imagePath) {
+    int currentLevel = imagePath.level;
+    if (currentLevel >= accommodation[index].lvl) {
+      return accomodationStack(index, context, imagePath);
+    } else {
+      return Stack(
+        children: [
+          accomodationStack(index, context, imagePath),
+          Container(
+            height: 160,
+            width: 400,
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Center(
+              child: StrokeText(
+                text: 'UNLOCK AT LVL ${accommodation[index].lvl}',
+                textStyle: const TextStyle(
+                  fontSize: 30,
+                  color: yellow,
+                  letterSpacing: 1,
+                ),
+                strokeColor: Colors.black,
+                strokeWidth: 5,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
+  Stack accomodationStack(int index, BuildContext context, imagePath) {
+    return Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        Container(
+          height: 170,
+          width: 400,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        Positioned(
+          bottom: 30,
+          child: Container(
+            alignment: Alignment.topRight,
+            height: 100,
+            width: 320,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10, right: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  StrokeText(
+                    text: accommodation[index].name.toUpperCase(),
+                    textStyle: const TextStyle(
+                        fontSize: 25,
+                        color: black,
+                        fontWeight: FontWeight.w100,
+                        letterSpacing: 1),
+                    strokeColor: darkPurple,
+                    strokeWidth: 0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Image.asset(
+                        'assets/images/money.png',
+                        width: 30,
+                        height: 30,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        '\$${accommodation[index].price}',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: green,
+                          fontWeight: FontWeight.w800,
+                          fontFamily: 'Helvetica',
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 8,
+          right: 14,
+          child: accept(context, index, imagePath),
+        ),
+        Positioned(
+          top: 0,
+          left: 10,
+          child: Container(
+            height: 130,
+            width: 130,
+            decoration: BoxDecoration(
+              color: purple,
+              borderRadius: BorderRadius.circular(16),
+              image: DecorationImage(
+                image: AssetImage(accommodation[index].iconPath),
+                fit: BoxFit.cover,
+              ),
+              border: Border.all(
+                color: darkPurple,
+                width: 4,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -186,7 +226,9 @@ class _AccomodationState extends State<Accomodation> {
         String image = accommodation[index].iconPath;
         double price = accommodation[index].price.toDouble();
         // Add the action to be performed when the button is pressed
-        if (imagePath.money >= price) {
+        if (imagePath.money >= price &&
+            imagePath.accommodationUse != index &&
+            index > imagePath.accommodationUse) {
           imagePath.setImagePath(image);
           imagePath.subtractMoney(price);
           imagePath.setAccommodationUse(index);
@@ -247,8 +289,10 @@ class _AccomodationState extends State<Accomodation> {
   String getText(int index, imagePath) {
     if (imagePath.accommodationUse == index) {
       return 'SELECTED';
-    } else {
+    } else if (imagePath.accommodationUse < index) {
       return 'ACCEPT';
+    } else {
+      return 'LOCKED';
     }
   }
 
