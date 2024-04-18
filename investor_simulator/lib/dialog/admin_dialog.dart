@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:investor_simulator/constant/color.dart';
+import 'package:investor_simulator/pages/home.dart';
 import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
@@ -31,7 +33,22 @@ void openAdminDialog(BuildContext context) {
                 border: Border.all(color: white, width: 6),
                 color: Colors.amber,
               ),
-              child: helpPage3(context),
+              child: SingleChildScrollView(
+                  child: Column(
+                children: [
+                  helpPage3(context),
+                  const SizedBox(height: 30),
+                  GestureDetector(
+                    onTap: () => Get.to(const HomePage()),
+                    child: const Icon(
+                      Icons.home_rounded,
+                      color: white,
+                      size: 40,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              )),
             ),
           ),
         ),

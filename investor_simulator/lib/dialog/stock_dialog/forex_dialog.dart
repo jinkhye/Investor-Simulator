@@ -301,13 +301,7 @@ SingleChildScrollView stockDetails(
             ],
           ),
         ),
-        Column(
-          children: [
-            marketState(stock),
-            const SizedBox(height: 5),
-            weekRange(stock),
-          ],
-        ),
+        weekRange(stock),
         const SizedBox(height: 10),
       ],
     ),

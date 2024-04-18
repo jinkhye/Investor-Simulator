@@ -71,130 +71,154 @@ class _ClothesState extends State<Clothes> {
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 5.0),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    Container(
-                      height: 170,
-                      width: 400,
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 30,
-                      child: Container(
-                        alignment: Alignment.topRight,
-                        height: 100,
-                        width: 320,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
-                              spreadRadius: 1,
-                              blurRadius: 5,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 10, right: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              StrokeText(
-                                text: clothes[index].name.toUpperCase(),
-                                textStyle: const TextStyle(
-                                    fontSize: 25,
-                                    color: black,
-                                    fontWeight: FontWeight.w100,
-                                    letterSpacing: 0.3),
-                                strokeColor: darkPurple,
-                                strokeWidth: 0,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Image.asset(
-                                    'assets/images/money.png',
-                                    width: 30,
-                                    height: 30,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  RichText(
-                                    text: TextSpan(
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: '\$${clothes[index].price}',
-                                          style: const TextStyle(
-                                            fontSize: 20,
-                                            color: green,
-                                            fontWeight: FontWeight.w800,
-                                          ),
-                                        ),
-                                        const TextSpan(
-                                          text: '/month',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            color: black,
-                                            fontWeight: FontWeight.w800,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 8,
-                      right: 14,
-                      child: accept(context, index, imagePath),
-                    ),
-                    Positioned(
-                      top: 0,
-                      left: 10,
-                      child: Container(
-                        height: 130,
-                        width: 130,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [purple, darkPurple],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                          color: purple,
-                          borderRadius: BorderRadius.circular(16),
-                          image: DecorationImage(
-                            image: AssetImage(clothes[index].iconPath),
-                            fit: BoxFit.contain,
-                          ),
-                          border: Border.all(
-                            color: darkPurple,
-                            width: 4,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
-                              spreadRadius: 1,
-                              blurRadius: 5,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                child: lockedClothes(index, context, imagePath),
               );
             },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Stack lockedClothes(int index, BuildContext context, imagePath) {
+    int currentLevel = imagePath.level;
+    if (currentLevel >= clothes[index].lvl) {
+      return clothesStack(index, context, imagePath);
+    } else {
+      return Stack(
+        children: [
+          clothesStack(index, context, imagePath),
+          Container(
+            height: 160,
+            width: 400,
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Center(
+              child: StrokeText(
+                text: 'UNLOCK AT LVL ${clothes[index].lvl}',
+                textStyle: const TextStyle(
+                  fontSize: 30,
+                  color: yellow,
+                  letterSpacing: 1,
+                ),
+                strokeColor: Colors.black,
+                strokeWidth: 5,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
+  Stack clothesStack(int index, BuildContext context, imagePath) {
+    return Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        Container(
+          height: 170,
+          width: 400,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        Positioned(
+          bottom: 30,
+          child: Container(
+            alignment: Alignment.topRight,
+            height: 100,
+            width: 320,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10, right: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  StrokeText(
+                    text: clothes[index].name.toUpperCase(),
+                    textStyle: const TextStyle(
+                        fontSize: 25,
+                        color: black,
+                        fontWeight: FontWeight.w100,
+                        letterSpacing: 0.3),
+                    strokeColor: darkPurple,
+                    strokeWidth: 0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Image.asset(
+                        'assets/images/money.png',
+                        width: 30,
+                        height: 30,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        '\$${clothes[index].price}',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: green,
+                          fontWeight: FontWeight.w800,
+                          fontFamily: 'Helvetica',
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 8,
+          right: 14,
+          child: accept(context, index, imagePath),
+        ),
+        Positioned(
+          top: 0,
+          left: 10,
+          child: Container(
+            height: 130,
+            width: 130,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [purple, darkPurple],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              color: purple,
+              borderRadius: BorderRadius.circular(16),
+              image: DecorationImage(
+                image: AssetImage(clothes[index].iconPath),
+                fit: BoxFit.contain,
+              ),
+              border: Border.all(
+                color: darkPurple,
+                width: 4,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -207,7 +231,11 @@ class _ClothesState extends State<Clothes> {
         String image = clothes[index].iconPath;
         double price = clothes[index].price.toDouble();
         // Add the action to be performed when the button is pressed
-        if (maxPath.money >= price) {
+        if (maxPath.money >= price &&
+            maxPath.clothesUse != index &&
+            maxPath.level >= clothes[index].lvl &&
+            index > maxPath.clothesUse &&
+            maxPath.clothesUse == index - 1) {
           maxPath.setMaxPath(image);
           maxPath.subtractMoney(price);
           maxPath.setClothesUse(index);
@@ -219,15 +247,21 @@ class _ClothesState extends State<Clothes> {
             Colors.transparent, // Set the background color to transparent
         elevation: 0, // Remove the elevation
       ),
-      child: Container(
+      child: getBuyButton(index, maxPath, clothes[index].lvl),
+    );
+  }
+
+  Widget getBuyButton(index, GameProvider imagePath, int requiredLvl) {
+    if (imagePath.clothesUse == index) {
+      return Container(
         alignment: Alignment.center,
         height: 35,
         width: 100,
         decoration: BoxDecoration(
-          color: getButtonColor(index, maxPath),
+          color: yellow,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: getStrokeColor(index, maxPath),
+            color: orangeRed,
             width: 4,
           ),
           boxShadow: [
@@ -239,37 +273,125 @@ class _ClothesState extends State<Clothes> {
             ),
           ],
         ),
-        child: StrokeText(
-          text: getText(index, maxPath),
-          textStyle: const TextStyle(fontSize: 18, color: white),
+        child: const StrokeText(
+          text: 'SELECTED',
+          textStyle: TextStyle(fontSize: 18, color: white),
           strokeColor: black,
           strokeWidth: 4,
         ),
-      ),
-    );
-  }
-
-  Color getButtonColor(int index, maxPath) {
-    if (maxPath.clothesUse == index) {
-      return yellow;
+      );
+    } else if (imagePath.level < requiredLvl) {
+      return Container(
+        alignment: Alignment.center,
+        height: 35,
+        width: 100,
+        decoration: BoxDecoration(
+          color: Colors.grey[400] ?? Colors.grey,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Colors.grey[500] ?? Colors.grey,
+            width: 4,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: const StrokeText(
+          text: 'LOCKED',
+          textStyle: TextStyle(fontSize: 18, color: white),
+          strokeColor: black,
+          strokeWidth: 4,
+        ),
+      );
+    } else if (imagePath.clothesUse == index - 1) {
+      return Container(
+        alignment: Alignment.center,
+        height: 35,
+        width: 100,
+        decoration: BoxDecoration(
+          color: lightGreen,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: green,
+            width: 4,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: const StrokeText(
+          text: 'ACCEPT',
+          textStyle: TextStyle(fontSize: 18, color: white),
+          strokeColor: black,
+          strokeWidth: 4,
+        ),
+      );
+    } else if (imagePath.clothesUse > index) {
+      return Container(
+        alignment: Alignment.center,
+        height: 35,
+        width: 100,
+        decoration: BoxDecoration(
+          color: Colors.grey[400] ?? Colors.grey,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Colors.grey[500] ?? Colors.grey,
+            width: 4,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: const StrokeText(
+          text: 'BOUGHT',
+          textStyle: TextStyle(fontSize: 18, color: white),
+          strokeColor: black,
+          strokeWidth: 4,
+        ),
+      );
     } else {
-      return lightGreen;
-    }
-  }
-
-  Color getStrokeColor(int index, maxPath) {
-    if (maxPath.clothesUse == index) {
-      return orangeRed;
-    } else {
-      return green;
-    }
-  }
-
-  String getText(int index, maxPath) {
-    if (maxPath.clothesUse == index) {
-      return 'SELECTED';
-    } else {
-      return 'ACCEPT';
+      return Container(
+        alignment: Alignment.center,
+        height: 35,
+        width: 100,
+        decoration: BoxDecoration(
+          color: Colors.grey[400] ?? Colors.grey,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Colors.grey[500] ?? Colors.grey,
+            width: 4,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: const StrokeText(
+          text: 'LOCKED',
+          textStyle: TextStyle(fontSize: 18, color: white),
+          strokeColor: black,
+          strokeWidth: 4,
+        ),
+      );
     }
   }
 

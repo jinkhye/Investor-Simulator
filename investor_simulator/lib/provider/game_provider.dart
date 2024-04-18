@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:investor_simulator/models/accommodation_model.dart';
 
 class GameProvider extends ChangeNotifier {
   String _imagePath = 'assets/images/area0.png';
@@ -7,6 +8,9 @@ class GameProvider extends ChangeNotifier {
   String get maxPath => _maxPath;
   double _money = 10000;
   double get money => _money;
+  final List<AccomodationModel> _accomodation =
+      AccomodationModel.getAccomodation();
+  List<AccomodationModel> get accomodation => _accomodation;
   int _accommodationUse = -1;
   int get accommodationUse => _accommodationUse;
   int _clothesUse = -1;
@@ -17,6 +21,11 @@ class GameProvider extends ChangeNotifier {
   double _requiredXp = 100;
   double get currentXp => _currentXp;
   double get requiredXp => _requiredXp;
+
+  void addAccomodationLevel(index) {
+    _accomodation[index].current++;
+    notifyListeners();
+  }
 
   void adminMoney(double money) {
     _money += money;
