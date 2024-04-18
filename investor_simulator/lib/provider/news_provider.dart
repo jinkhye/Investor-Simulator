@@ -95,7 +95,7 @@ class NewsProvider with ChangeNotifier {
         headers: {
           'X-RapidAPI-Host': 'newsnow.p.rapidapi.com',
           'X-RapidAPI-Key':
-              'db6a0970ccmsh0f5067e3d31cf07p1cc59djsn96c676c0db70',
+              '1651139c27msh71996520d0ed192p1eb3b8jsn7c67cea4d8db',
           'Content-Type': 'application/json', // Specify JSON content type
         },
         body: requestBody,
