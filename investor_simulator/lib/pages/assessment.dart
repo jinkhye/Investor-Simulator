@@ -19,7 +19,7 @@ class Assessment extends StatelessWidget {
     String question2 =
         "Q2. What is the improvements that can be made to the portfolio.(How can i improve my portfolio) (Do not mention the problems) ";
     String question3 =
-        "Q3. How much the score u think the portfolio valued(1-100)? ( give me the score only, do not include any explanation or description ) ";
+        "Q3. How much the score u think the portfolio valued(1-100)? ( give me the score only (ONLY DIGITS), do not include any explanation or description ) ";
     portfolioProvider.portfolio.forEach((symbol, investment) {
       Map<String, dynamic> details = {
         'symbol': symbol,
