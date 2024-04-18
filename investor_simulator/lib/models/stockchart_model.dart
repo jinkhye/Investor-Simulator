@@ -103,10 +103,11 @@ class Quote {
   });
 
   factory Quote.fromJson(Map<String, dynamic> json) => Quote(
-        open: List<double>.from(json["open"].map((x) => x?.toDouble())),
-        close: List<double>.from(json["close"].map((x) => x?.toDouble())),
-        low: List<double>.from(json["low"].map((x) => x?.toDouble())),
-        high: List<double>.from(json["high"].map((x) => x?.toDouble())),
+        open: List<double>.from(json["open"].map((x) => x?.toDouble() ?? 0.0)),
+        close:
+            List<double>.from(json["close"].map((x) => x?.toDouble() ?? 0.0)),
+        low: List<double>.from(json["low"].map((x) => x?.toDouble() ?? 0.0)),
+        high: List<double>.from(json["high"].map((x) => x?.toDouble() ?? 0.0)),
         // volume: List<int>.from(json["volume"].map((x) => x)),
       );
 

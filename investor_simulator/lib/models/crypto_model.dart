@@ -13,7 +13,7 @@ class CoinModel {
     required this.longName,
     required this.image,
     required this.regularMarketPrice,
-    // required this.marketCap,
+    required this.marketCap,
     required this.marketCapRank,
     // required this.fullyDilutedValuation,
     required this.totalVolume,
@@ -23,7 +23,7 @@ class CoinModel {
     required this.regularMarketChangePercent,
     // required this.marketCapChange24H,
     required this.marketCapChangePercentage24H,
-    // required this.circulatingSupply,
+    required this.circulatingSupply,
     // required this.totalSupply,
     // required this.maxSupply,
     // required this.ath,
@@ -43,7 +43,7 @@ class CoinModel {
   String longName;
   String image;
   double regularMarketPrice;
-  // int marketCap;
+  int marketCap;
   int marketCapRank;
   // int fullyDilutedValuation;
   double totalVolume;
@@ -53,7 +53,7 @@ class CoinModel {
   double regularMarketChangePercent;
   // int marketCapChange24H;
   double marketCapChangePercentage24H;
-  // int circulatingSupply;
+  int circulatingSupply;
   // int totalSupply;
   // int maxSupply;
   // int ath;
@@ -87,6 +87,8 @@ class CoinModel {
       sparklineIn7D: sparklineData != null
           ? SparklineIn7D.fromJson(sparklineData)
           : SparklineIn7D(price: []),
+      circulatingSupply: json["circulating_supply"]?.toInt() ?? 0,
+      marketCap: json["market_cap"]?.toInt() ?? 0,
     );
   }
 
@@ -96,7 +98,7 @@ class CoinModel {
         "longName": longName,
         "image": image,
         "current_price": regularMarketPrice,
-        // "market_cap": marketCap,
+        "market_cap": marketCap,
         "market_cap_rank": marketCapRank,
         // "fully_diluted_valuation": fullyDilutedValuation,
         "total_volume": totalVolume,
@@ -106,7 +108,7 @@ class CoinModel {
         // "price_change_percentage_24h": priceChangePercentage24H,
         // "market_cap_change_24h": marketCapChange24H,
         "market_cap_change_percentage_24h": marketCapChangePercentage24H,
-        // "circulating_supply": circulatingSupply,
+        "circulating_supply": circulatingSupply,
         // "total_supply": totalSupply,
         // "max_supply": maxSupply,
         // "ath": ath,

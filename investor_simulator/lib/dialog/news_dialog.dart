@@ -30,19 +30,17 @@ void openNewsDialog(BuildContext context, String newsURL, String pubDate) {
             children: [
               // Dialog for displaying news content
               Positioned(
-                bottom: 30,
+                bottom: 100,
                 child: Column(
                   children: [
                     Dialog(
-                      backgroundColor: white,
+                      backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width *
-                            0.8, // Adjusted width
-                        height: MediaQuery.of(context).size.height *
-                            0.7, // Adjusted height
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        height: MediaQuery.of(context).size.height * 0.7,
                         child: Consumer<NewsProvider>(
                           builder: (context, provider, child) {
                             if (provider.newsDetails.isNotEmpty) {
@@ -65,6 +63,21 @@ void openNewsDialog(BuildContext context, String newsURL, String pubDate) {
                       ),
                     ),
                   ],
+                ),
+              ),
+              // Position aiAssessment outside of the dialog
+              Positioned(
+                bottom: 30,
+                left: 0,
+                right: 0,
+                child: Consumer<NewsProvider>(
+                  builder: (context, provider, child) {
+                    if (provider.newsDetails.isNotEmpty) {
+                      return aiAssessment(context, provider.newsDetails[0]);
+                    } else {
+                      return Container(); // Return empty container if data not available yet
+                    }
+                  },
                 ),
               ),
             ],
@@ -172,10 +185,6 @@ SingleChildScrollView newsPage(
               ),
             ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          aiAssessment(context, content),
         ],
       ),
     ),
@@ -238,7 +247,7 @@ ElevatedButton aiAssessment(
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: orangeRed,
-          width: 3,
+          width: 5,
         ),
       ),
       child: const StrokeText(

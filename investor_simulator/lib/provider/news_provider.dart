@@ -13,7 +13,7 @@ class NewsProvider with ChangeNotifier {
   bool _hasError = false;
   bool _hasErrorDetails = false;
   String _errorMessage = '';
-  String api = '1651139c27msh71996520d0ed192p1eb3b8jsn7c67cea4d8db';
+  String api = '40d7312818mshddd6877a4da2e17p190b63jsncfe0a925f21a';
 
   List<n.Stream> get news => _news;
   List<NewsDetails> get newsDetails => _newsDetails;

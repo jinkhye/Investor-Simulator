@@ -126,18 +126,83 @@ class QuoteSummary {
 }
 
 class Earnings {
+  EarningsChart earningsChart;
   FinancialsChart financialsChart;
 
   Earnings({
+    required this.earningsChart,
     required this.financialsChart,
   });
 
   factory Earnings.fromJson(Map<String, dynamic> json) => Earnings(
+        earningsChart: EarningsChart.fromJson(json["earningsChart"]),
         financialsChart: FinancialsChart.fromJson(json["financialsChart"]),
       );
 
   Map<String, dynamic> toJson() => {
+        "earningsChart": earningsChart.toJson(),
         "financialsChart": financialsChart.toJson(),
+      };
+}
+
+class EarningsChart {
+  List<EarningsChartQuarterly> quarterly;
+  double currentQuarterEstimate;
+  String currentQuarterEstimateDate;
+  int currentQuarterEstimateYear;
+  List<int> earningsDate;
+
+  EarningsChart({
+    required this.quarterly,
+    required this.currentQuarterEstimate,
+    required this.currentQuarterEstimateDate,
+    required this.currentQuarterEstimateYear,
+    required this.earningsDate,
+  });
+
+  factory EarningsChart.fromJson(Map<String, dynamic> json) => EarningsChart(
+        quarterly: List<EarningsChartQuarterly>.from(
+            json["quarterly"].map((x) => EarningsChartQuarterly.fromJson(x))),
+        currentQuarterEstimate:
+            json["currentQuarterEstimate"]?.toDouble() ?? 0.0,
+        currentQuarterEstimateDate:
+            json["currentQuarterEstimateDate"]?.toString() ?? '',
+        currentQuarterEstimateYear:
+            json["currentQuarterEstimateYear"]?.toInt() ?? 0,
+        earningsDate: List<int>.from(json["earningsDate"].map((x) => x)),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "quarterly": List<dynamic>.from(quarterly.map((x) => x.toJson())),
+        "currentQuarterEstimate": currentQuarterEstimate,
+        "currentQuarterEstimateDate": currentQuarterEstimateDate,
+        "currentQuarterEstimateYear": currentQuarterEstimateYear,
+        "earningsDate": List<dynamic>.from(earningsDate.map((x) => x)),
+      };
+}
+
+class EarningsChartQuarterly {
+  String date;
+  double actual;
+  double estimate;
+
+  EarningsChartQuarterly({
+    required this.date,
+    required this.actual,
+    required this.estimate,
+  });
+
+  factory EarningsChartQuarterly.fromJson(Map<String, dynamic> json) =>
+      EarningsChartQuarterly(
+        date: json["date"]?.toString() ?? '',
+        actual: json["actual"]?.toDouble() ?? 0.0,
+        estimate: json["estimate"]?.toDouble() ?? 0.0,
+      );
+
+  Map<String, dynamic> toJson() => {
+        "date": date,
+        "actual": actual,
+        "estimate": estimate,
       };
 }
 

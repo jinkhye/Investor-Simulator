@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/models/chart_model.dart';
+import 'package:investor_simulator/models/forex_model.dart';
 import 'package:investor_simulator/models/stockchart_model.dart';
-import 'package:investor_simulator/models/stocks_model.dart';
 
-class StocksProvider with ChangeNotifier {
+class ForexProvider with ChangeNotifier {
   List<Result> _stocks = [];
   bool _isLoadingStocks = false;
   bool _hasError = false;
@@ -31,7 +31,7 @@ class StocksProvider with ChangeNotifier {
 
   late Timer _timer;
 
-  StocksProvider() {
+  ForexProvider() {
     fetchStocks();
     // Start the timer when the provider is initialized
     _timer = Timer.periodic(const Duration(minutes: 10), (_) {
@@ -54,7 +54,7 @@ class StocksProvider with ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse(
-          'https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2/get-quotes?region=US&symbols=META%2CBABA%2CAMZN%2CCVX%2C5225.KL%2CMCD%2CPG%2CNFLX%2CTSLA%2C1295.KL%2CBA%2C1023.KL%2CMETA%2CPFE%2C5168.KL%2C1155.KL%2CNVDA%2C6033.KL%2C4707.KL%2CWMT%2C7113.KL%2CAAPL%2CV%2C6888.KL%2CMSFT%2CJNJ%2CHD%2CKO%2CJPM%2CGOOGL%2C%2CT%2CXOM%2CDIS',
+          'https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2/get-quotes?region=US&symbols=EURUSD=X%2CUSDJPY=X%2CGBPUSD=X%2CMYR=X%2CEURMYR=X%2CSGDMYR=X%2CUSDCHF=X%2CAUDUSD=X%2CUSDCAD=X%2CNZDUSD=X%2CEURJPY=X%2CGBPJPY=X%2CEURGBP=X',
         ),
         headers: {
           'X-RapidAPI-Host': 'apidojo-yahoo-finance-v1.p.rapidapi.com',
@@ -63,7 +63,7 @@ class StocksProvider with ChangeNotifier {
       );
       if (response.statusCode == 200) {
         final decodedResponse = utf8.decode(response.bodyBytes);
-        final StocksModel responseData = stocksModelFromJson(decodedResponse);
+        final ForexModel responseData = forexModelFromJson(decodedResponse);
         _stocks = responseData.quoteResponse.result;
       } else {
         _hasError = true;

@@ -5,6 +5,7 @@ import 'package:investor_simulator/pages/accomodation.dart';
 import 'package:investor_simulator/pages/mainmenu.dart';
 import 'package:investor_simulator/pages/clothes.dart';
 import 'package:investor_simulator/provider/etf_provider.dart';
+import 'package:investor_simulator/provider/forex_provider.dart';
 import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:investor_simulator/provider/news_provider.dart';
 import 'package:investor_simulator/provider/portfolio_provider.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ETFProvider()),
         ChangeNotifierProvider(create: (_) => PortfolioProvider()),
         ChangeNotifierProvider(create: (_) => NewsProvider()),
+        ChangeNotifierProvider(create: (_) => ForexProvider()),
         // Add other providers here if needed
       ],
       child: GetMaterialApp(

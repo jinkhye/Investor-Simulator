@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 class Assessment extends StatelessWidget {
   final PortfolioProvider portfolioProvider;
 
-  const Assessment({super.key, required this.portfolioProvider});
+  Assessment({super.key, required this.portfolioProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +77,7 @@ class Assessment extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: Scrollbar(
+                  controller: ScrollController(),
                   thumbVisibility: true,
                   child: SingleChildScrollView(
                     child: Column(

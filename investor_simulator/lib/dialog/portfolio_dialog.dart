@@ -11,6 +11,7 @@ import 'package:investor_simulator/models/chart_model.dart';
 import 'package:investor_simulator/models/portfolio_model.dart';
 import 'package:investor_simulator/provider/crypto_provider.dart';
 import 'package:investor_simulator/provider/etf_provider.dart';
+import 'package:investor_simulator/provider/forex_provider.dart';
 import 'package:investor_simulator/provider/portfolio_provider.dart';
 import 'package:investor_simulator/provider/stocks_provider.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,18 @@ void openPortfolioDialog(BuildContext context, String symbol, String type) {
       stock = provider.stocks.firstWhere((element) => element.symbol == symbol);
 
       for (ETFInvestment investment in portfolio.etfInvestments) {
+        if (investment.stock.symbol == symbol) {
+          stocks.add(investment);
+        }
+      }
+      provider.emptyChart();
+      provider.fetchChartData(stock.symbol);
+      break;
+    case 'forex':
+      provider = Provider.of<ForexProvider>(context, listen: false);
+      stock = provider.stocks.firstWhere((element) => element.symbol == symbol);
+
+      for (ForexInvestment investment in portfolio.forexInvestments) {
         if (investment.stock.symbol == symbol) {
           stocks.add(investment);
         }
@@ -176,11 +189,7 @@ SingleChildScrollView stockDetails(BuildContext context, dynamic stock,
             ],
           ),
         ),
-        SizedBox(
-          width: 300,
-          height: 85,
-          child: stockDetailsLogoName(context, stock),
-        ),
+        detailsLogoName(context, stock, stock.type),
         const SizedBox(
           height: 10,
         ),
@@ -341,9 +350,36 @@ Widget displayChart(TrackballBehavior trackballBehavior, String type) {
     return cryptoChart(trackballBehavior);
   } else if (type == 'stock') {
     return stocksChart(trackballBehavior);
+  } else if (type == 'forex') {
+    return forexChart(trackballBehavior);
   } else {
     return etfChart(trackballBehavior);
   }
+}
+
+Consumer<ForexProvider> forexChart(TrackballBehavior trackballBehavior) {
+  return Consumer<ForexProvider>(
+    builder: (context, provider, _) {
+      if (provider.itemChart != null) {
+        // Data loaded, return chart
+        return stockChart(trackballBehavior, provider.chartModel);
+      } else if (provider.isLoadingChartData) {
+        // Data loading, return loading indicator
+        return const Center(child: CircularProgressIndicator());
+      } else if (provider.hasError) {
+        // Error fetching data, handle error
+        return Center(
+          child: Text(
+            'Error: ${provider.errorMessage} \n\nAttention this Api is free, so you cannot send multiple requests per second, please wait and try again later.',
+          ),
+        );
+      } else {
+        // Data not yet loaded (initial state), return placeholder
+        return const Center(
+            child: Text('Loading chart data...')); // Placeholder text
+      }
+    },
+  );
 }
 
 Consumer<ETFProvider> etfChart(TrackballBehavior trackballBehavior) {
@@ -506,7 +542,7 @@ SizedBox transactions(
                             ),
                             TextSpan(
                               text:
-                                  '\$${stocks[index].purchasePrice.toString()}',
+                                  '\$${stocks[index].purchasePrice.toStringAsFixed(2)}',
                               style: const TextStyle(
                                 fontFamily: 'Helvetica',
                                 fontWeight: FontWeight.w800,
@@ -537,7 +573,7 @@ SizedBox transactions(
                             ),
                             TextSpan(
                               text:
-                                  '\$${stocks[index].purchasePrice.toString()}',
+                                  '\$${stocks[index].purchasePrice.toStringAsFixed(2)}',
                               style: const TextStyle(
                                 fontFamily: 'Helvetica',
                                 fontWeight: FontWeight.w800,
@@ -568,7 +604,7 @@ SizedBox transactions(
                             ),
                             TextSpan(
                               text:
-                                  '\$${stocks[index].purchasePrice * stocks[index].shares}',
+                                  '\$${(stocks[index].purchasePrice * stocks[index].shares).toStringAsFixed(2)}',
                               style: const TextStyle(
                                 fontFamily: 'Helvetica',
                                 fontWeight: FontWeight.w800,
@@ -614,6 +650,7 @@ SizedBox stockChart(
     height: 200,
     width: 311,
     child: SfCartesianChart(
+      enableAxisAnimation: true,
       trackballBehavior: trackballBehavior,
       zoomPanBehavior:
           ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x),
@@ -711,45 +748,120 @@ Widget iconStock(dynamic stock) {
   }
 }
 
+Widget detailsLogoName(BuildContext context, dynamic stock, String type) {
+  switch (type) {
+    case 'forex':
+      return SizedBox(
+          width: 300, height: 70, child: forexDetailsLogoName(context, stock));
+    default:
+      return SizedBox(
+          width: 300, height: 105, child: stockDetailsLogoName(context, stock));
+  }
+}
+
+Widget forexDetailsLogoName(BuildContext context, dynamic stock) {
+  return SizedBox(
+      height: 60,
+      width: 311,
+      child: Column(
+        children: [
+          Text(
+            stock.longName,
+            textAlign: TextAlign.left,
+            maxLines: 4,
+            style: const TextStyle(
+              fontFamily: 'Helvetica',
+              fontWeight: FontWeight.w800,
+              fontSize: 30,
+              color: purple,
+              overflow: TextOverflow.clip,
+              height: 0,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            '(${stock.symbol})',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'Helvetica',
+              fontWeight: FontWeight.w800,
+              fontSize: 16,
+              color: Colors.grey[600],
+              letterSpacing: 0,
+              height: 0,
+            ),
+          ),
+        ],
+      ));
+}
+
 Stack stockDetailsLogoName(BuildContext context, dynamic stock) {
   return Stack(
     children: [
       Positioned(
         top: 8,
         left: 2,
-        child: Container(
-          height: 70,
-          width: 70,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.transparent,
-            border: Border.all(
-              color: darkPurple,
-              width: 4,
+        child: Column(
+          children: [
+            Container(
+              height: 70,
+              width: 70,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.transparent,
+                border: Border.all(
+                  color: darkPurple,
+                  width: 4,
+                ),
+              ),
+              child: Center(
+                child: Transform.scale(
+                  scale:
+                      1.0, // Adjust the scale factor to make the image smaller
+                  child: Image.asset(
+                    'assets/stocks/${stock.symbol}.png',
+                    width: 40,
+                    height: 40,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Return a placeholder widget in case of error
+                      return const Icon(Icons.error, size: 40);
+                    },
+                  ),
+                ),
+              ),
             ),
-          ),
-          child: Center(
-            child: Transform.scale(
-              scale: 1.0, // Adjust the scale factor to make the image smaller
-              child: iconStock(stock),
+            const SizedBox(height: 8),
+            Text(
+              '(${stock.symbol})',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Helvetica',
+                fontWeight: FontWeight.w800,
+                fontSize: 14,
+                color: Colors.grey[600],
+                letterSpacing: 0,
+                height: 0,
+              ),
             ),
-          ),
+          ],
         ),
       ),
       Positioned(
         left: 80,
-        top: 5,
+        top: 0,
         child: SizedBox(
           height: 80,
           width: 218,
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              stock.longName?.toUpperCase() ?? '',
+              stock.longName ?? '',
               textAlign: TextAlign.left,
-              maxLines: 3,
+              maxLines: 4,
               style: const TextStyle(
-                fontSize: 22,
+                fontFamily: 'Helvetica',
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
                 color: purple,
                 overflow: TextOverflow.clip,
                 height: 0,

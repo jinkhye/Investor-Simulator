@@ -185,14 +185,17 @@ class _ClothesState extends State<Clothes> {
     );
   }
 
-  ElevatedButton accept(BuildContext context, index, maxPath) {
+  ElevatedButton accept(BuildContext context, index, GameProvider maxPath) {
     return ElevatedButton(
       onPressed: () {
         String image = clothes[index].iconPath;
+        double price = clothes[index].price.toDouble();
         // Add the action to be performed when the button is pressed
-        maxPath.setMaxPath(image);
-        maxPath.subtractMoney(clothes[index].price.toDouble());
-        maxPath.setClothesUse(index);
+        if (maxPath.money >= price) {
+          maxPath.setMaxPath(image);
+          maxPath.subtractMoney(price);
+          maxPath.setClothesUse(index);
+        }
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(0),
