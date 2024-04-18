@@ -112,6 +112,34 @@ class Assessment extends StatelessWidget {
                           strokeWidth: 7,
                         ),
                         SizedBox(height: 20),
+                        Row(
+                          children: [
+                            StrokeText(
+                              text: "SCORE : ",
+                              textStyle: TextStyle(fontSize: 40, color: white),
+                              strokeColor: darkPurple,
+                              strokeWidth: 7,
+                            ),
+                            SizedBox(width: 10),
+                            SizedBox(
+                              width: 200, // Adjust the width as needed
+                              child: StrokeText(
+                                text: fetchedText3[0],
+                                textStyle: TextStyle(
+                                  fontSize: 40,
+                                  color: white,
+                                  fontWeight: FontWeight.w800,
+                                  wordSpacing: 0,
+                                  letterSpacing: 0,
+                                ),
+                                strokeColor:
+                                    darkPurple, // Match the stroke color
+                                strokeWidth: 7,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20),
                         Divider(thickness: 4),
                         SizedBox(height: 20),
                         StrokeText(
@@ -191,21 +219,6 @@ class Assessment extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
-              Positioned(
-                right: 20,
-                top: 95,
-                child: Text(
-                  fetchedText3[0],
-                  style: TextStyle(
-                    fontFamily: 'Helvetica',
-                    fontSize: 20,
-                    color: white,
-                    fontWeight: FontWeight.w800,
-                    wordSpacing: 0,
-                    letterSpacing: 0,
-                  ),
-                ),
               ),
             ],
           ),
