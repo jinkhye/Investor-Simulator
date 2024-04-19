@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 
 void openAdminDialog(BuildContext context) {
+  // ignore: unused_local_variable
   final provider = Provider.of<GameProvider>(context, listen: false);
   showGeneralDialog(
     context: context,
@@ -42,8 +43,6 @@ void openAdminDialog(BuildContext context) {
                   GestureDetector(
                     onTap: () {
                       Get.to(const HomePage());
-                      provider.setOpenCount(0);
-                      provider.setClose(false);
                     },
                     child: const Icon(
                       Icons.home_rounded,

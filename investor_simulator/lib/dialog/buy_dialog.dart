@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/dialog/admin_dialog.dart';

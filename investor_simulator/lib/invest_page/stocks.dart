@@ -12,6 +12,7 @@ class StocksMenuPage extends StatefulWidget {
   const StocksMenuPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _StocksMenuPageState createState() => _StocksMenuPageState();
 }
 

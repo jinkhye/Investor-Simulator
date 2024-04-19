@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/constant/string_format.dart';
 import 'package:investor_simulator/dialog/portfolio_dialog.dart';
-import 'package:investor_simulator/dialog/stock_help_dialog.dart';
 
 import 'package:investor_simulator/menu/topMenu.dart';
 import 'package:investor_simulator/pages/assessment.dart';

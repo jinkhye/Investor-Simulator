@@ -298,10 +298,11 @@ SingleChildScrollView helpPage1(BuildContext context) {
             height: 20,
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 140,
-                height: 140,
+                width: 130,
+                height: 130,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   image: const DecorationImage(
@@ -320,8 +321,8 @@ SingleChildScrollView helpPage1(BuildContext context) {
                 width: 10,
               ),
               Container(
-                width: 140,
-                height: 140,
+                width: 130,
+                height: 130,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   image: const DecorationImage(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// ignore: unnecessary_import
 import 'package:flutter/widgets.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/invest_page/crypto.dart';

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/dialog/news_dialog.dart';
-import 'package:investor_simulator/dialog/stock_help_dialog.dart';
 
 import 'package:investor_simulator/menu/topMenu.dart';
 import 'package:investor_simulator/models/news_model.dart' as n;

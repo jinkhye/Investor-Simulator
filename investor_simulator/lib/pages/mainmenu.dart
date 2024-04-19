@@ -41,9 +41,12 @@ class _MainMenuState extends State<MainMenu> {
   GlobalKey accomodationKey = GlobalKey();
   GlobalKey clothesKey = GlobalKey();
 
+  int count = 0;
+
   @override
   void initState() {
     super.initState();
+
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
         _dateTime = DateTime.now();
@@ -51,10 +54,12 @@ class _MainMenuState extends State<MainMenu> {
     });
     final gameProvider = Provider.of<GameProvider>(context, listen: false);
     gameProvider.addListener(() {
-      if (gameProvider.isClose && gameProvider.openCount == 0) {
+      if (gameProvider.isClose && count == 0) {
         // When isClose is true, activate tutorial coachmark
-        Future.delayed(const Duration(seconds: 1), () {
+
+        setState(() {
           _showTutorialCoachmark();
+          count = 1;
         });
       }
     });
@@ -70,6 +75,9 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   void _initTarget() {
+    if (targets.isNotEmpty) {
+      targets = [];
+    }
     targets = [
       //  Menu
       TargetFocus(

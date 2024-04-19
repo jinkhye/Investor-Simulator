@@ -34,7 +34,6 @@ class CryptoProvider extends ChangeNotifier {
     // Start the timer when the provider is initialized
     _timer = Timer.periodic(const Duration(minutes: 10), (_) {
       fetchCryptocurrencies();
-      print('Crypto Timer triggered');
     });
   }
 

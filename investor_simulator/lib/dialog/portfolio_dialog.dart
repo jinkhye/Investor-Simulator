@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/constant/string_format.dart';
 import 'package:investor_simulator/dialog/buy_dialog.dart';
-import 'package:investor_simulator/dialog/keystats_help_dialog.dart';
 import 'package:investor_simulator/dialog/sell_dialog.dart';
 import 'package:investor_simulator/models/chart_model.dart';
 import 'package:investor_simulator/models/portfolio_model.dart';

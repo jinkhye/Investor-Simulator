@@ -201,12 +201,9 @@ Widget webBrowser(String url) {
           final Uri uri = Uri.parse(url);
           if (await canLaunchUrl(uri)) {
             await launchUrl(uri);
-          } else {
-            print('Could not open $url');
-          }
-        } on Exception catch (e) {
-          print('Error launching URL: $e');
-        }
+          } else {}
+          // ignore: empty_catches
+        } on Exception {}
       },
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,

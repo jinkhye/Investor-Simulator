@@ -17,7 +17,7 @@ class StocksProvider with ChangeNotifier {
   List<ChartResult>? _itemChart;
   List<ChartModel>? _chartModel = [];
   String _days = 'W';
-  String api = '40d7312818mshddd6877a4da2e17p190b63jsncfe0a925f21a';
+  String api = '2f0743bd6fmshc69c7c937d2929bp19a38fjsn426e20a418fb';
 
   List<Result> get stocks => _stocks;
   bool get isLoadingStocks => _isLoadingStocks;
@@ -142,6 +142,7 @@ class StocksProvider with ChangeNotifier {
             close: quote.close.isNotEmpty ? quote.close[i] : null,
           ));
         } else {
+          // ignore: avoid_print
           print("Quote data is not available");
         }
       }

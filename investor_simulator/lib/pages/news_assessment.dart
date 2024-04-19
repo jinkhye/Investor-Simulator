@@ -6,6 +6,7 @@ import 'package:stroke_text/stroke_text.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+// ignore: must_be_immutable
 class NewsAssessment extends StatelessWidget {
   final NewsDetails news;
 
@@ -82,8 +83,8 @@ class NewsAssessment extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 20),
-                          Align(
+                          const SizedBox(height: 20),
+                          const Align(
                             alignment: Alignment.center,
                             child: StrokeText(
                               text: "NEWS ASSESSMENT",
@@ -92,30 +93,32 @@ class NewsAssessment extends StatelessWidget {
                               strokeWidth: 7,
                             ),
                           ),
-                          SizedBox(height: 20),
-                          Divider(thickness: 4),
+                          const SizedBox(height: 20),
+                          const Divider(thickness: 4),
                           Text(
-                            news.title,
-                            style: TextStyle(
+                            news.title.toUpperCase(),
+                            style: const TextStyle(
+                              fontFamily: 'Helvetica',
+                              fontWeight: FontWeight.w800,
                               letterSpacing: 0.8,
-                              fontSize: 30,
+                              fontSize: 25,
                               color: white,
                               overflow: TextOverflow.clip,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Center(
                             child: Container(
-                              width: 150,
-                              height: 150,
+                              width: 330,
+                              height: 200,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16),
                                 image: DecorationImage(
                                   image: NetworkImage(news.topImage),
                                   fit: BoxFit.fill,
                                 ),
-                                border: Border.fromBorderSide(
+                                border: const Border.fromBorderSide(
                                   BorderSide(
                                     color: black,
                                     width: 4,
@@ -124,18 +127,21 @@ class NewsAssessment extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(height: 10),
-                          Divider(thickness: 4),
-                          SizedBox(height: 20),
-                          StrokeText(
-                            text: "Summary :",
-                            textStyle: TextStyle(fontSize: 30, color: yellow),
-                            strokeColor: darkPurple,
-                            strokeWidth: 7,
+                          const SizedBox(height: 10),
+                          const Divider(thickness: 4),
+                          const SizedBox(height: 20),
+                          const Center(
+                            child: StrokeText(
+                              text: "SUMMARY",
+                              textStyle: TextStyle(fontSize: 25, color: yellow),
+                              strokeColor: darkPurple,
+                              strokeWidth: 7,
+                            ),
                           ),
+                          const SizedBox(height: 10),
                           Text(
                             textList[0],
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Helvetica',
                               fontSize: 16,
                               color: white,
@@ -143,12 +149,12 @@ class NewsAssessment extends StatelessWidget {
                               wordSpacing: 0,
                               letterSpacing: 0,
                             ),
-                            textAlign: TextAlign.center,
+                            textAlign: TextAlign.left,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Text(
                             textList[1],
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Helvetica',
                               fontSize: 16,
                               color: white,
@@ -156,18 +162,19 @@ class NewsAssessment extends StatelessWidget {
                               wordSpacing: 0,
                               letterSpacing: 0,
                             ),
-                            textAlign: TextAlign.center,
+                            textAlign: TextAlign.left,
                           ),
-                          SizedBox(height: 20),
-                          StrokeText(
-                            text: "1. Market Confidence",
-                            textStyle: TextStyle(fontSize: 30, color: yellow),
+                          const SizedBox(height: 25),
+                          const StrokeText(
+                            text: "1. MARKET CONFIDENCE",
+                            textStyle: TextStyle(fontSize: 25, color: yellow),
                             strokeColor: darkPurple,
                             strokeWidth: 7,
                           ),
+                          const SizedBox(height: 10),
                           Text(
                             textList[2],
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Helvetica',
                               fontSize: 16,
                               color: white,
@@ -176,16 +183,17 @@ class NewsAssessment extends StatelessWidget {
                               letterSpacing: 0,
                             ),
                           ),
-                          SizedBox(height: 20),
-                          StrokeText(
-                            text: "2. Company Performance",
-                            textStyle: TextStyle(fontSize: 30, color: yellow),
+                          const SizedBox(height: 25),
+                          const StrokeText(
+                            text: "2. COMPANY PERFORMANCE",
+                            textStyle: TextStyle(fontSize: 25, color: yellow),
                             strokeColor: darkPurple,
                             strokeWidth: 7,
                           ),
+                          const SizedBox(height: 10),
                           Text(
                             textList[3],
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Helvetica',
                               fontSize: 16,
                               color: white,
@@ -194,16 +202,17 @@ class NewsAssessment extends StatelessWidget {
                               letterSpacing: 0,
                             ),
                           ),
-                          SizedBox(height: 20),
-                          StrokeText(
-                            text: "3. Investment Recommendations:",
-                            textStyle: TextStyle(fontSize: 30, color: yellow),
+                          const SizedBox(height: 20),
+                          const StrokeText(
+                            text: "3. INVESTMENT RECOMMENDATIONS",
+                            textStyle: TextStyle(fontSize: 25, color: yellow),
                             strokeColor: darkPurple,
                             strokeWidth: 7,
                           ),
+                          const SizedBox(height: 10),
                           Text(
                             textList[4],
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Helvetica',
                               fontSize: 16,
                               color: white,
@@ -212,7 +221,7 @@ class NewsAssessment extends StatelessWidget {
                               letterSpacing: 0,
                             ),
                           ),
-                          SizedBox(height: 40),
+                          const SizedBox(height: 40),
                         ],
                       ),
                     ),
@@ -245,7 +254,7 @@ class NewsAssessment extends StatelessWidget {
           {
             'role': "user",
             'content':
-                "These are the few main question that you have to answer :${message}"
+                "These are the few main question that you have to answer :$message"
           },
           {'role': "user", 'content': "News: ${newss.text}"},
           {
@@ -261,7 +270,6 @@ class NewsAssessment extends StatelessWidget {
     if (response.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(response.body);
       String content = data['choices'][0]['message']['content'];
-      print(content);
       return content;
     } else {
       throw Exception('Failed to load text:${response.body}');

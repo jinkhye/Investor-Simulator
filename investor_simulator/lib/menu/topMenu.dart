@@ -17,7 +17,7 @@ Padding topMenu(BuildContext context) {
     child: Row(
       children: <Widget>[
         back(context),
-        const SizedBox(width: 10),
+        const SizedBox(width: 5),
         level(gameProvider.level, gameProvider.currentXp,
             gameProvider.requiredXp),
         Expanded(child: Container()),
@@ -35,7 +35,7 @@ Padding topMainMenu(BuildContext context) {
     child: Row(
       children: <Widget>[
         admin(context),
-        const SizedBox(width: 10),
+        const SizedBox(width: 5),
         level(gameProvider.level, gameProvider.currentXp,
             gameProvider.requiredXp),
         Expanded(child: Container()),

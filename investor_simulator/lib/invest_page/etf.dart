@@ -12,6 +12,7 @@ class ETFMenuPage extends StatefulWidget {
   const ETFMenuPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ETFMenuPageState createState() => _ETFMenuPageState();
 }
 
