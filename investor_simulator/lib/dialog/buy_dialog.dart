@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:investor_simulator/constant/color.dart';
+import 'package:investor_simulator/dialog/admin_dialog.dart';
+import 'package:investor_simulator/dialog/buy_confirmation_dialog.dart';
 import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:investor_simulator/provider/portfolio_provider.dart';
 import 'package:provider/provider.dart';
@@ -161,6 +163,8 @@ class _BuyDialogState extends State<BuyDialog> {
           }
           provider.subtractMoney(totalPrice);
           Navigator.pop(context); // Close the dialog after buying
+          openBuyConfirmationDialog(
+              context, widget.stock.symbol, quantity, totalPrice);
         } else {
           // Show error or handle invalid quantity
         }

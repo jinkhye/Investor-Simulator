@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:investor_simulator/constant/color.dart';
+import 'package:investor_simulator/provider/game_provider.dart';
+import 'package:provider/provider.dart';
 
 void openOpeningDialog(BuildContext context) {
   // Create a PageController
@@ -8,7 +10,7 @@ void openOpeningDialog(BuildContext context) {
   // Show the general dialog with the custom stateful widget
   showGeneralDialog(
     context: context,
-    barrierDismissible: true,
+    barrierDismissible: false,
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
     pageBuilder: (context, animation1, animation2) {
       return Container();
@@ -120,6 +122,7 @@ Widget imageContainer(BuildContext context, String imagePath) {
 }
 
 Widget close(BuildContext context) {
+  final provider = Provider.of<GameProvider>(context, listen: false);
   return Container(
     decoration: BoxDecoration(
       // Define the shadow using boxShadow
@@ -139,6 +142,8 @@ Widget close(BuildContext context) {
       iconSize: 40,
       onPressed: () {
         Navigator.pop(context);
+        provider.setClose(true);
+        provider.setOpenCount(1);
       },
     ),
   );

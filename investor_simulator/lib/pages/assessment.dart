@@ -18,6 +18,8 @@ class Assessment extends StatelessWidget {
         "Q1. What is the potential risks that will occur to the portfolio? ";
     String question2 =
         "Q2. What is the improvements that can be made to the portfolio.(How can i improve my portfolio) (Do not mention the problems) ";
+    String question3 =
+        "Q3. How much the score u think the portfolio valued(1-100)? ( give me the score only (ONLY DIGITS), do not include any explanation or description ) ";
     portfolioProvider.portfolio.forEach((symbol, investment) {
       Map<String, dynamic> details = {
         'symbol': symbol,
@@ -49,8 +51,22 @@ class Assessment extends StatelessWidget {
               } else {
                 // Process fetched data here
                 List<String> fetchedText2 = snapshot2.data ?? [];
-                return _buildAssessmentScreen(
-                    context, fetchedText1, fetchedText2);
+                return FutureBuilder<List<String>>(
+                  future: fetchText(portfolioDetails,
+                      question3), // Add your third question here
+                  builder: (context, snapshot3) {
+                    if (snapshot3.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot3.hasError) {
+                      return Center(child: Text('Error: ${snapshot3.error}'));
+                    } else {
+                      // Process fetched data here
+                      List<String> fetchedText3 = snapshot3.data ?? [];
+                      return _buildAssessmentScreen(
+                          context, fetchedText1, fetchedText2, fetchedText3);
+                    }
+                  },
+                );
               }
             },
           );
@@ -60,7 +76,7 @@ class Assessment extends StatelessWidget {
   }
 
   Widget _buildAssessmentScreen(BuildContext context, List<String> fetchedText1,
-      List<String> fetchedText2) {
+      List<String> fetchedText2, List<String> fetchedText3) {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -71,15 +87,13 @@ class Assessment extends StatelessWidget {
           ),
         ),
         child: SafeArea(
-          child: ListView(
+          child: Stack(
             children: [
-              topMenu(context),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: Scrollbar(
-                  controller: ScrollController(),
-                  thumbVisibility: true,
-                  child: SingleChildScrollView(
+              ListView(
+                children: [
+                  topMenu(context),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -98,6 +112,34 @@ class Assessment extends StatelessWidget {
                           strokeWidth: 7,
                         ),
                         SizedBox(height: 20),
+                        Row(
+                          children: [
+                            StrokeText(
+                              text: "SCORE : ",
+                              textStyle: TextStyle(fontSize: 40, color: white),
+                              strokeColor: darkPurple,
+                              strokeWidth: 7,
+                            ),
+                            SizedBox(width: 10),
+                            SizedBox(
+                              width: 200, // Adjust the width as needed
+                              child: StrokeText(
+                                text: fetchedText3[0],
+                                textStyle: TextStyle(
+                                  fontSize: 40,
+                                  color: white,
+                                  fontWeight: FontWeight.w800,
+                                  wordSpacing: 0,
+                                  letterSpacing: 0,
+                                ),
+                                strokeColor:
+                                    darkPurple, // Match the stroke color
+                                strokeWidth: 7,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20),
                         Divider(thickness: 4),
                         SizedBox(height: 20),
                         StrokeText(
@@ -108,20 +150,32 @@ class Assessment extends StatelessWidget {
                         ),
                         SizedBox(height: 10),
                         // Display fetched risks from question 1
-                        for (int i = 0; i < fetchedText1.length; i++)
-                          Text(
-                            fetchedText1[i],
-                            style: TextStyle(
-                              fontFamily: 'Helvetica',
-                              fontSize: 20,
-                              color: white,
-                              fontWeight: i % 2 == 0
-                                  ? FontWeight.w800
-                                  : FontWeight.w600,
-                              wordSpacing: 0,
-                              letterSpacing: 0,
-                            ),
-                          ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: fetchedText1.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  fetchedText1[index],
+                                  style: TextStyle(
+                                    fontFamily: 'Helvetica',
+                                    fontSize: 20,
+                                    color: fetchedText1[index].contains(':')
+                                        ? yellow
+                                        : white,
+                                    fontWeight: FontWeight.w800,
+                                    wordSpacing: 0,
+                                    letterSpacing: 0,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                              ],
+                            );
+                          },
+                        ),
                         SizedBox(height: 20),
                         Divider(thickness: 4),
                         SizedBox(height: 20),
@@ -133,25 +187,38 @@ class Assessment extends StatelessWidget {
                         ),
                         SizedBox(height: 10),
                         // Display fetched improvements from question 2
-                        for (int i = 0; i < fetchedText2.length; i++)
-                          Text(
-                            fetchedText2[i],
-                            style: TextStyle(
-                              fontFamily: 'Helvetica',
-                              fontSize: 20,
-                              color: white,
-                              fontWeight: i % 2 == 0
-                                  ? FontWeight.w800
-                                  : FontWeight.w600,
-                              wordSpacing: 0,
-                              letterSpacing: 0,
-                            ),
-                          ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: fetchedText2.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  fetchedText2[index],
+                                  style: TextStyle(
+                                    fontFamily: 'Helvetica',
+                                    fontSize: 20,
+                                    color: fetchedText2[index].contains(')') &
+                                            fetchedText2[index].contains(':')
+                                        ? yellow
+                                        : white,
+                                    fontWeight: FontWeight.w800,
+                                    wordSpacing: 0,
+                                    letterSpacing: 0,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                              ],
+                            );
+                          },
+                        ),
                         SizedBox(height: 40),
                       ],
                     ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
@@ -162,11 +229,27 @@ class Assessment extends StatelessWidget {
 
   Future<List<String>> fetchText(
       List<Map<String, dynamic>> portfolioDetails, String message) async {
+    String type = "Strictly do not follow the format ";
+    String format =
+        "DO NOT INCLUDE ANYTHING HERE  1) [Title of ${type}] : [YOUR ANSWER HERE]   \n\n 2) [(Title of ${type}] : [YOUR ANSWER HERE] )\n\n";
+    String description =
+        "Answer each questions in sentence, briefly and informatively. Each response must be in between 30 to 50 words and only. At least 2 points for ${format}. 1 point should include only 1 paragraph description. I want only the answer in your response without labelling the question number but label it with a title on what are u explaining.  Separate the title with your answers in sentences. Strictly follow the answer format that i provide you. ";
+
+    if (message.contains('Q2.')) {
+      type = "improvements";
+    }
+    if (message.contains('Q1.')) {
+      type = "risk";
+    } else if (message.contains('Q3.')) {
+      description = " ";
+      format = " ";
+    }
+
     final response = await http.post(
       Uri.parse('https://api.openai.com/v1/chat/completions'),
       headers: {
         'Authorization':
-            'Bearer sk-proj-IuZJM0Qxv3tzoyQNx15UT3BlbkFJ289u6N8DjSpJsBUKTQtr',
+            'Bearer sk-proj-qf7W4UCemsPZlSlERSmPT3BlbkFJ029EHqgofI4BRY5HAgyI',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
@@ -175,8 +258,10 @@ class Assessment extends StatelessWidget {
           {
             'role': "user",
             'content':
-                "You are now an AI stocks' portfolio analyzer. I strictly require you to analyze the portfolio and give your opinion on the following portfolio. These are the main questions that you have to answer: ${message} Answer each question in a sentence with brief and informative. I want only the answer in your response without labeling the question number but label it with a title on what you are explaining. Separate the title with your answers in sentences. Strictly follow the answer format: \n Description  1) Title of Description : Description  2) Title of Description : Description  3) Title of Description : Description   .Do not mention the question, do not give a summary. Answer each question in a sentence with brief and informative."
+                "You are now a stocks' portfolio analyzer. Pay detail to every single sentence that I provide you. I strictly require you to analyze the portfolio and give your opinion on the following portfolio. Do not return your answer in bold form. This is the main question that you have to answer : ${message}   "
           },
+          {'role': "user", 'content': "${description}"},
+          {'role': "user", 'content': "${format}}"},
           {
             'role': "user",
             'content': "Portfolio: ${portfolioDetails.toString()}"
@@ -194,15 +279,21 @@ class Assessment extends StatelessWidget {
       // Initialize list to store split parts
       List<String> allAnswers = [];
       for (String message in messages) {
-        // Split the message into parts
-        List<String> parts = message.split(':');
-        for (int i = 0; i < parts.length; i++) {
-          if (i == 0) {
-            // Add the first part with index prefix
-            allAnswers.add('${parts[i].trim()} :');
-          } else {
+        // Check if the message ends with a colon
+        if (message.endsWith(':')) {
+          // If it does, add it directly to allAnswers
+          allAnswers.add(message.trim());
+        } else {
+          // If not, split the message into parts
+          List<String> parts = message.split(':');
+          if (parts.length > 1) {
+            // If the message contains a colon, add the first part with index prefix
+            allAnswers.add('${parts[0].trim()} :');
             // Add the remaining parts without any modification
-            allAnswers.add(parts[i].trim());
+            allAnswers.addAll(parts.sublist(1).map((part) => part.trim()));
+          } else {
+            // If the message doesn't contain a colon, add it directly to allAnswers
+            allAnswers.add(message.trim());
           }
         }
       }

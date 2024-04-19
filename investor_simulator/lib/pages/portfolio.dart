@@ -69,11 +69,6 @@ class _PortfolioState extends State<Portfolio> {
         Stack(
           children: [
             Center(child: stocksText()),
-            Positioned(
-              right: 10,
-              top: 5,
-              child: help(context),
-            ),
           ],
         ),
         const SizedBox(height: 10),
@@ -658,38 +653,6 @@ class _PortfolioState extends State<Portfolio> {
       textStyle: TextStyle(fontSize: 40, color: yellow),
       strokeColor: darkPurple,
       strokeWidth: 7,
-    );
-  }
-
-  ElevatedButton help(BuildContext context) {
-    final pageController = PageController(initialPage: 1);
-    return ElevatedButton(
-      onPressed: () {
-        openStockHelpDialog(context, pageController);
-      },
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.all(0),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        shape: const CircleBorder(
-          side: BorderSide(color: darkPurple, width: 4),
-        ),
-      ),
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: const BoxDecoration(
-          color: purple,
-          shape: BoxShape.circle,
-        ),
-        child: const Center(
-          child: Icon(
-            Icons.help_outline,
-            color: white,
-            size: 40,
-          ),
-        ),
-      ),
     );
   }
 }

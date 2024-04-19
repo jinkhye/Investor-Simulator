@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:investor_simulator/constant/color.dart';
+import 'package:investor_simulator/dialog/sell_confirmation_dialog.dart';
 import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:investor_simulator/provider/portfolio_provider.dart';
 import 'package:provider/provider.dart';
@@ -176,6 +177,8 @@ class _SellDialogState extends State<SellDialog> {
 
           provider.addMoney(totalPrice);
           Navigator.pop(context); // Close the dialog after buying
+          openSellConfirmationDialog(
+              context, widget.stock.symbol, quantity, totalPrice);
         } else {
           // Show error or handle invalid quantity
         }

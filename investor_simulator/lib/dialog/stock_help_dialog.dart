@@ -59,6 +59,13 @@ void openStockHelpDialog(BuildContext context, pagecontroller) {
                               borderRadius: BorderRadius.circular(16),
                               color: yellow,
                             ),
+                            child: Scrollbar(child: helpPage4(context)),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              color: yellow,
+                            ),
                             child: Scrollbar(child: helpPage3(context)),
                           ),
                         ],
@@ -122,6 +129,72 @@ SingleChildScrollView helpPage3(BuildContext context) {
               padding: EdgeInsets.all(10.0),
               child: Text(
                 'Cryptocurrency is a digital or virtual currency that uses cryptography for security.Cryptocurrency investing can be highly unpredictive and risky.\n\nPrices of cryptocurrencies can experience rapid fluctuations based on factors such as market demand, regulatory developments, technological advancements, and investor sentiment.',
+                style: TextStyle(
+                  fontFamily: 'Helvetica',
+                  letterSpacing: 0,
+                  wordSpacing: 0,
+                  fontSize: 20,
+                  color: black,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+SingleChildScrollView helpPage4(BuildContext context) {
+  return SingleChildScrollView(
+    scrollDirection: Axis.vertical,
+    child: Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        children: [
+          Stack(
+            children: [
+              helpText('FOREX'),
+              Positioned(top: -2, right: 0, child: close(context)),
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            width: 150,
+            height: 150,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              image: const DecorationImage(
+                image: AssetImage('assets/images/forex.png'),
+                fit: BoxFit.fill,
+              ),
+              border: const Border.fromBorderSide(
+                BorderSide(
+                  color: black,
+                  width: 4,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            width: 400,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: white,
+            ),
+            child: const Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Text(
+                'Forex, short for foreign exchange, is the global market where you can trade currency pairs from around the world. This market operates 24 hours a day, five days a week, offering high liquidity and the opportunity to use leverage to control larger positions with smaller investments.\n\nHowever, forex trading also carries risks. High market volatility can lead to rapid price changes, so it\'s important to have a solid strategy and stay informed about global economic events.',
                 style: TextStyle(
                   fontFamily: 'Helvetica',
                   letterSpacing: 0,
@@ -227,8 +300,8 @@ SingleChildScrollView helpPage1(BuildContext context) {
           Row(
             children: [
               Container(
-                width: 150,
-                height: 150,
+                width: 140,
+                height: 140,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   image: const DecorationImage(
@@ -247,8 +320,8 @@ SingleChildScrollView helpPage1(BuildContext context) {
                 width: 10,
               ),
               Container(
-                width: 150,
-                height: 150,
+                width: 140,
+                height: 140,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   image: const DecorationImage(

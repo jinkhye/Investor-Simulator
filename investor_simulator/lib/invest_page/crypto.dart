@@ -207,7 +207,7 @@ class _CryptoMenuPageState extends State<CryptoMenuPage> {
   }
 
   ElevatedButton help(BuildContext context) {
-    final pageController = PageController(initialPage: 2);
+    final pageController = PageController(initialPage: 3);
     return ElevatedButton(
       onPressed: () {
         openStockHelpDialog(context, pageController);

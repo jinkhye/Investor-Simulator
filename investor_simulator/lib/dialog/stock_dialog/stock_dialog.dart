@@ -392,7 +392,7 @@ ElevatedButton statsHelp(BuildContext context) {
   final pageController = PageController(initialPage: 0);
   return ElevatedButton(
     onPressed: () {
-      openKeyStatsHelpDialog(context, pageController);
+      openStockKeyStatsHelpDialog(context, pageController);
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),

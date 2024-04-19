@@ -217,7 +217,7 @@ SingleChildScrollView stockDetails(BuildContext context, dynamic stock,
                 ),
               ),
               const TextSpan(
-                text: " units of this stock.",
+                text: " units of this asset.",
                 style: TextStyle(
                   fontFamily: 'Helvetica',
                   letterSpacing: 0,
@@ -680,38 +680,6 @@ SizedBox stockChart(
           animationDuration: 55,
         )
       ],
-    ),
-  );
-}
-
-ElevatedButton statsHelp(BuildContext context) {
-  final pageController = PageController(initialPage: 0);
-  return ElevatedButton(
-    onPressed: () {
-      openKeyStatsHelpDialog(context, pageController);
-    },
-    style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.all(0),
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      shape: const CircleBorder(
-        side: BorderSide(color: darkPurple, width: 4),
-      ),
-    ),
-    child: Container(
-      width: 40,
-      height: 40,
-      decoration: const BoxDecoration(
-        color: purple,
-        shape: BoxShape.circle,
-      ),
-      child: const Center(
-        child: Icon(
-          Icons.help_outline,
-          color: Colors.white,
-          size: 40,
-        ),
-      ),
     ),
   );
 }

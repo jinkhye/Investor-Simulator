@@ -54,7 +54,7 @@ class StocksProvider with ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse(
-          'https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2/get-quotes?region=US&symbols=META%2CBABA%2CAMZN%2CCVX%2C5225.KL%2CMCD%2CPG%2CNFLX%2CTSLA%2C1295.KL%2CBA%2C1023.KL%2CMETA%2CPFE%2C5168.KL%2C1155.KL%2CNVDA%2C6033.KL%2C4707.KL%2CWMT%2C7113.KL%2CAAPL%2CV%2C6888.KL%2CMSFT%2CJNJ%2CHD%2CKO%2CJPM%2CGOOGL%2C%2CT%2CXOM%2CDIS',
+          'https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2/get-quotes?region=US&symbols=AAPL%2C6033.KL%2CTSLA%2C4707.KL%2CMETA%2CBABA%2CAMZN%2CCVX%2C5225.KL%2CMCD%2CPG%2CNFLX%2C1295.KL%2CBA%2C1023.KL%2CMETA%2CPFE%2C5168.KL%2C1155.KL%2CNVDA%2CWMT%2C7113.KL%2CV%2C6888.KL%2CMSFT%2CJNJ%2CHD%2CKO%2CJPM%2CGOOGL%2C%2CT%2CXOM%2CDIS',
         ),
         headers: {
           'X-RapidAPI-Host': 'apidojo-yahoo-finance-v1.p.rapidapi.com',

@@ -184,7 +184,7 @@ class _ForexMenuPageState extends State<ForexMenuPage> {
   }
 
   ElevatedButton _helpButton(BuildContext context) {
-    final pageController = PageController(initialPage: 0);
+    final pageController = PageController(initialPage: 2);
     return ElevatedButton(
       onPressed: () {
         openStockHelpDialog(context, pageController);

@@ -21,6 +21,20 @@ class GameProvider extends ChangeNotifier {
   double _requiredXp = 100;
   double get currentXp => _currentXp;
   double get requiredXp => _requiredXp;
+  bool _isClose = false;
+  bool get isClose => _isClose;
+  int _openCount = 0;
+  int get openCount => _openCount;
+
+  void setOpenCount(int count) {
+    _openCount = count;
+  }
+
+  void setClose(bool close) {
+    _isClose = close;
+
+    notifyListeners();
+  }
 
   void addAccomodationLevel(index) {
     _accomodation[index].current++;

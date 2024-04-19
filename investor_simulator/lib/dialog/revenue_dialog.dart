@@ -53,8 +53,6 @@ void openRevenueDialog(BuildContext context, Result stock) {
                           Align(
                               alignment: Alignment.center,
                               child: revenueText("REVENUE GROWTH")),
-                          Positioned(
-                              top: -2, right: -12, child: statsHelp(context)),
                         ],
                       ),
                     ),
@@ -109,7 +107,7 @@ void openRevenueDialog(BuildContext context, Result stock) {
                       thickness: 4,
                     ),
                     const Text(
-                      'REVENUE GROWTH',
+                      'REVENUE REPORT',
                       style: TextStyle(
                         fontSize: 25,
                         color: purple,
@@ -118,14 +116,69 @@ void openRevenueDialog(BuildContext context, Result stock) {
                     const SizedBox(
                       height: 15,
                     ),
-                    const Text(
-                      'It shows an increase in a company\'s total revenue over a specific period compared to previous periods. \n\nThis growth indicates that the company is generating more income from its core business activities',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontFamily: 'Helvetica',
-                        fontSize: 18,
-                        color: black,
-                        fontWeight: FontWeight.w800,
+                    RichText(
+                      text: const TextSpan(
+                        style: TextStyle(
+                          fontFamily: 'Helvetica',
+                          letterSpacing: 0,
+                          wordSpacing: 0,
+                          fontSize: 20,
+                          color: black,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: 'Quarterly Earnings:\n\n',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w800),
+                          ),
+                          TextSpan(
+                            text:
+                                'This section provides information about the company\'s earnings per share (EPS) for each quarter. It helps investors assess the company\'s profitability over time and compare its performance from one quarter to another.',
+                            style: TextStyle(
+                              fontFamily: 'Helvetica',
+                              letterSpacing: 0,
+                              wordSpacing: 0,
+                              fontSize: 16,
+                              color: black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          TextSpan(
+                            text: '\n\nYearly Financials:\n\n',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w800),
+                          ),
+                          TextSpan(
+                            text:
+                                'This section includes data on the company\'s revenue and earnings for different years. It allows investors to evaluate the company\'s overall financial performance across multiple years and identify long-term trends.',
+                            style: TextStyle(
+                              fontFamily: 'Helvetica',
+                              letterSpacing: 0,
+                              wordSpacing: 0,
+                              fontSize: 16,
+                              color: black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          TextSpan(
+                            text: '\n\nQuarterly Financials:\n\n',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w800),
+                          ),
+                          TextSpan(
+                            text:
+                                'This section shows the company\'s revenue and earnings for each quarter. It helps investors analyze how the company performs throughout the year and identify seasonal patterns or fluctuations in the company\'s financial health.',
+                            style: TextStyle(
+                              fontFamily: 'Helvetica',
+                              letterSpacing: 0,
+                              wordSpacing: 0,
+                              fontSize: 16,
+                              color: black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -136,38 +189,6 @@ void openRevenueDialog(BuildContext context, Result stock) {
         ),
       );
     },
-  );
-}
-
-ElevatedButton statsHelp(BuildContext context) {
-  final pageController = PageController(initialPage: 0);
-  return ElevatedButton(
-    onPressed: () {
-      // openKeyStatsHelpDialog(context, pageController);
-    },
-    style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.all(0),
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      shape: const CircleBorder(
-        side: BorderSide(color: darkPurple, width: 4),
-      ),
-    ),
-    child: Container(
-      width: 40,
-      height: 40,
-      decoration: const BoxDecoration(
-        color: purple,
-        shape: BoxShape.circle,
-      ),
-      child: const Center(
-        child: Icon(
-          Icons.help_outline,
-          color: Colors.white,
-          size: 40,
-        ),
-      ),
-    ),
   );
 }
 

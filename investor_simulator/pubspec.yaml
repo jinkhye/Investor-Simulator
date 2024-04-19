@@ -50,6 +50,7 @@ dependencies:
   fl_chart: ^0.67.0
   chart_sparkline: ^1.0.15+1
   url_launcher: ^6.2.6
+  tutorial_coach_mark: ^1.2.11
 
 dev_dependencies:
   flutter_test:

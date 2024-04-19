@@ -176,7 +176,7 @@ SingleChildScrollView stockDetails(
                 ),
               ),
               const TextSpan(
-                text: " units of this stock.",
+                text: " units of this ETF.",
                 style: TextStyle(
                   fontFamily: 'Helvetica',
                   letterSpacing: 0,
@@ -374,7 +374,7 @@ ElevatedButton statsHelp(BuildContext context) {
   final pageController = PageController(initialPage: 0);
   return ElevatedButton(
     onPressed: () {
-      openKeyStatsHelpDialog(context, pageController);
+      openETFKeyStatsHelpDialog(context, pageController);
     },
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(0),

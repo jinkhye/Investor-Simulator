@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:investor_simulator/constant/color.dart';
+import 'package:investor_simulator/menu/coach_mark.dart';
 import 'package:investor_simulator/menu/topMenu.dart';
 import 'package:investor_simulator/pages/clothes.dart';
 import 'package:investor_simulator/pages/home.dart';
@@ -15,6 +16,7 @@ import 'package:investor_simulator/pages/portfolio.dart';
 import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 import 'package:provider/provider.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
@@ -27,6 +29,18 @@ class _MainMenuState extends State<MainMenu> {
   DateTime _dateTime = DateTime.now();
   late Timer _timer;
 
+  final scrollController = ScrollController();
+
+  TutorialCoachMark? tutorialCoachMark;
+  List<TargetFocus> targets = [];
+
+  GlobalKey topMenuKey = GlobalKey();
+  GlobalKey investKey = GlobalKey();
+  GlobalKey portfolioKey = GlobalKey();
+  GlobalKey newsKey = GlobalKey();
+  GlobalKey accomodationKey = GlobalKey();
+  GlobalKey clothesKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +49,176 @@ class _MainMenuState extends State<MainMenu> {
         _dateTime = DateTime.now();
       });
     });
+    final gameProvider = Provider.of<GameProvider>(context, listen: false);
+    gameProvider.addListener(() {
+      if (gameProvider.isClose && gameProvider.openCount == 0) {
+        // When isClose is true, activate tutorial coachmark
+        Future.delayed(const Duration(seconds: 1), () {
+          _showTutorialCoachmark();
+        });
+      }
+    });
+  }
+
+  void _showTutorialCoachmark() {
+    _initTarget();
+    tutorialCoachMark = TutorialCoachMark(
+      useSafeArea: true,
+      hideSkip: true,
+      targets: targets,
+    )..show(context: context);
+  }
+
+  void _initTarget() {
+    targets = [
+      //  Menu
+      TargetFocus(
+        identify: "topMenu-key",
+        keyTarget: topMenuKey,
+        shape: ShapeLightFocus.RRect,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return CoachmarkDesc(
+                text:
+                    "This is the top menu, which displays your money and level. Track your funds and progress here! Earn XP through profits from investments to level up and unlock new opportunities.",
+                onNext: () {
+                  controller.next();
+                },
+                onSkip: () {
+                  controller.skip();
+                },
+              );
+            },
+          ),
+        ],
+      ),
+
+      // Invest
+      TargetFocus(
+        identify: "invest-key",
+        keyTarget: investKey,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return CoachmarkDesc(
+                text:
+                    "This is the 'Invest' button, where you can dive into real-time investing simulations. Explore stocks, ETFs, Forex, and crypto to grow your wealth. This will be your main source of income in the game!",
+                onNext: () {
+                  controller.next();
+                },
+                onSkip: () {
+                  controller.skip();
+                },
+              );
+            },
+          ),
+        ],
+      ),
+
+      // Portfolio
+      TargetFocus(
+        identify: "portfolio-key",
+        keyTarget: portfolioKey,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return CoachmarkDesc(
+                text:
+                    "This is the 'Portfolio' button, where you can manage your assets and get AI Portfolio Analysis. Track your investments, assess performance, and receive insights for strategic decisions.",
+                onNext: () {
+                  controller.next();
+                },
+                onSkip: () {
+                  controller.skip();
+                },
+              );
+            },
+          ),
+        ],
+      ),
+
+      // News
+      TargetFocus(
+        identify: "news-key",
+        keyTarget: newsKey,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return CoachmarkDesc(
+                text:
+                    "This is the 'News' button, where you can view the latest news feed of the investment market and get AI summary and analysis of the news. Stay informed and make smarter investment choices.",
+                onNext: () {
+                  scrollController.animateTo(150,
+                      duration: const Duration(milliseconds: 1000),
+                      curve: Curves.ease);
+                  controller.next();
+                },
+                onSkip: () {
+                  controller.skip();
+                },
+              );
+            },
+          ),
+        ],
+      ),
+
+      // Accomodation
+      TargetFocus(
+        identify: "accomodation-key",
+        keyTarget: accomodationKey,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return CoachmarkDesc(
+                text:
+                    "This is the 'Accommodation' button, where you can unlock new living spaces, rent and upgrade them out to earn more money. Enhance your lifestyle and your income!",
+                onNext: () {
+                  scrollController.animateTo(200,
+                      duration: const Duration(milliseconds: 1000),
+                      curve: Curves.ease);
+                  controller.next();
+                },
+                onSkip: () {
+                  controller.skip();
+                },
+              );
+            },
+          ),
+        ],
+      ),
+
+      // Clothes
+      TargetFocus(
+        identify: "clothes-key",
+        keyTarget: clothesKey,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return CoachmarkDesc(
+                text:
+                    "This is the 'Clothes' button, where you can buy new outfits to keep your character stylish, boost your social status, and unlock new accomodations. Dress for success!",
+                onNext: () {
+                  scrollController.animateTo(0,
+                      duration: const Duration(milliseconds: 2000),
+                      curve: Curves.ease);
+                  controller.next();
+                },
+                onSkip: () {
+                  controller.skip();
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    ];
   }
 
   @override
@@ -67,7 +251,12 @@ class _MainMenuState extends State<MainMenu> {
   Column gameMenu(BuildContext context, imagePath, maxPath) {
     return Column(
       children: <Widget>[
-        topMainMenu(context),
+        SizedBox(
+          key: topMenuKey,
+          child: topMainMenu(
+            context,
+          ),
+        ),
         const SizedBox(
           height: 10,
         ),
@@ -85,8 +274,6 @@ class _MainMenuState extends State<MainMenu> {
   }
 
   Padding bottomMenu(BuildContext context) {
-    final scrollController = ScrollController();
-
     return Padding(
       padding: const EdgeInsets.only(top: 5, left: 15, right: 10),
       child: RawScrollbar(
@@ -123,6 +310,7 @@ class _MainMenuState extends State<MainMenu> {
 
   Widget news(BuildContext context) {
     return Column(
+      key: newsKey,
       children: [
         ElevatedButton(
           onPressed: () {
@@ -185,6 +373,7 @@ class _MainMenuState extends State<MainMenu> {
 
   Widget portfolio(BuildContext context) {
     return Column(
+      key: portfolioKey,
       children: [
         ElevatedButton(
           onPressed: () {
@@ -250,6 +439,7 @@ class _MainMenuState extends State<MainMenu> {
 
   Widget clothes(BuildContext context) {
     return Column(
+      key: clothesKey,
       children: [
         ElevatedButton(
           onPressed: () {
@@ -315,6 +505,7 @@ class _MainMenuState extends State<MainMenu> {
 
   Widget accomodation(BuildContext context) {
     return Column(
+      key: accomodationKey,
       children: [
         ElevatedButton(
           onPressed: () {
@@ -380,6 +571,7 @@ class _MainMenuState extends State<MainMenu> {
 
   Widget invest(BuildContext context) {
     return Column(
+      key: investKey,
       children: [
         ElevatedButton(
           onPressed: () {

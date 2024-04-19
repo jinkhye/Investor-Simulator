@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/menu/topMenu.dart';
 import 'package:investor_simulator/models/accommodation_model.dart';
+import 'package:investor_simulator/models/clothes_model.dart';
 import 'package:investor_simulator/provider/game_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
@@ -17,12 +18,14 @@ class Accomodation extends StatefulWidget {
 
 class _AccomodationState extends State<Accomodation> {
   List<AccomodationModel> accommodation = [];
+  List<ClothesModel> clothes = [];
 
   @override
   Widget build(BuildContext context) {
     final imagePath = Provider.of<GameProvider>(context);
 
     accommodation = imagePath.accomodation;
+    clothes = ClothesModel.getClothes();
 
     return Scaffold(
       body: Container(
@@ -78,7 +81,8 @@ class _AccomodationState extends State<Accomodation> {
 
   Widget lockedAccomodation(index, context, GameProvider imagePath) {
     int currentLevel = imagePath.level;
-    if (currentLevel >= accommodation[index].lvl) {
+    if (currentLevel >= accommodation[index].lvl &&
+        imagePath.clothesUse >= index) {
       return accomodationStack(index, context, imagePath);
     } else {
       return Stack(
@@ -91,17 +95,95 @@ class _AccomodationState extends State<Accomodation> {
               color: Colors.black.withOpacity(0.5),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Center(
-              child: StrokeText(
-                text: 'UNLOCK AT LVL ${accommodation[index].lvl}',
-                textStyle: const TextStyle(
-                  fontSize: 30,
-                  color: yellow,
-                  letterSpacing: 1,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const StrokeText(
+                  text: 'UNLOCK',
+                  textStyle: TextStyle(
+                    fontSize: 30,
+                    color: yellow,
+                    letterSpacing: 1,
+                  ),
+                  strokeColor: Colors.black,
+                  strokeWidth: 5,
                 ),
-                strokeColor: Colors.black,
-                strokeWidth: 5,
-              ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(16),
+                            color: darkPurple.withOpacity(0.8),
+                          ),
+                          child: Transform.scale(
+                            scale: 0.9,
+                            child: Image.asset(
+                              clothes[index].iconPath,
+                              fit: BoxFit.fitHeight,
+                            ),
+                          ),
+                        ),
+                        StrokeText(
+                          text: clothes[index].name.toUpperCase(),
+                          textStyle: const TextStyle(
+                            fontSize: 12,
+                            color: yellow,
+                            letterSpacing: 1,
+                          ),
+                          strokeColor: Colors.black,
+                          strokeWidth: 5,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 10),
+                    Column(
+                      children: [
+                        Container(
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: darkPurple.withOpacity(0.8),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const StrokeText(
+                                text: 'LVL',
+                                textStyle: TextStyle(
+                                  fontSize: 14,
+                                  color: yellow,
+                                  letterSpacing: 1,
+                                ),
+                                strokeColor: Colors.black,
+                                strokeWidth: 5,
+                              ),
+                              StrokeText(
+                                text: accommodation[index].lvl.toString(),
+                                textStyle: const TextStyle(
+                                  fontSize: 25,
+                                  color: yellow,
+                                  letterSpacing: 1,
+                                ),
+                                strokeColor: Colors.black,
+                                strokeWidth: 5,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
         ],

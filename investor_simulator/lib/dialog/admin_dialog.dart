@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:stroke_text/stroke_text.dart';
 
 void openAdminDialog(BuildContext context) {
+  final provider = Provider.of<GameProvider>(context, listen: false);
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -39,7 +40,11 @@ void openAdminDialog(BuildContext context) {
                   helpPage3(context),
                   const SizedBox(height: 30),
                   GestureDetector(
-                    onTap: () => Get.to(const HomePage()),
+                    onTap: () {
+                      Get.to(const HomePage());
+                      provider.setOpenCount(0);
+                      provider.setClose(false);
+                    },
                     child: const Icon(
                       Icons.home_rounded,
                       color: white,
