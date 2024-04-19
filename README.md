@@ -31,6 +31,6 @@ Investor Simulator is an immersive game designed to empower players with financi
 
 Investor Simulator aims to provide players with an immersive experience in the world of finance. Navigate the capital market, strategically invest in assets, and grow your portfolio to achieve financial independence and earn recognition as a savvy investor. Are you ready to embark on this exciting journey?
 
-##Programming Languages Used
+## Programming Languages Used
 
 Investor Simulator is an app built using Flutter, a software development kit created by Google. The primary programming language used in Flutter development is Dart. Dart is known for its simplicity, performance, and expressiveness, making it a great choice for building applications with complex features and high interactivity, such as the Investor Simulator. By using Flutter and Dart, the application can deliver a consistent and immersive experience across different platforms.
