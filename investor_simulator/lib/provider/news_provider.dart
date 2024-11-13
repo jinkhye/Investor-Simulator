@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:investor_simulator/models/news_details_model.dart';
 import 'package:investor_simulator/models/news_model.dart' as n;
@@ -13,7 +14,8 @@ class NewsProvider with ChangeNotifier {
   bool _hasError = false;
   bool _hasErrorDetails = false;
   String _errorMessage = '';
-  String api = '2f0743bd6fmshc69c7c937d2929bp19a38fjsn426e20a418fb';
+  String api = dotenv.env['APIDOJO'] ?? '';
+  String newsApi = dotenv.env['NEWSAPI'] ?? '';
 
   List<n.Stream> get news => _news;
   List<NewsDetails> get newsDetails => _newsDetails;
@@ -94,8 +96,7 @@ class NewsProvider with ChangeNotifier {
         Uri.parse('https://newsnow.p.rapidapi.com/newsv2_top_news_site'),
         headers: {
           'X-RapidAPI-Host': 'newsnow.p.rapidapi.com',
-          'X-RapidAPI-Key':
-              '40d7312818mshddd6877a4da2e17p190b63jsncfe0a925f21a',
+          'X-RapidAPI-Key': newsApi,
           'Content-Type': 'application/json', // Specify JSON content type
         },
         body: requestBody,

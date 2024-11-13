@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:investor_simulator/pages/home.dart';
 import 'package:investor_simulator/pages/accomodation.dart';
@@ -13,7 +14,8 @@ import 'package:investor_simulator/provider/stocks_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:investor_simulator/provider/crypto_provider.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: '.env');
   runApp(const MyApp());
 }
 

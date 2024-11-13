@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/menu/topMenu.dart';
 import 'package:investor_simulator/models/news_details_model.dart';
@@ -236,11 +237,12 @@ class NewsAssessment extends StatelessWidget {
   }
 
   Future<String> fetchText(NewsDetails newss, String message) async {
+    String api = dotenv.env['OPENAI_API_KEY'] ?? '';
+
     final response = await http.post(
       Uri.parse('https://api.openai.com/v1/chat/completions'),
       headers: {
-        'Authorization':
-            'Bearer sk-proj-qf7W4UCemsPZlSlERSmPT3BlbkFJ029EHqgofI4BRY5HAgyI',
+        'Authorization': 'Bearer $api',
         'Content-Type': 'application/json',
       },
       body: jsonEncode({

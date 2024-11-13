@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/models/chart_model.dart';
@@ -17,7 +18,7 @@ class ForexProvider with ChangeNotifier {
   List<ChartResult>? _itemChart;
   List<ChartModel>? _chartModel = [];
   String _days = 'W';
-  String api = '2f0743bd6fmshc69c7c937d2929bp19a38fjsn426e20a418fb';
+  String api = dotenv.env['APIDOJO'] ?? '';
 
   List<Result> get stocks => _stocks;
   bool get isLoadingStocks => _isLoadingStocks;

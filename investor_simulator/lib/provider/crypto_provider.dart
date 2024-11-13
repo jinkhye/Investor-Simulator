@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:investor_simulator/constant/color.dart';
 import 'package:investor_simulator/models/chart_model.dart';
@@ -17,6 +18,7 @@ class CryptoProvider extends ChangeNotifier {
   String _errorMessage = '';
   List<ChartModel>? _itemChart; // Declare itemChart as a nullable list
   String _days = 'W';
+  String api = dotenv.env['COINGECKO'] ?? '';
 
   List<CoinModel> get cryptocurrencies => _cryptocurrencies;
   bool get isLoadingCryptocurrencies => _isLoadingCryptocurrencies;
@@ -51,7 +53,7 @@ class CryptoProvider extends ChangeNotifier {
 
     try {
       final response = await http.get(Uri.parse(
-          'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=25&page=1&sparkline=true&x_cg_demo_api_key=CG-9KLBqzTjoFnEW9aWkqXrKmNW'));
+          'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=25&page=1&sparkline=true&x_cg_demo_api_key=$api'));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         _cryptocurrencies = data.map((e) => CoinModel.fromJson(e)).toList();

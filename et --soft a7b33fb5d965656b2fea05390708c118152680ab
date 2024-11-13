@@ -1,0 +1,23 @@
+[33mcommit 25143b589552e9b83c3bacae02780cbb8de44a85[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: jinkhye <shawnkhye@gmail.com>
+Date:   Wed Nov 13 23:28:53 2024 +0800
+
+    hide api key
+
+[33mcommit a7b33fb5d965656b2fea05390708c118152680ab[m
+Author: jinkhye <shawnkhye@gmail.com>
+Date:   Wed Nov 13 23:20:29 2024 +0800
+
+    API key hidden in .env
+
+[33mcommit ee9e96f5dd844e36e6320ebdcead049c6a40c172[m
+Author: jinkhye <shawnkhye@gmail.com>
+Date:   Thu Apr 18 01:58:50 2024 +0800
+
+    commit forex and level
+
+[33mcommit e24eb3c924467d912ce75a34ecf6aff5bcc5359f[m
+Author: jinkhye <shawnkhye@gmail.com>
+Date:   Wed Apr 17 22:49:20 2024 +0800
+
+    Update news_assessment.dart
